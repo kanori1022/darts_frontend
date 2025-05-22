@@ -1,5 +1,5 @@
-import { Button } from "../components/Button/page";
-import { InputLong } from "../components/Input/page";
+import { Button } from "@/components/Button/page";
+import { InputLong } from "@/components/Input/page";
 // ここから検索
 // https://fontawesome.com/icons?t=packs#packs
 
@@ -10,7 +10,7 @@ import { InputLong } from "../components/Input/page";
 export default function Login() {
   return (
     <div>
-      <div className="h-screen">
+      <div className="">
         <p className="py-10 text-3xl font-bold font-Noto Sans text-center">
           ログイン
         </p>

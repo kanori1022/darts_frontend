@@ -1,7 +1,7 @@
+import { Footer } from "@/components/Footer/page";
+import { Header } from "@/components/Header/page";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Footer } from "./components/Footer/page";
-import { Header } from "./components/Header/page";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -27,11 +27,15 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased lg:w-1/3 mx-auto`}
+        className={`${geistSans.variable} ${geistMono.variable} flex flex-col antialiased lg:w-1/3 mx-auto min-h-screen`}
       >
-        <Header />
-        <div className="bg-[#F1F6F7]">{children}</div>
-        <Footer />
+        <div className="sticky top-0">
+          <Header />
+        </div>
+        <div className="flex-grow bg-[#F1F6F7]">{children}</div>
+        <div className="sticky bottom-0">
+          <Footer />
+        </div>
       </body>
     </html>
   );
