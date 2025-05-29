@@ -25,6 +25,9 @@ export default function Login() {
         </div>
         <div className="bg-neutral-100"></div>
       </div>
+      <div></div>
     </div>
   );
 }
+
+// https://nextjs-ja-translation-docs.vercel.app/docs/api-reference/next/link
