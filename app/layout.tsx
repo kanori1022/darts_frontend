@@ -1,8 +1,15 @@
 import { Footer } from "@/components/Footer/page";
 import { Header } from "@/components/Header/page";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
+
+// https://docs.fontawesome.com/web/use-with/react/use-with
+import { config } from "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+config.autoAddCss = false;
+
+const inter = Inter({ subsets: ["latin"] });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +34,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} flex flex-col antialiased lg:w-1/3 mx-auto min-h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} ${inter.className} flex flex-col antialiased lg:w-1/3 mx-auto min-h-screen`}
       >
         <div className="sticky top-0">
           <Header />

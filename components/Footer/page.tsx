@@ -1,3 +1,5 @@
+"use client";
+
 import {
   faHeart,
   faHouse,
@@ -7,44 +9,80 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export const Footer = () => {
+  const pathname = usePathname(); // 現在のURLパスを取得
+
+  // ${pathname === '/home' ? 'text-orange-400' : 'text-black'}
+  // + (pathname === '/home' ? ' text-orange-400' : ' text-black')
+
+  // 1. これと
+  // pathname === "/home" ? '水色' : 'グレー'
+
+  // 2. これが同じ
+  // if (pathname === "/home") {
+  //   return "水色";
+  // } else {
+  //   return "グレー";
+  // }
+
   return (
-    <div className="bg-[#333333] px-8 p-5 ">
-      <div className="text-[#828282] flex justify-between bg-[#333333]">
-        <Link href="/">
+    <div>
+      <div className="bg-[#333333] text-[#828282] flex justify-between px-8 p-5 ">
+        <Link href="/home">
           {/* <p>Home</p> */}
           <FontAwesomeIcon
             icon={faHouse}
-            className="hover:text-[#6DDDFF] cursor-pointer h-14 w-14"
+            size="2x"
+            className={
+              "hover:text-[#6DDDFF] cursor-pointer " +
+              (pathname === "/home" ? "text-[#6DDDFF]" : "text-[#828282]")
+            }
           />
         </Link>
         <Link href="/">
           {/* <p>Search</p> */}
           <FontAwesomeIcon
             icon={faMagnifyingGlass}
-            className="hover:text-[#6DDDFF] cursor-pointer h-14 w-14"
+            size="2x"
+            className={
+              "hover:text-[#6DDDFF] cursor-pointer " +
+              (pathname === "/" ? "text-[#6DDDFF]" : "text-[#828282]")
+            }
           />
         </Link>
         <Link href="/post">
           {/* <p>Post</p> */}
           <FontAwesomeIcon
             icon={faPlus}
-            className="hover:text-[#6DDDFF] cursor-pointer h-15 w-15"
+            size="2x"
+            className={
+              "hover:text-[#6DDDFF] cursor-pointer " +
+              (pathname === "/post" ? "text-[#6DDDFF]" : "text-[#828282]")
+            }
           />
         </Link>
         <Link href="/">
           {/* <p>favorite</p> */}
           <FontAwesomeIcon
             icon={faHeart}
-            className="hover:text-[#6DDDFF] cursor-pointer h-14 w-14"
+            size="2x"
+            className={
+              "hover:text-[#6DDDFF] cursor-pointer " +
+              (pathname === "/" ? "text-[#6DDDFF]" : "text-[#828282]")
+            }
           />
         </Link>
         <Link href="/">
           {/* <p>profile</p> */}
           <FontAwesomeIcon
             icon={faUser}
-            className="hover:text-[#6DDDFF] cursor-pointer h-14 w-14"
+            size="2x"
+            className={
+              "hover:text-[#6DDDFF] cursor-pointer " +
+              (pathname === "/" ? "text-[#6DDDFF]" : "text-[#828282]")
+            }
           />
         </Link>
       </div>

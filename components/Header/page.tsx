@@ -8,7 +8,7 @@ export const Header = () => {
       <p className="text-3xl font-serif text-[#CCCCCC] pl-23">Combines Darts</p>
       <button type="button" className="h-8 w-8 text-[#CCCCCC]">
         <Link href="/login">
-          <FontAwesomeIcon icon={faBars} className="cursor-pointer" />
+          <FontAwesomeIcon icon={faBars} size="2x" className="cursor-pointer" />
         </Link>
       </button>
     </div>
