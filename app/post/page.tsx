@@ -1,5 +1,5 @@
-import { Button } from "@/components/Button/page";
-import { InputLong, InputShort } from "@/components/Input/page";
+import { Button } from "@/components/Button/Button";
+import { InputLong, InputShort } from "@/components/Input/Input";
 
 export default function post() {
   return (

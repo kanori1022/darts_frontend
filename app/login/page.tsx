@@ -1,5 +1,5 @@
-import { Button } from "@/components/Button/page";
-import { InputLong } from "@/components/Input/page";
+import { Button } from "@/components/Button/Button";
+import { InputLong } from "@/components/Input/Input";
 // ここから検索
 // https://fontawesome.com/icons?t=packs#packs
 
