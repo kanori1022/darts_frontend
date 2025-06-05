@@ -4,8 +4,15 @@ type CardProps = {
 };
 
 export const Card = (props: CardProps) => {
-  const { src } = props;
+  const { src, title } = props;
   return (
-    <img className="w-50 h-30 mb-5 shadow-sm border rounded-lg" src={src} />
+    <div className="px-3 bg-[#DADADA] rounded-lg">
+      <div className="w-50 text-[#000000]">{title} </div>
+      <img
+        className="w-50 h-30 mb-5 shadow-sm border rounded-lg"
+        src={src}
+        alt={title}
+      />
+    </div>
   );
 };

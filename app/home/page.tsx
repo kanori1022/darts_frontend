@@ -22,14 +22,14 @@ export default function home() {
     <div>
       <div className="pb-3">
         <div className="p-3 font-bold bg-white">人気ランキング</div>
-        <div className="flex overflow-scroll gap-3 pt-3">
+        <div className="flex overflow-scroll gap-3 pt-3 mx-3">
           {array.map((image, index) => (
             <Card src={image.src} title={image.title} key={index} />
           ))}
         </div>
         <div className="pb-3">
           <div className="p-3 mt-3 font-bold  bg-white">新着一覧</div>
-          <div className="flex overflow-scroll gap-3 pt-3">
+          <div className="flex overflow-scroll gap-3 pt-3 mx-3">
             {arr.map((image, index) => (
               <Card src={image.src} title={image.title} key={index} />
             ))}
