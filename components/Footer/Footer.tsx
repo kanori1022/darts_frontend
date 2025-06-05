@@ -29,14 +29,14 @@ export const Footer = () => {
 
   return (
     <div>
-      <div className="bg-[#333333] text-[#828282] flex justify-between px-8 p-5 ">
+      <div className="bg-[#333333] text-[#828282] flex justify-between px-10 pt-5 pb-5">
         <Link href="/home">
           {/* <p>Home</p> */}
           <FontAwesomeIcon
             icon={faHouse}
             size="2x"
             className={
-              "hover:text-[#6DDDFF] cursor-pointer " +
+              "hover:text-[#6DDDFF] cursor-pointer pt-2 " +
               (pathname === "/home" ? "text-[#6DDDFF]" : "text-[#828282]")
             }
           />
@@ -47,7 +47,7 @@ export const Footer = () => {
             icon={faMagnifyingGlass}
             size="2x"
             className={
-              "hover:text-[#6DDDFF] cursor-pointer " +
+              "hover:text-[#6DDDFF] cursor-pointer pt-2 " +
               (pathname === "/" ? "text-[#6DDDFF]" : "text-[#828282]")
             }
           />
@@ -56,9 +56,9 @@ export const Footer = () => {
           {/* <p>Post</p> */}
           <FontAwesomeIcon
             icon={faPlus}
-            size="2x"
+            size="3x"
             className={
-              "hover:text-[#6DDDFF] cursor-pointer " +
+              "hover:text-[#6DDDFF] text-center cursor-pointer " +
               (pathname === "/post" ? "text-[#6DDDFF]" : "text-[#828282]")
             }
           />
@@ -69,7 +69,7 @@ export const Footer = () => {
             icon={faHeart}
             size="2x"
             className={
-              "hover:text-[#6DDDFF] cursor-pointer " +
+              "hover:text-[#6DDDFF] cursor-pointer pt-2 " +
               (pathname === "/" ? "text-[#6DDDFF]" : "text-[#828282]")
             }
           />
@@ -80,7 +80,7 @@ export const Footer = () => {
             icon={faUser}
             size="2x"
             className={
-              "hover:text-[#6DDDFF] cursor-pointer " +
+              "hover:text-[#6DDDFF] cursor-pointer pt-2 " +
               (pathname === "/" ? "text-[#6DDDFF]" : "text-[#828282]")
             }
           />
