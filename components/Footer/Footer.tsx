@@ -41,14 +41,14 @@ export const Footer = () => {
             }
           />
         </Link>
-        <Link href="/">
+        <Link href="/search">
           {/* <p>Search</p> */}
           <FontAwesomeIcon
             icon={faMagnifyingGlass}
             size="2x"
             className={
               "hover:text-[#6DDDFF] cursor-pointer pt-2 " +
-              (pathname === "/" ? "text-[#6DDDFF]" : "text-[#828282]")
+              (pathname === "/search" ? "text-[#6DDDFF]" : "text-[#828282]")
             }
           />
         </Link>
