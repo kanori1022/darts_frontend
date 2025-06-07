@@ -15,19 +15,17 @@ export default function search() {
   ];
 
   return (
-    <div className="h-screen flex flex-col">
-      <div className="p-3 font-bold bg-white sticky top-18 mb-1 z-10">一覧</div>
+    <div className="flex flex-col">
+      <div className="p-3 font-bold bg-white mb-1 -z-0.5">一覧</div>
 
-      <div className="flex-1 overflow-y-auto p-3">
+      <div className="flex-1 overflow-y-scroll overflow-x-hidden p-3">
         <div className="grid grid-cols-3 gap-3">
           {array.map((image, index) => (
             <Card src={image.src} title={image.title} key={index} />
           ))}
         </div>
       </div>
-      <div className="p-3 font-bold sticky top-18 mb-1 z-10">
-        前のページ 1/3 次のページ{" "}
-      </div>
+      <div className="p-3 font-bold">前のページ 1/3 次のページ</div>
     </div>
   );
 }
