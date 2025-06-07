@@ -1,32 +1,127 @@
+"use client";
+
 import { Button } from "@/components/Button/Button";
 import { InputLong, InputShort } from "@/components/Input/Input";
+import { useState } from "react";
 
-export default function post() {
+type Combination = {
+  title: string;
+  flight: string;
+  shaft: string;
+  barrel: string;
+  tip: string;
+  description: string;
+};
+export default function Post() {
+  // const [title, setTitle] = useState<string>("");
+  // console.log(title);
+  const [combination, setCombination] = useState<Combination>({
+    title: "",
+    flight: "",
+    shaft: "",
+    barrel: "",
+    tip: "",
+    description: "",
+  });
+
+  // useEffect(() => {
+  //   const hasEmptyField = Object.values(combination).some(
+  //     (value) => value.trim() === ""
+  //   );
+
+  //   if (hasEmptyField) {
+  //     alert("全ての値の入力が完了していません！");
+  //   }
+  // }, [combination]);
+
+  // useEffect(() => {
+  //   console.log(combination);
+  //   if (combination.title === "" && combination.flight === "") {
+  //     alert("ふぇ〜〜〜い！");
+  //   }
+  // }, [combination]);
+
   return (
     <div>
       <div>
         <div className="pl-10 pr-10 pt-10 pb-10 bg-white mb-70">
           <div>
-            <InputLong placeholder="タイトル">タイトル</InputLong>
+            <InputLong
+              placeholder="タイトル"
+              onChange={(e) => {
+                // setTitle(e.target.value);
+                // https://zenn.dev/axpensive/articles/6f35d3da03044f
+                setCombination({ ...combination, title: e.target.value });
+              }}
+            >
+              タイトル
+            </InputLong>
           </div>
         </div>
         {/* ここにファイルインポートの処理 */}
 
         <div className="pl-10 pr-10 pt-10 pb-10 bg-white">
           <div>
-            <InputShort placeholder="フライト">フライト</InputShort>
-            <InputShort placeholder="シャフト">シャフト</InputShort>
-            <InputShort placeholder="バレル">バレル</InputShort>
-            <InputShort placeholder="チップ">チップ</InputShort>
+            <InputShort
+              placeholder="フライト"
+              onChange={(e) => {
+                setCombination({ ...combination, flight: e.target.value });
+              }}
+            >
+              フライト
+            </InputShort>
+            <InputShort
+              placeholder="シャフト"
+              onChange={(e) => {
+                setCombination({ ...combination, shaft: e.target.value });
+              }}
+            >
+              シャフト
+            </InputShort>
+
+            <InputShort
+              placeholder="バレル"
+              onChange={(e) => {
+                setCombination({ ...combination, barrel: e.target.value });
+              }}
+            >
+              バレル
+            </InputShort>
+            <InputShort
+              placeholder="チップ"
+              onChange={(e) => {
+                setCombination({ ...combination, tip: e.target.value });
+              }}
+            >
+              チップ
+            </InputShort>
           </div>
 
           <p className="text-left pt-10">説明</p>
           <textarea
             className="border-2 rounded-sm w-full pb-70 placeholder-[#A39C9C] border-[#E0E0E0]"
             placeholder="例：バレルの重心を感じやすく、初心者におすすめな組み合わせになっている。"
+            onChange={(e) => {
+              setCombination({ ...combination, description: e.target.value });
+            }}
           ></textarea>
           <InputLong placeholder="タグ">タグ</InputLong>
-          <Button color="bg-[#3B82F6]">投稿</Button>
+          <Button
+            color="bg-[#3B82F6]"
+            onClick={() => {
+              const hasEmptyField = Object.values(combination).some(
+                (value) => value.trim() === ""
+              );
+
+              if (hasEmptyField) {
+                alert("全ての値の入力が完了していません！");
+              }
+              console.log("押したよ");
+            }}
+          >
+            投稿
+          </Button>
+
           <Button color="bg-[#BEBEBE]">キャンセル</Button>
         </div>
         <div className="bg-neutral-100"></div>

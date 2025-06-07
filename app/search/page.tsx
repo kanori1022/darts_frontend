@@ -11,7 +11,7 @@ export default function search() {
     { src: "sampl7.jpeg", title: "サンプル7" },
     { src: "sampl8.jpg", title: "サンプル8" },
     { src: "sampl9.jpg", title: "サンプル9" },
-    // { src: "sampl10.jpg", title: "サンプル10" },
+    { src: "sampl10.jpg", title: "サンプル10" },
   ];
 
   return (

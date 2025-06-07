@@ -89,5 +89,3 @@ export const Footer = () => {
     </div>
   );
 };
-
-// https://qiita.com/naoyuki2/items/7ae311f790b637ce40fd#justify-between
