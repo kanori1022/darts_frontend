@@ -13,8 +13,6 @@ type Combination = {
   description: string;
 };
 export default function Post() {
-  // const [title, setTitle] = useState<string>("");
-  // console.log(title);
   const [combination, setCombination] = useState<Combination>({
     title: "",
     flight: "",
@@ -34,13 +32,6 @@ export default function Post() {
   //   }
   // }, [combination]);
 
-  // useEffect(() => {
-  //   console.log(combination);
-  //   if (combination.title === "" && combination.flight === "") {
-  //     alert("ふぇ〜〜〜い！");
-  //   }
-  // }, [combination]);
-
   return (
     <div>
       <div>
@@ -49,8 +40,6 @@ export default function Post() {
             <InputLong
               placeholder="タイトル"
               onChange={(e) => {
-                // setTitle(e.target.value);
-                // https://zenn.dev/axpensive/articles/6f35d3da03044f
                 setCombination({ ...combination, title: e.target.value });
               }}
             >

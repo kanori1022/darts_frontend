@@ -54,4 +54,3 @@ export default function Login() {
   );
 }
 
-// https://nextjs-ja-translation-docs.vercel.app/docs/api-reference/next/link
