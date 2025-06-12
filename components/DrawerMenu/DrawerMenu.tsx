@@ -1,9 +1,26 @@
-export const DrawerMenu = () => {
+type DrawerMenuProps = {
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+export const DrawerMenu: React.FC<DrawerMenuProps> = ({ isOpen, onClose }) => {
+  if (!isOpen) return null; // 表示されていないときは何も描画しない
+
   return (
     // https://tailwindcss.com/docs/z-index 奥行き
     // https://tailwindcss.com/docs/opacity 透明度
-    <div className="bg-[#333333] opacity-95 z-50 absolute right-0 w-1/2 h-screen">
-      {/* <p className="text-3xl font-serif text-[#CCCCCC] mx-auto text-center"></p> */}
+    <div className="absolute top-0 right-0 w-1/2 h-screen bg-[#333333] opacity-95 z-50">
+      {/* 閉じるボタン */}
+      <button
+        onClick={onClose}
+        className="absolute top-0 right-0 text-[#FFFFFF] p-4 text-right w-1/2"
+      ></button>
+
+      {/* メニューアイテム */}
+      <div className="text-[#CCCCCC] text-xl pt-18 p-4 space-y-5">
+        <p>メニューA</p>
+        <p>メニューB</p>
+      </div>
     </div>
   );
 };
