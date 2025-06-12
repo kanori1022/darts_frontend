@@ -21,7 +21,8 @@ export default function Post() {
     tip: "",
     description: "",
   });
-
+  const [image, setImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   // useEffect(() => {
   //   const hasEmptyField = Object.values(combination).some(
   //     (value) => value.trim() === ""
@@ -35,7 +36,7 @@ export default function Post() {
   return (
     <div>
       <div>
-        <div className="pl-10 pr-10 pt-10 pb-10 bg-white mb-70">
+        <div className="pl-10 pr-10 pt-10 pb-10 bg-white mb-10">
           <div>
             <InputLong
               placeholder="タイトル"
@@ -48,7 +49,42 @@ export default function Post() {
           </div>
         </div>
         {/* ここにファイルインポートの処理 */}
+        <div className="pb-10">
+          {/* ラベルクリックでファイル選択が開く */}
+          <label
+            htmlFor="imageUpload"
+            className="block text-center font-medium text-[#000000] mb-4 cursor-pointer hover:underline"
+          >
+            画像アップロード
+          </label>
 
+          {/* 非表示のファイル入力 */}
+          <input
+            id="imageUpload"
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                setImage(file);
+                setPreviewUrl(URL.createObjectURL(file));
+              }
+            }}
+            className="hidden"
+          />
+
+          {/* プレビュー */}
+          {previewUrl && (
+            <div className="mt-4 text-center">
+              <p className="text-sm text-gray-600">プレビュー:</p>
+              <img
+                src={previewUrl}
+                alt="選択された画像"
+                className="w-48 h-auto mx-auto rounded-md shadow"
+              />
+            </div>
+          )}
+        </div>
         <div className="pl-10 pr-10 pt-10 pb-10 bg-white">
           <div>
             <InputShort
