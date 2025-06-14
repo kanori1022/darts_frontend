@@ -44,7 +44,7 @@ export default function Post() {
           </div>
         </div>
         {/* ここにファイルインポートの処理 */}
-        <div className=" w-32 h-32 mx-auto">
+        <div className=" w-32 h-auto mx-auto">
           {/* プレビュー画像（重ねる） */}
           {previewUrl && (
             <img
@@ -87,7 +87,7 @@ export default function Post() {
           />
         </div>
 
-        <div className="text-center mt-2 mb-2 text-sm text-gray-600">
+        <div className="text-center mt-2 mb-4 text-sm text-gray-600">
           画像を選択
         </div>
         <div className="pl-10 pr-10 pt-10 pb-10 bg-white">

@@ -16,7 +16,7 @@ export const Header = () => {
   return (
     <>
       <DrawerMenu isOpen={isOpen} onClose={() => setIsOpen(false)} />
-      <div className="bg-[#333333] p-5 z-50 flex justify-between items-center relative">
+      <div className="bg-[#333333] p-5 flex justify-between items-center relative">
         <p className="text-3xl font-serif text-[#CCCCCC] mx-auto text-center cursor-pointer">
           <Link href="/home">Combines Darts</Link>
         </p>
