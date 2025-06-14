@@ -6,7 +6,9 @@ import { useCreateCombination } from "@/hooks/api/useCreateCombination";
 import { CombinationParms } from "@/types/combination";
 import { faFolderPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useRef, useState } from "react";
+
+// https://flowbite.com/docs/components/forms/
 
 export default function Post() {
   const [combination, setCombination] = useState<CombinationParms>({
@@ -19,18 +21,12 @@ export default function Post() {
     description: "",
   });
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-
   const { createCombination } = useCreateCombination();
-
+  const inputRef = useRef<HTMLInputElement>(null);
   // useEffect(() => {
   //   const hasEmptyField = Object.values(combination).some(
   //     (value) => value.trim() === ""
   //   );
-
-  //   if (hasEmptyField) {
-  //     alert("全ての値の入力が完了していません！");
-  //   }
-  // }, [combination]);
 
   return (
     <div>
@@ -48,23 +44,36 @@ export default function Post() {
           </div>
         </div>
         {/* ここにファイルインポートの処理 */}
-        <div className="pb-10">
-          {/* ラベルクリックでファイル選択が開く */}
-          <label
-            htmlFor="imageUpload"
-            className="block text-center font-medium text-[#000000] mb-4 cursor-pointer hover:underline"
-          >
-            <FontAwesomeIcon
-              icon={faFolderPlus}
-              size="4x"
-              className="hover:text-[#6DDDFF] cursor-pointer pt-2 "
+        <div className=" w-32 h-32 mx-auto">
+          {/* プレビュー画像（重ねる） */}
+          {previewUrl && (
+            <img
+              src={previewUrl}
+              alt="選択された画像"
+              className=" top-0 left-0 w-full h-full object-cover rounded-md cursor-pointer shadow-lg"
+              onClick={() => {
+                inputRef.current?.click();
+              }}
             />
-          </label>
-          <div className="text-center">画像を選択</div>
+          )}
 
+          {/* アップロード用ラベルとアイコン（下に表示） */}
+          {!previewUrl && (
+            <label
+              htmlFor="imageUpload"
+              className=" top-0 left-0 w-full h-full flex items-center justify-center cursor-pointer hover:opacity-70"
+            >
+              <FontAwesomeIcon
+                icon={faFolderPlus}
+                size="4x"
+                className="text-gray-400"
+              />
+            </label>
+          )}
           {/* 非表示のファイル入力 */}
           <input
             id="imageUpload"
+            ref={inputRef}
             type="file"
             accept="image/*"
             onChange={(e) => {
@@ -76,18 +85,10 @@ export default function Post() {
             }}
             className="hidden"
           />
+        </div>
 
-          {/* プレビュー */}
-          {previewUrl && (
-            <div className="mt-4 text-center">
-              <p className="text-sm text-gray-600">プレビュー:</p>
-              <img
-                src={previewUrl}
-                alt="選択された画像"
-                className="w-48 h-auto mx-auto rounded-md shadow"
-              />
-            </div>
-          )}
+        <div className="text-center mt-2 mb-2 text-sm text-gray-600">
+          画像を選択
         </div>
         <div className="pl-10 pr-10 pt-10 pb-10 bg-white">
           <div>
