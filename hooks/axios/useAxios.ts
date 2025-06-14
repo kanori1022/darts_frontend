@@ -6,7 +6,7 @@ export const useAxios = () => {
         headers: {
           'Content-Type': 'application/json'
         },
-        withCredentials: true,
+        // withCredentials: true,
       })
 
       return instance

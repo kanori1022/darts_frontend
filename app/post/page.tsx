@@ -2,9 +2,12 @@
 
 import { Button } from "@/components/Button/Button";
 import { InputLong, InputShort } from "@/components/Input/Input";
+import { useCreateCombination } from "@/hooks/api/useCreateCombination";
+import { faFolderPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 
-type Combination = {
+export type Combination = {
   title: string;
   flight: string;
   shaft: string;
@@ -21,8 +24,11 @@ export default function Post() {
     tip: "",
     description: "",
   });
-  const [image, setImage] = useState<File | null>(null);
+  const [, setImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  const { createCombination } = useCreateCombination();
+
   // useEffect(() => {
   //   const hasEmptyField = Object.values(combination).some(
   //     (value) => value.trim() === ""
@@ -55,8 +61,13 @@ export default function Post() {
             htmlFor="imageUpload"
             className="block text-center font-medium text-[#000000] mb-4 cursor-pointer hover:underline"
           >
-            画像アップロード
+            <FontAwesomeIcon
+              icon={faFolderPlus}
+              size="4x"
+              className="hover:text-[#6DDDFF] cursor-pointer pt-2 "
+            />
           </label>
+          <div className="text-center">画像を選択</div>
 
           {/* 非表示のファイル入力 */}
           <input
@@ -142,6 +153,7 @@ export default function Post() {
                 alert("全ての値の入力が完了していません！");
               }
               console.log("押したよ");
+              createCombination({ combination: combination });
             }}
           >
             投稿
