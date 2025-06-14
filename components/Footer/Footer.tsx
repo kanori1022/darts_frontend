@@ -25,7 +25,7 @@ export const Footer = () => {
   //   return "水色";
   // } else {
   //   return "グレー";
-  // }
+  // }fa-solid fa-folder-plus
 
   return (
     <div>

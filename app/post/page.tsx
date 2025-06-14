@@ -3,28 +3,21 @@
 import { Button } from "@/components/Button/Button";
 import { InputLong, InputShort } from "@/components/Input/Input";
 import { useCreateCombination } from "@/hooks/api/useCreateCombination";
+import { CombinationParms } from "@/types/combination";
 import { faFolderPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 
-export type Combination = {
-  title: string;
-  flight: string;
-  shaft: string;
-  barrel: string;
-  tip: string;
-  description: string;
-};
 export default function Post() {
-  const [combination, setCombination] = useState<Combination>({
+  const [combination, setCombination] = useState<CombinationParms>({
     title: "",
+    image: null,
     flight: "",
     shaft: "",
     barrel: "",
     tip: "",
     description: "",
   });
-  const [, setImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const { createCombination } = useCreateCombination();
@@ -77,7 +70,7 @@ export default function Post() {
             onChange={(e) => {
               const file = e.target.files?.[0];
               if (file) {
-                setImage(file);
+                setCombination({ ...combination, image: file });
                 setPreviewUrl(URL.createObjectURL(file));
               }
             }}
@@ -146,11 +139,11 @@ export default function Post() {
             color="bg-[#3B82F6]"
             onClick={() => {
               const hasEmptyField = Object.values(combination).some(
-                (value) => value.trim() === ""
+                (value) => !value
               );
 
               if (hasEmptyField) {
-                alert("全ての値の入力が完了していません！");
+                alert("値の入力または画像の選択が完了していません！");
               }
               console.log("押したよ");
               createCombination({ combination: combination });
