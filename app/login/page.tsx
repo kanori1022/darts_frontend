@@ -46,6 +46,9 @@ export default function Login() {
             </InputLong>
           </div>
           <Button color="bg-[#3B82F6]">ログイン</Button>
+
+          {/* <div className="text-center pt-6">※新規登録の方はコチラから</div> */}
+          <Button color="bg-[#393939]">※新規登録の方はコチラから</Button>
         </div>
         <div className="bg-neutral-100"></div>
       </div>
@@ -53,4 +56,3 @@ export default function Login() {
     </div>
   );
 }
-

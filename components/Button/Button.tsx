@@ -15,3 +15,15 @@ export const Button = (props: ButtonProps) => {
     </button>
   );
 };
+
+export const SrcButton = (props: ButtonProps) => {
+  const { children, color, onClick } = props;
+  return (
+    <button
+      className={`${color} mt-5 py-1 w-20 whitespace-nowrap rounded-sm text-[#FFFFFF] cursor-pointer`}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+};

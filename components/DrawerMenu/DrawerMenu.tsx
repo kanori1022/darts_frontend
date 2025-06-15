@@ -18,8 +18,9 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({ isOpen, onClose }) => {
 
       {/* メニューアイテム */}
       <div className="text-[#CCCCCC] text-xl pt-18 p-4 space-y-5">
-        <p>メニューA</p>
-        <p>メニューB</p>
+        <p>ログイン</p>
+        <p>設定</p>
+        <p>お問い合わせ</p>
       </div>
     </div>
   );

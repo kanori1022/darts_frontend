@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/Button/Button";
-import { Card } from "@/components/card/card";
+import { Card } from "@/components/Card/Card";
 import { useFetch } from "@/hooks/fetch/useFetch";
 import { Combination } from "@/types/combination";
 import Link from "next/link";

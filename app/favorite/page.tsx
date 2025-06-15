@@ -1,7 +1,7 @@
 import { Button } from "@/components/Button/Button";
 import Link from "next/link";
 
-export default function mypage() {
+export default function favorite() {
   // const array = [
   //   { src: "sampl1.png", title: "サンプル1" },
   //   { src: "sampl2.jpg", title: "サンプル2" },

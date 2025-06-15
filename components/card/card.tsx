@@ -16,3 +16,17 @@ export const Card = (props: CardProps) => {
     </div>
   );
 };
+
+export const SrcCard = (props: CardProps) => {
+  const { src, title } = props;
+  return (
+    <div className="px-3 bg-[#DADADA] rounded-lg">
+      <div className="w-20 text-[#000000]">{title} </div>
+      <img
+        className="w-20 h-auto mb-5 shadow-sm border rounded-lg"
+        src={src}
+        alt={title}
+      />
+    </div>
+  );
+};

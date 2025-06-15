@@ -50,7 +50,7 @@ export const InputLong = (props: InputProps) => {
   const { children, placeholder, onChange } = props;
   return (
     <>
-      <p className="text-left">{children}</p>
+      <p className="mt-5 text-left">{children}</p>
       <input
         className="border-2 rounded-sm w-full placeholder-[#A39C9C] border-[#E0E0E0]"
         type="text"
