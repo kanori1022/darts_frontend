@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 type DrawerMenuProps = {
   isOpen: boolean;
   onClose: () => void;
@@ -17,10 +19,16 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({ isOpen, onClose }) => {
       ></button>
 
       {/* メニューアイテム */}
-      <div className="text-[#CCCCCC] text-xl pt-18 p-4 space-y-5">
-        <p>ログイン</p>
-        <p>設定</p>
-        <p>お問い合わせ</p>
+      <div className="text-[#CCCCCC] text-xl pt-20 p-4">
+        <Link href="/login">
+          <p className="mb-5">ログイン</p>
+        </Link>
+        <Link href="">
+          <p className="mb-5">設定</p>
+        </Link>
+        <Link href="">
+          <p className="mb-5">お問い合わせ</p>
+        </Link>
       </div>
     </div>
   );
