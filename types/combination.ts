@@ -9,6 +9,7 @@ export type CombinationParms = {
 };
 
 export type Combination = {
+  id:string;
   title: string;
   image: string;
   flight: string;
