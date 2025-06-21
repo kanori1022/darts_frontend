@@ -1,14 +1,18 @@
-import axios from 'axios'
+"use client";
+
+import axios from 'axios';
 
 export const useAxios = () => {
-    const instance = axios.create({
+  const token = localStorage.getItem("token");
+  const instance = axios.create({
         baseURL: process.env.NEXT_PUBLIC_API_HOST,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
         // withCredentials: true,
       })
-
+  
       return instance
 }
  

@@ -23,6 +23,7 @@ export default function Login() {
   });
   console.log(login);
   const { auth } = useAuth();
+
   const loginUser = async () => {
     try {
       const user = await signInWithEmailAndPassword(
