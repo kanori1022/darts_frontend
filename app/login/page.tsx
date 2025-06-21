@@ -2,7 +2,10 @@
 
 import { Button } from "@/components/Button/Button";
 import { InputLong } from "@/components/Input/Input";
+import useAuth from "@/hooks/auth/useAuth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
+
 // ここから検索
 // https://fontawesome.com/icons?t=packs#packs
 
@@ -19,6 +22,28 @@ export default function Login() {
     pass: "",
   });
   console.log(login);
+  const { auth } = useAuth();
+  const loginUser = async () => {
+    try {
+      const user = await signInWithEmailAndPassword(
+        auth,
+        login.email,
+        login.pass
+      );
+      alert("ログインしました");
+      console.log("ログイン成功:", user.user);
+      const token = await user.user.getIdToken();
+      console.log("トークン:", token);
+      // await router.push('/home');
+      // https://developer.mozilla.org/ja/docs/Web/API/Window/localStorage
+      localStorage.setItem("token", token);
+    } catch (error) {
+      alert("ログインに失敗しました");
+      console.error("ログインエラー:", error);
+      // await router.push('/login');
+    }
+  };
+
   return (
     <div>
       <div className="">
@@ -45,7 +70,14 @@ export default function Login() {
               パスワード
             </InputLong>
           </div>
-          <Button color="bg-[#3B82F6]">ログイン</Button>
+          <Button
+            color="bg-[#3B82F6]"
+            onClick={() => {
+              loginUser();
+            }}
+          >
+            ログイン
+          </Button>
 
           {/* <div className="text-center pt-6">※新規登録の方はコチラから</div> */}
           <Button color="bg-[#393939]">※新規登録の方はコチラから</Button>

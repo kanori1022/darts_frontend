@@ -15,7 +15,7 @@ export default function Home() {
       <div className="p-3 font-bold bg-white">人気ランキング</div>
       <div className="flex overflow-scroll gap-3 pt-3 mx-3">
         {data?.map((combination, index) => (
-          <Link href={"/Item/" + combination.id} key={index}>
+          <Link href={"/item/" + combination.id} key={index}>
             <Card src={combination.image} title={combination.title} />
           </Link>
         ))}

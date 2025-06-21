@@ -1,5 +1,6 @@
 "use client";
 
+import LabelValueRow from "@/components/LabelValueRow/LabelValueRow";
 import { useFetch } from "@/hooks/fetch/useFetch";
 import { Combination } from "@/types/combination";
 import { use } from "react";
@@ -16,28 +17,38 @@ export default function Item({ params }: Props) {
   const { data, error, isLoading } = useFetch<Combination>(
     "/combinations/" + id
   );
-  console.log("params.idはーーーーーーーーーーー", id);
 
   if (isLoading) return <div>読み込み中…</div>;
   if (error) return <div>エラーが発生しました: {error.message}</div>;
   if (!data) return <div>データがありません</div>;
   return (
     <div>
-      <div className="p-3 font-bold bg-white">IDは{id}です！</div>
-      <div className="p-3 font-bold bg-white">localhost:3000/item/{id}</div>
+      {/* <div className="p-3 font-bold bg-white">localhost:3000/Item/{id}</div> */}
 
       {data && (
-        <div className="p-3 bg-white">
-          <div>ID: {data.id}</div>
+        <div className="p-6 bg-white rounded shadow">
           <div>Title: {data.title}</div>
-          <div>Flight: {data.flight}</div>
-          <div>Shaft: {data.shaft}</div>
-          <div>Barrel: {data.barrel}</div>
-          <div>Tip: {data.tip}</div>
-          <div>Description: {data.description}</div>
+          <div className="w-auto pl-25 py-3">
+            <img
+              src={data.image}
+              alt={data.title}
+              className="w-64 h-auto rounded shadow-sm border"
+            />
+          </div>
+          {/* <div>ID: {data.id}</div> */}
+          <div className="text-gray-600 font-semibold space-y-4">
+            <LabelValueRow label="フライト:" value={data.flight} />
+            <LabelValueRow label="シャフト:" value={data.shaft} />
+            <LabelValueRow label="バレル:" value={data.barrel} />
+            <LabelValueRow label="チップ:" value={data.tip} />
+            <LabelValueRow label="説明:" value={data.description} />
+          </div>
         </div>
       )}
     </div>
   );
 }
-// http://localhost:3000/item/2
+
+// https://firebase.google.com/docs/auth/web/start?hl=ja&_gl=1*187nh6y*_up*MQ..*_ga*MTYxOTA3OTYzLjE3NTA0OTY2MzE.*_ga_CW55HF8NVT*czE3NTA0OTY2MzEkbzEkZzAkdDE3NTA0OTY2MzEkajYwJGwwJGgw
+
+// https://github.com/fuku01/konbini-recipe-front/blob/main/src/hooks/auth/useAuth.ts
