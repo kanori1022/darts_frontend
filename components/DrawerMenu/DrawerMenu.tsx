@@ -1,11 +1,17 @@
+"use client";
 import Link from "next/link";
 
 type DrawerMenuProps = {
   isOpen: boolean;
   onClose: () => void;
+  onLogout: () => void;
 };
 
-export const DrawerMenu: React.FC<DrawerMenuProps> = ({ isOpen, onClose }) => {
+export const DrawerMenu: React.FC<DrawerMenuProps> = ({
+  isOpen,
+  onClose,
+  onLogout,
+}) => {
   if (!isOpen) return null; // 表示されていないときは何も描画しない
 
   return (
@@ -29,6 +35,16 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({ isOpen, onClose }) => {
         <Link href="">
           <p className="mb-5">お問い合わせ</p>
         </Link>
+        <button
+          onClick={() => {
+            onLogout();
+            onClose();
+          }}
+          className="mb-5 text-left w-full text-red-500 hover:bg-gray-700 p-2 rounded"
+          type="button"
+        >
+          ログアウト
+        </button>
       </div>
     </div>
   );

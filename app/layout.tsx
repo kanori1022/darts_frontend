@@ -39,6 +39,7 @@ export default function RootLayout({
         <div className="sticky top-0">
           <Header />
         </div>
+
         <div className="flex-grow bg-[#F1F6F7]">{children}</div>
         <div className="sticky bottom-0">
           <Footer />

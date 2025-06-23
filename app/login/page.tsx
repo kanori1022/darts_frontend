@@ -4,6 +4,7 @@ import { Button } from "@/components/Button/Button";
 import { InputLong } from "@/components/Input/Input";
 import useAuth from "@/hooks/auth/useAuth";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 // ここから検索
@@ -23,7 +24,7 @@ export default function Login() {
   });
   console.log(login);
   const { auth } = useAuth();
-
+  const router = useRouter();
   const loginUser = async () => {
     try {
       const user = await signInWithEmailAndPassword(
@@ -36,8 +37,7 @@ export default function Login() {
       const token = await user.user.getIdToken();
       console.log("トークン:", token);
       // await router.push('/home');
-      // https://developer.mozilla.org/ja/docs/Web/API/Window/localStorage
-      localStorage.setItem("token", token);
+      router.push("/home");
     } catch (error) {
       alert("ログインに失敗しました");
       console.error("ログインエラー:", error);
