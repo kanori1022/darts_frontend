@@ -1,23 +1,27 @@
+"use client";
+
 import { Button } from "@/components/Button/Button";
+import useAuth from "@/hooks/auth/useAuth";
 import Link from "next/link";
 
-export default function favorite() {
-  // const array = [
-  //   { src: "sampl1.png", title: "サンプル1" },
-  //   { src: "sampl2.jpg", title: "サンプル2" },
-  //   { src: "sampl3.jpg", title: "サンプル3" },
-  //   { src: "sampl4.jpg", title: "サンプル4" },
-  //   { src: "sampl5.jpg", title: "サンプル5" },
-  // ];
-
-  // const arr = [
-  //   { src: "sampl6.jpeg", title: "サンプル6" },
-  //   { src: "sampl7.jpeg", title: "サンプル7" },
-  //   { src: "sampl8.jpg", title: "サンプル8" },
-  //   { src: "sampl9.jpg", title: "サンプル9" },
-  //   { src: "sampl10.jpg", title: "サンプル10" },
-  // ];
-
+export default function Favorite() {
+  const { loginUser } = useAuth();
+  if (!loginUser) {
+    // ログイン前の表示
+    return (
+      <div className="pl-10 pr-10 pt-10 pb-10 bg-white mb-10 text-center">
+        <p className="mb-3">
+          その他の機能を利用するには新規登録をしてください。
+        </p>
+        <Link href="/login">
+          <Button color="bg-[#3B82F6]">新規登録はコチラ</Button>
+        </Link>
+        <div className="pt-3">
+          ※登録済みの方はメニューよりログインをしてください。
+        </div>
+      </div>
+    );
+  }
   return (
     <div>
       <div className="p-3 font-bold bg-white"></div>

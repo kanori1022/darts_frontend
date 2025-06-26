@@ -1,6 +1,7 @@
+"use client";
 // import axios from 'axios';
 
-import { FirebaseError, initializeApp } from 'firebase/app'; // Firebaseアプリの初期化を行うためのinitializeApp関数を'firebase/app'からインポート
+import { FirebaseError, getApps, initializeApp } from 'firebase/app'; // Firebaseアプリの初期化を行うためのinitializeApp関数を'firebase/app'からインポート
 import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth'; // Firebase Authenticationを使用するためのgetAuth関数を'firebase/auth'からインポート
 import { useEffect, useState } from 'react';
 import { useAxios } from '../axios/useAxios';
@@ -17,6 +18,9 @@ const firebaseConfig = {
 };
 
 
+if (!getApps().length) {
+  initializeApp(firebaseConfig);
+}
 
 const useAuth = () => {
   // useAuthという名前の関数を定義する
@@ -38,7 +42,9 @@ const useAuth = () => {
 
   // ログイン状態の変化を監視する（初期描画のタイミングで、ログイン状態をセットする）
 
-  // ※ログインのセットより初期描画の方が早いため、これをしないと、初期描画時にログイン状態がセットされず、初期描画時にログインが必要なページを表示できない。
+  // ※ログインのセットより初期描画の方が早いため、
+  // これをしないと、初期描画時にログイン状態がセットされず、
+  // 初期描画時にログインが必要なページを表示できない。
   useEffect(() => {
     setIsWaiting(true);
     onAuthStateChanged(auth, (user) => {

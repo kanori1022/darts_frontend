@@ -3,9 +3,11 @@
 import { Button } from "@/components/Button/Button";
 import { InputLong, InputShort } from "@/components/Input/Input";
 import { useCreateCombination } from "@/hooks/api/useCreateCombination";
+import useAuth from "@/hooks/auth/useAuth";
 import { CombinationParms } from "@/types/combination";
 import { faFolderPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 import { useRef, useState } from "react";
 
 // https://flowbite.com/docs/components/forms/
@@ -23,11 +25,27 @@ export default function Post() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const { createCombination } = useCreateCombination();
   const inputRef = useRef<HTMLInputElement>(null);
+  const { loginUser } = useAuth();
   // useEffect(() => {
   //   const hasEmptyField = Object.values(combination).some(
   //     (value) => value.trim() === ""
   //   );
-
+  if (!loginUser) {
+    // ログイン前の表示
+    return (
+      <div className="pl-10 pr-10 pt-10 pb-10 bg-white mb-10 text-center">
+        <p className="mb-3">
+          その他の機能を利用するには新規登録をしてください。
+        </p>
+        <Link href="/login">
+          <Button color="bg-[#3B82F6]">新規登録はコチラ</Button>
+        </Link>
+        <div className="pt-3">
+          ※登録済みの方はメニューよりログインをしてください。
+        </div>
+      </div>
+    );
+  }
   return (
     <div>
       <div>
@@ -43,6 +61,7 @@ export default function Post() {
             </InputLong>
           </div>
         </div>
+
         {/* ここにファイルインポートの処理 */}
         <div className=" w-32 h-auto mx-auto">
           {/* プレビュー画像（重ねる） */}
