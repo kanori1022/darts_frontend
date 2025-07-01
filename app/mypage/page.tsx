@@ -6,6 +6,7 @@ import Link from "next/link";
 
 export default function Mypage() {
   const { loginUser } = useAuth();
+
   if (!loginUser) {
     // ログイン前の表示
     return (
@@ -22,6 +23,7 @@ export default function Mypage() {
       </div>
     );
   }
+
   return (
     <div className="p-6 bg-white rounded-md shadow-md max-w-xl mx-auto mt-10">
       <h1 className="text-2xl font-bold mb-4 text-center">マイページ</h1>
@@ -31,10 +33,11 @@ export default function Mypage() {
           <span className="font-semibold">ユーザー名：</span>
           {loginUser.displayName ?? "未設定"}
         </p>
-        <p>
-          <span className="font-semibold">メールアドレス：</span>
+        {/* <p> */}
+        {/* <span className="font-semibold">メールアドレス：</span>
           {loginUser.email}
-        </p>
+        </p> */}
+
         {/* 追加したいプロフィール情報があればここに追加 */}
       </div>
 
