@@ -6,11 +6,21 @@ import useAuth from "@/hooks/auth/useAuth";
 import { useFetch } from "@/hooks/fetch/useFetch";
 import { Combination } from "@/types/combination";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function Home() {
   // const { data } = useFetch("/combinations");
   const { data, isLoading } = useFetch<Combination[]>("/combinations");
   const { loginUser } = useAuth();
+  const [favorites, setFavorites] = useState<string[]>([]);
+
+  const toggleFavorite = (id: string) => {
+    if (!loginUser) return;
+
+    setFavorites((prev) =>
+      prev.includes(id) ? prev.filter((fid) => fid !== id) : [...prev, id]
+    );
+  };
 
   if (isLoading) {
     return <div>ローディング中</div>;
@@ -22,20 +32,29 @@ export default function Home() {
       <div className="flex overflow-scroll gap-3 pt-3 mx-3">
         {data?.map((combination, index) => (
           <Link href={"/item/" + combination.id} key={index}>
-            <Card src={combination.image} title={combination.title} />
+            <Card
+              src={combination.image}
+              title={combination.title}
+              isFavorite={favorites.includes(combination.id)}
+              onToggleFavorite={() => toggleFavorite(combination.id)}
+            />
           </Link>
         ))}
       </div>
 
-      <div className="pb-3">
+      <div>
         <div className="p-3 mt-3 font-bold  bg-white">新着一覧</div>
-        <div className="flex overflow-scroll gap-3 pt-3 mx-3">
+        <div className="flex overflow-scroll gap-3 pt-3 mx-3 items-end">
           {data?.map((combination, index) => (
-            <Card
-              src={combination.image}
-              title={combination.title}
-              key={index}
-            />
+            <Link href={"/item/" + combination.id} key={index}>
+              <Card
+                src={combination.image}
+                title={combination.title}
+                isFavorite={favorites.includes(combination.id)}
+                onToggleFavorite={() => toggleFavorite(combination.id)}
+                key={index}
+              />
+            </Link>
           ))}
         </div>
       </div>
