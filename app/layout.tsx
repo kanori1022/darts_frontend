@@ -5,8 +5,10 @@ import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 
 // https://docs.fontawesome.com/web/use-with/react/use-with
+import { FavoriteProvider } from "@/context/FavoriteContext";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
+
 config.autoAddCss = false;
 
 const inter = Inter({ subsets: ["latin"] });
@@ -36,14 +38,16 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${inter.className} flex flex-col antialiased lg:w-1/3 mx-auto min-h-screen`}
       >
-        <div className="sticky top-0">
-          <Header />
-        </div>
+        <FavoriteProvider>
+          <div className="sticky top-0">
+            <Header />
+          </div>
 
-        <div className="flex-grow bg-[#F1F6F7]">{children}</div>
-        <div className="sticky bottom-0">
-          <Footer />
-        </div>
+          <div className="flex-grow bg-[#F1F6F7]">{children}</div>
+          <div className="sticky bottom-0">
+            <Footer />
+          </div>
+        </FavoriteProvider>
       </body>
     </html>
   );

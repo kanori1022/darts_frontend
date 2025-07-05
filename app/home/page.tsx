@@ -6,13 +6,27 @@ import useAuth from "@/hooks/auth/useAuth";
 import { useFetch } from "@/hooks/fetch/useFetch";
 import { Combination } from "@/types/combination";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
-  // const { data } = useFetch("/combinations");
   const { data, isLoading } = useFetch<Combination[]>("/combinations");
   const { loginUser } = useAuth();
   const [favorites, setFavorites] = useState<string[]>([]);
+
+  // --- LocalStorage からお気に入りを読み込む ---
+  useEffect(() => {
+    const storedFavorites = localStorage.getItem("favorites");
+    if (storedFavorites) {
+      setFavorites(JSON.parse(storedFavorites));
+    }
+  }, []);
+
+  // --- favorites が変わるたびに LocalStorage に保存 ---
+  useEffect(() => {
+    if (favorites.length > 0) {
+      localStorage.setItem("favorites", JSON.stringify(favorites));
+    }
+  }, [favorites]);
 
   const toggleFavorite = (id: string) => {
     if (!loginUser) return;
@@ -60,26 +74,23 @@ export default function Home() {
       </div>
 
       {/* ログイン前に表示させる画面 */}
-      {/* <div className="flame p-3  bg-white"> */}
       {!loginUser && (
         <div className="pt-5 pl-10 pr-10 text-center rounded-sm w-full bg-white placeholder-[#000000]">
           その他の機能を利用するには新規登録をしてください。
-          {/* <div> */}
           <Link href="/login">
             <Button color="bg-[#3B82F6]">新規登録はコチラ</Button>
           </Link>
-          {/* </div> */}
           <div className="text-center pt-3 pb-3">
             ※登録済みの方はメニューよりログインをしてください。
           </div>
         </div>
       )}
+
       {/* ログイン後に表示させる画面 */}
       {loginUser && (
         <div className="p-3 mt-3 bg-white text-center">
           <p className="font-bold">ログインありがとうございます！</p>
           <p>限定コンテンツが利用可能になりました。</p>
-          {/* ここに追加機能をどんどん追加可能 */}
         </div>
       )}
     </div>
