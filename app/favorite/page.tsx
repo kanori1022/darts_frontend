@@ -10,7 +10,7 @@ import Link from "next/link";
 
 export default function Favorite() {
   const { loginUser } = useAuth();
-  const { favorites } = useFavorite();
+  const { favorites, toggleFavorite } = useFavorite(); // ← 追加
   const { data, isLoading } = useFetch<Combination[]>("/combinations");
 
   if (!loginUser) {
@@ -45,7 +45,7 @@ export default function Favorite() {
               src={combination.image}
               title={combination.title}
               isFavorite={true}
-              onToggleFavorite={() => {}}
+              onToggleFavorite={() => toggleFavorite(combination.id)} // ← 修正ここ
             />
           ))
         ) : (
