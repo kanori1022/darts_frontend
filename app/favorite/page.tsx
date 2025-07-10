@@ -37,16 +37,22 @@ export default function Favorite() {
   return (
     <div>
       <div className="p-3 font-bold bg-white">お気に入り</div>
-      <div className="flex overflow-scroll gap-3 pt-3 mx-3 items-end">
+      <div className="flex overflow-scroll gap-3 pt-3 mx-3 items-start">
         {favoriteItems.length > 0 ? (
-          favoriteItems.map((combination, index) => (
-            <Card
-              key={index}
-              src={combination.image}
-              title={combination.title}
-              isFavorite={true}
-              onToggleFavorite={() => toggleFavorite(combination.id)} // ← 修正ここ
-            />
+          favoriteItems.map((combination) => (
+            <div key={combination.id} className="flex flex-col items-center">
+              <Card
+                src={combination.image}
+                title={combination.title}
+                isFavorite={true}
+                onToggleFavorite={() => toggleFavorite(combination.id)}
+              />
+              <Link href={"/item/" + combination.id}>
+                <p className="text-blue-500 text-sm mt-1 underline cursor-pointer text-center">
+                  詳細を見る
+                </p>
+              </Link>
+            </div>
           ))
         ) : (
           <p className="p-3">お気に入りはまだありません。</p>
