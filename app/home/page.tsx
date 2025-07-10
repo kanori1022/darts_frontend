@@ -23,9 +23,8 @@ export default function Home() {
 
   // --- favorites が変わるたびに LocalStorage に保存 ---
   useEffect(() => {
-    if (favorites.length > 0) {
-      localStorage.setItem("favorites", JSON.stringify(favorites));
-    }
+    // 空配列でも保存して最新状態を保持
+    localStorage.setItem("favorites", JSON.stringify(favorites));
   }, [favorites]);
 
   const toggleFavorite = (id: string) => {
@@ -44,31 +43,40 @@ export default function Home() {
     <div>
       <div className="p-3 font-bold bg-white">人気ランキング</div>
       <div className="flex overflow-scroll gap-3 pt-3 mx-3">
-        {data?.map((combination, index) => (
-          <Link href={"/item/" + combination.id} key={index}>
+        {data?.map((combination) => (
+          <div key={combination.id} className="flex flex-col items-center">
             <Card
               src={combination.image}
               title={combination.title}
               isFavorite={favorites.includes(combination.id)}
               onToggleFavorite={() => toggleFavorite(combination.id)}
             />
-          </Link>
+            <Link href={"/item/" + combination.id}>
+              <p className="text-blue-500 text-sm text-center mt-1 underline cursor-pointer">
+                詳細を見る
+              </p>
+            </Link>
+          </div>
         ))}
       </div>
 
       <div>
-        <div className="p-3 mt-3 font-bold  bg-white">新着一覧</div>
+        <div className="p-3 mt-3 font-bold bg-white">新着一覧</div>
         <div className="flex overflow-scroll gap-3 pt-3 mx-3 items-end">
-          {data?.map((combination, index) => (
-            <Link href={"/item/" + combination.id} key={index}>
+          {data?.map((combination) => (
+            <div key={combination.id} className="flex flex-col items-center">
               <Card
                 src={combination.image}
                 title={combination.title}
                 isFavorite={favorites.includes(combination.id)}
                 onToggleFavorite={() => toggleFavorite(combination.id)}
-                key={index}
               />
-            </Link>
+              <Link href={"/item/" + combination.id}>
+                <p className="text-blue-500 text-sm text-center mt-1 underline cursor-pointer">
+                  詳細を見る
+                </p>
+              </Link>
+            </div>
           ))}
         </div>
       </div>
