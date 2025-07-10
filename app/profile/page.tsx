@@ -16,11 +16,17 @@ export default function Profile() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const [bio, setBio] = useState("");
 
   useEffect(() => {
     if (loginUser) {
       setDisplayName(loginUser.displayName ?? "");
       setPhotoURL(loginUser.photoURL ?? "");
+
+      const savedBio = localStorage.getItem(`bio_${loginUser.uid}`);
+      if (savedBio) {
+        setBio(savedBio);
+      }
     }
   }, [loginUser]);
 
@@ -48,6 +54,8 @@ export default function Profile() {
         displayName,
         photoURL, // ※ 本来はアップロード処理の後に URL を入れる必要あり
       });
+      localStorage.setItem(`bio_${loginUser.uid}`, bio);
+
       alert("プロフィールを更新しました");
       router.push("/mypage");
     } catch (error) {
@@ -130,6 +138,8 @@ export default function Profile() {
         <textarea
           className="border-2 rounded-sm w-full h-28 p-2 placeholder-[#A39C9C] border-[#E0E0E0]"
           placeholder="ここに自己紹介を入力..."
+          value={bio}
+          onChange={(e) => setBio(e.target.value)}
         ></textarea>
       </div>
 
