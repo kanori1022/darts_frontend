@@ -81,7 +81,12 @@ export default function Login() {
           </Button>
 
           {/* <div className="text-center pt-6">※新規登録の方はコチラから</div> */}
-          <Button color="bg-[#393939]">※新規登録の方はコチラから</Button>
+          <Button
+            color="bg-[#393939]"
+            onClick={() => router.push("/newprofile")}
+          >
+            ※新規登録の方はコチラから
+          </Button>
         </div>
         <div className="bg-neutral-100"></div>
       </div>
