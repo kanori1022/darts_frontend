@@ -1,9 +1,9 @@
 
-import { CombinationParms } from "@/types/combination";
+import { CombinationParams } from "@/types/combination";
 import { useAxios } from "../axios/useAxios";
 
 type CombinationRequest = {
-  combination: CombinationParms;
+  combination: CombinationParams;
 };
 
 export const useCreateCombination = () => {

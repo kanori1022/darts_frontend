@@ -1,4 +1,4 @@
-export type CombinationParms = {
+export type CombinationParams = {
   title: string;
   image: File | null;
   flight: string;

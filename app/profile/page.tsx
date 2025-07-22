@@ -1,10 +1,10 @@
 "use client";
 
 import { Button } from "@/components/Button/Button";
+import { useCreateUser } from "@/hooks/api/useCreateUser";
 import useAuth from "@/hooks/auth/useAuth";
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { updateProfile } from "firebase/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -17,6 +17,7 @@ export default function Profile() {
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const [bio, setBio] = useState("");
+  const { createUser } = useCreateUser();
 
   useEffect(() => {
     if (loginUser) {
@@ -48,11 +49,16 @@ export default function Profile() {
 
   const handleUpdate = async () => {
     if (!loginUser) return;
-
+    // const image = {
+    //   image: inputRef.current?.files?.[0] || null,
+    //   name: displayName,
+    // };
     try {
-      await updateProfile(loginUser, {
-        displayName,
-        photoURL, // ※ 本来はアップロード処理の後に URL を入れる必要あり
+      createUser({
+        user: {
+          image: inputRef.current?.files?.[0] || null,
+          name: displayName,
+        },
       });
       localStorage.setItem(`bio_${loginUser.uid}`, bio);
 
@@ -112,6 +118,8 @@ export default function Profile() {
             const file = e.target.files?.[0];
             if (file) {
               const preview = URL.createObjectURL(file);
+
+              console.log("Preview URL:", preview);
               setPreviewUrl(preview);
               // 本来ここで storage にアップロードして photoURL を更新する処理が必要
               // setPhotoURL(uploadedUrl);

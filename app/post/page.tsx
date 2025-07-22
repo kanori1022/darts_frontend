@@ -4,7 +4,7 @@ import { Button } from "@/components/Button/Button";
 import { InputLong, InputShort } from "@/components/Input/Input";
 import { useCreateCombination } from "@/hooks/api/useCreateCombination";
 import useAuth from "@/hooks/auth/useAuth";
-import { CombinationParms } from "@/types/combination";
+import { CombinationParams } from "@/types/combination";
 import { faFolderPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
@@ -13,7 +13,7 @@ import { useRef, useState } from "react";
 // https://flowbite.com/docs/components/forms/
 
 export default function Post() {
-  const [combination, setCombination] = useState<CombinationParms>({
+  const [combination, setCombination] = useState<CombinationParams>({
     title: "",
     image: null,
     flight: "",
