@@ -1,19 +1,10 @@
 "use client";
 
-import {
-  FirebaseError,
-  getApp,
-  getApps,
-  initializeApp,
-} from "firebase/app";
-import {
-  getAuth,
-  onAuthStateChanged,
-  signOut,
-  User,
-} from "firebase/auth";
-import { useEffect, useState } from "react";
-import { useAxios } from "../axios/useAxios";
+import { FirebaseError, getApps, initializeApp } from 'firebase/app'; // Firebaseアプリの初期化を行うためのinitializeApp関数を'firebase/app'からインポート
+import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth'; // Firebase Authenticationを使用するためのgetAuth関数を'firebase/auth'からインポート
+import { useEffect, useState } from 'react';
+import { useAxios } from '../axios/useAxios';
+
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_API_KEY,
@@ -25,15 +16,20 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-// ✅ Firebase アプリを安全に初期化（重複防止）
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-const auth = getAuth(app);
+if (!getApps().length) {
+  initializeApp(firebaseConfig);
+}
+
 
 const useAuth = () => {
-  const axios = useAxios();
+  const app = initializeApp(firebaseConfig); // Firebaseアプリの初期化
+  const auth = getAuth(app); // Firebase Authenticationの認証オブジェクトを取得
+  const axios = useAxios(); // axiosのインスタンスを取得
+
   const [loginUser, setLoginUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-  const [isWaiting, setIsWaiting] = useState<boolean>(false);
+  const [token, setToken] = useState<string | null>(null); // トークンを保持するための変数を定義し、初期値をnullに設定
+  const [isWaiting, setIsWaiting] = useState<boolean>(false); // ログイン状態の変化を監視するための変数を定義し、初期値をtrueに設定
+
 
   const handleSignOut = async () => {
     try {
@@ -45,15 +41,20 @@ const useAuth = () => {
     }
   };
 
-  useEffect(() => {
-    setIsWaiting(true);
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setLoginUser(user);
-      setIsWaiting(false);
-    });
+  // ※ログインのセットより初期描画の方が早いため、
+  // これをしないと、初期描画時にログイン状態がセットされず、
+  // 初期描画時にログインが必要なページを表示できない。
+   useEffect(() => {
+     setIsWaiting(true);
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setLoginUser(user);
+      }
+       setIsWaiting(false);
+     });
+  }, [auth]);
 
-    return () => unsubscribe();
-  }, []);
+
 
   useEffect(() => {
     if (loginUser) {
