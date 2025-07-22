@@ -25,7 +25,7 @@ export const Footer = () => {
   //   return "水色";
   // } else {
   //   return "グレー";
-  // }
+  // }fa-solid fa-folder-plus
 
   return (
     <div>
@@ -63,25 +63,25 @@ export const Footer = () => {
             }
           />
         </Link>
-        <Link href="/">
+        <Link href="/favorite">
           {/* <p>favorite</p> */}
           <FontAwesomeIcon
             icon={faHeart}
             size="2x"
             className={
               "hover:text-[#6DDDFF] cursor-pointer pt-2 " +
-              (pathname === "/" ? "text-[#6DDDFF]" : "text-[#828282]")
+              (pathname === "/favorite" ? "text-[#6DDDFF]" : "text-[#828282]")
             }
           />
         </Link>
-        <Link href="/">
+        <Link href="/mypage">
           {/* <p>profile</p> */}
           <FontAwesomeIcon
             icon={faUser}
             size="2x"
             className={
               "hover:text-[#6DDDFF] cursor-pointer pt-2 " +
-              (pathname === "/" ? "text-[#6DDDFF]" : "text-[#828282]")
+              (pathname === "/mypage" ? "text-[#6DDDFF]" : "text-[#828282]")
             }
           />
         </Link>
@@ -89,5 +89,3 @@ export const Footer = () => {
     </div>
   );
 };
-
-// https://qiita.com/naoyuki2/items/7ae311f790b637ce40fd#justify-between
