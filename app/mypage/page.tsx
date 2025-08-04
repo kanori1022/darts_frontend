@@ -2,22 +2,24 @@
 
 import { Button } from "@/components/Button/Button";
 import useAuth from "@/hooks/auth/useAuth";
+import { useFetch } from "@/hooks/fetch/useFetch";
+import { User } from "@/types/user";
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 export default function Mypage() {
   const { loginUser } = useAuth();
-  const [bio, setBio] = useState("");
-  useEffect(() => {
-    if (loginUser) {
-      const savedBio = localStorage.getItem(`bio_${loginUser.uid}`);
-      if (savedBio) {
-        setBio(savedBio);
-      }
-    }
-  }, [loginUser]);
+  const { data } = useFetch<User>("/users");
+  // const [bio, setBio] = useState("");
+  // useEffect(() => {
+  //   if (loginUser) {
+  //     const savedBio = localStorage.getItem(`bio_${loginUser.uid}`);
+  //     if (savedBio) {
+  //       setBio(savedBio);
+  //     }
+  //   }
+  // }, [loginUser]);
 
   if (!loginUser) {
     return (
@@ -41,9 +43,9 @@ export default function Mypage() {
 
       {/* プロフィール画像 */}
       <div className="flex justify-center mb-4">
-        {loginUser.photoURL ? (
+        {data ? (
           <img
-            src={loginUser.photoURL}
+            src={data.image}
             alt="プロフィール画像"
             className="w-24 h-24 rounded-full object-cover shadow"
           />
@@ -59,14 +61,15 @@ export default function Mypage() {
       <div className="text-left space-y-4">
         <p>
           <span className="font-semibold">ユーザー名：</span>
-          {loginUser.displayName ?? "未設定"}
+
+          {data?.name ?? "未設定"}
         </p>
-        {bio && (
+        {/* {bio && (
           <p>
             <span className="font-semibold">自己紹介：</span>
             {bio}
           </p>
-        )}
+        )} */}
       </div>
 
       <Link href="/profile">
