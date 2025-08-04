@@ -1,35 +1,22 @@
 "use client";
 
 import { Button } from "@/components/Button/Button";
-import { useCreateUser } from "@/hooks/api/useCreateUser";
+import { useUpdateUser } from "@/hooks/api/useUpdateUser";
 import useAuth from "@/hooks/auth/useAuth";
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 export default function Profile() {
   const { loginUser } = useAuth();
   const [displayName, setDisplayName] = useState("");
-  const [photoURL, setPhotoURL] = useState("");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
-  const [bio, setBio] = useState("");
-  const { createUser } = useCreateUser();
-
-  useEffect(() => {
-    if (loginUser) {
-      setDisplayName(loginUser.displayName ?? "");
-      setPhotoURL(loginUser.photoURL ?? "");
-
-      const savedBio = localStorage.getItem(`bio_${loginUser.uid}`);
-      if (savedBio) {
-        setBio(savedBio);
-      }
-    }
-  }, [loginUser]);
+  //const { createUser } = useCreateUser();
+  const { updateUser } = useUpdateUser();
 
   if (!loginUser) {
     return (
@@ -49,18 +36,14 @@ export default function Profile() {
 
   const handleUpdate = async () => {
     if (!loginUser) return;
-    // const image = {
-    //   image: inputRef.current?.files?.[0] || null,
-    //   name: displayName,
-    // };
+
     try {
-      createUser({
+      await updateUser({
         user: {
           image: inputRef.current?.files?.[0] || null,
           name: displayName,
         },
       });
-      localStorage.setItem(`bio_${loginUser.uid}`, bio);
 
       alert("プロフィールを更新しました");
       router.push("/mypage");
@@ -141,7 +124,7 @@ export default function Profile() {
       </div>
 
       {/* 自己紹介 */}
-      <div className="mb-6">
+      {/* <div className="mb-6">
         <label className="block font-semibold mb-1">自己紹介</label>
         <textarea
           className="border-2 rounded-sm w-full h-28 p-2 placeholder-[#A39C9C] border-[#E0E0E0]"
@@ -149,7 +132,7 @@ export default function Profile() {
           value={bio}
           onChange={(e) => setBio(e.target.value)}
         ></textarea>
-      </div>
+      </div> */}
 
       {/* ボタンエリア */}
       <div className="flex justify-between">
