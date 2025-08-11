@@ -5,9 +5,10 @@ import { useUpdateUser } from "@/hooks/api/useUpdateUser";
 import useAuth from "@/hooks/auth/useAuth";
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { updateProfile } from "firebase/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Profile() {
   const { loginUser } = useAuth();
@@ -15,8 +16,15 @@ export default function Profile() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
-  //const { createUser } = useCreateUser();
   const { updateUser } = useUpdateUser();
+
+  // ログインユーザー情報を初期セット
+  useEffect(() => {
+    if (loginUser) {
+      setDisplayName(loginUser.displayName || "");
+      setPreviewUrl(loginUser.photoURL || null);
+    }
+  }, [loginUser]);
 
   if (!loginUser) {
     return (
@@ -38,11 +46,18 @@ export default function Profile() {
     if (!loginUser) return;
 
     try {
+      // API側に更新
       await updateUser({
         user: {
           image: inputRef.current?.files?.[0] || null,
           name: displayName,
         },
+      });
+
+      // Firebaseのユーザー情報も更新
+      await updateProfile(loginUser, {
+        displayName: displayName,
+        photoURL: previewUrl || loginUser.photoURL || null,
       });
 
       alert("プロフィールを更新しました");
@@ -63,8 +78,8 @@ export default function Profile() {
           htmlFor="imageUpload"
           className="w-24 h-24 cursor-pointer hover:opacity-80"
         >
-          {/* デフォルトアイコン（photoURLもpreviewも無い時） */}
-          {!loginUser.photoURL && !previewUrl && (
+          {/* デフォルトアイコン */}
+          {!previewUrl && (
             <FontAwesomeIcon
               icon={faCircleUser}
               size="4x"
@@ -72,21 +87,12 @@ export default function Profile() {
             />
           )}
 
-          {/* プレビュー画像（最優先） */}
+          {/* プレビュー画像 or 既存画像 */}
           {previewUrl && (
             <img
               src={previewUrl}
-              alt="選択された画像"
-              className="top-0 left-0 w-24 h-24 rounded-full object-cover shadow-lg"
-            />
-          )}
-
-          {/* 既存プロフィール画像（プレビューない時のみ） */}
-          {!previewUrl && loginUser.photoURL && (
-            <img
-              src={loginUser.photoURL}
               alt="プロフィール画像"
-              className="top-0 left-0 w-24 h-24 rounded-full object-cover shadow"
+              className="top-0 left-0 w-24 h-24 rounded-full object-cover shadow-lg"
             />
           )}
         </label>
@@ -101,11 +107,7 @@ export default function Profile() {
             const file = e.target.files?.[0];
             if (file) {
               const preview = URL.createObjectURL(file);
-
-              console.log("Preview URL:", preview);
               setPreviewUrl(preview);
-              // 本来ここで storage にアップロードして photoURL を更新する処理が必要
-              // setPhotoURL(uploadedUrl);
             }
           }}
           className="hidden"
@@ -122,17 +124,6 @@ export default function Profile() {
           className="border border-gray-300 rounded p-2 w-full"
         />
       </div>
-
-      {/* 自己紹介 */}
-      {/* <div className="mb-6">
-        <label className="block font-semibold mb-1">自己紹介</label>
-        <textarea
-          className="border-2 rounded-sm w-full h-28 p-2 placeholder-[#A39C9C] border-[#E0E0E0]"
-          placeholder="ここに自己紹介を入力..."
-          value={bio}
-          onChange={(e) => setBio(e.target.value)}
-        ></textarea>
-      </div> */}
 
       {/* ボタンエリア */}
       <div className="flex justify-between">
