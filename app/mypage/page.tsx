@@ -11,15 +11,6 @@ import Link from "next/link";
 export default function Mypage() {
   const { loginUser } = useAuth();
   const { data } = useFetch<User>("/users");
-  // const [bio, setBio] = useState("");
-  // useEffect(() => {
-  //   if (loginUser) {
-  //     const savedBio = localStorage.getItem(`bio_${loginUser.uid}`);
-  //     if (savedBio) {
-  //       setBio(savedBio);
-  //     }
-  //   }
-  // }, [loginUser]);
 
   if (!loginUser) {
     return (
@@ -64,12 +55,6 @@ export default function Mypage() {
 
           {data?.name ?? "未設定"}
         </p>
-        {/* {bio && (
-          <p>
-            <span className="font-semibold">自己紹介：</span>
-            {bio}
-          </p>
-        )} */}
       </div>
 
       <Link href="/profile">
