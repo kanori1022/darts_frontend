@@ -8,9 +8,8 @@ import { CombinationParams } from "@/types/combination";
 import { faFolderPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-
-// https://flowbite.com/docs/components/forms/
 
 export default function Post() {
   const [combination, setCombination] = useState<CombinationParams>({
@@ -26,12 +25,9 @@ export default function Post() {
   const { createCombination } = useCreateCombination();
   const inputRef = useRef<HTMLInputElement>(null);
   const { loginUser } = useAuth();
-  // useEffect(() => {
-  //   const hasEmptyField = Object.values(combination).some(
-  //     (value) => value.trim() === ""
-  //   );
+  const router = useRouter();
+
   if (!loginUser) {
-    // ログイン前の表示
     return (
       <div className="pl-10 pr-10 pt-10 pb-10 bg-white mb-10 text-center">
         <p className="mb-3">
@@ -46,6 +42,7 @@ export default function Post() {
       </div>
     );
   }
+
   return (
     <div>
       <div>
@@ -62,9 +59,7 @@ export default function Post() {
           </div>
         </div>
 
-        {/* ここにファイルインポートの処理 */}
         <div className=" w-32 h-auto mx-auto">
-          {/* プレビュー画像（重ねる） */}
           {previewUrl && (
             <img
               src={previewUrl}
@@ -76,7 +71,6 @@ export default function Post() {
             />
           )}
 
-          {/* アップロード用ラベルとアイコン（下に表示） */}
           {!previewUrl && (
             <label
               htmlFor="imageUpload"
@@ -89,7 +83,7 @@ export default function Post() {
               />
             </label>
           )}
-          {/* 非表示のファイル入力 */}
+
           <input
             id="imageUpload"
             ref={inputRef}
@@ -127,7 +121,6 @@ export default function Post() {
             >
               シャフト
             </InputShort>
-
             <InputShort
               placeholder="バレル"
               onChange={(e) => {
@@ -157,16 +150,19 @@ export default function Post() {
           <InputLong placeholder="タグ">タグ</InputLong>
           <Button
             color="bg-[#3B82F6]"
-            onClick={() => {
+            onClick={async () => {
               const hasEmptyField = Object.values(combination).some(
                 (value) => !value
               );
 
               if (hasEmptyField) {
                 alert("値の入力または画像の選択が完了していません！");
+                return;
               }
+
               console.log("押したよ");
-              createCombination({ combination: combination });
+              await createCombination({ combination: combination });
+              router.push("/home");
             }}
           >
             投稿
