@@ -2,7 +2,7 @@
 
 import { FirebaseError, getApps, initializeApp } from "firebase/app"; // Firebaseアプリの初期化を行うためのinitializeApp関数を'firebase/app'からインポート
 import { getAuth, onAuthStateChanged, signOut, User } from "firebase/auth"; // Firebase Authenticationを使用するためのgetAuth関数を'firebase/auth'からインポート
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_API_KEY,
@@ -19,12 +19,12 @@ if (!getApps().length) {
 }
 
 const useAuth = () => {
-  const app = initializeApp(firebaseConfig); // Firebaseアプリの初期化
-  const auth = getAuth(app); // Firebase Authenticationの認証オブジェクトを取得
+  // authインスタンスをメモ化して毎回同じインスタンスを使用
+  const auth = useMemo(() => getAuth(), []);
 
   const [loginUser, setLoginUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null); // トークンを保持するための変数を定義し、初期値をnullに設定
-  const [isWaiting, setIsWaiting] = useState<boolean>(false); // ログイン状態の変化を監視するための変数を定義し、初期値をtrueに設定
+  const [token, setToken] = useState<string | null>(null);
+  const [isWaiting, setIsWaiting] = useState<boolean>(true); // 初期値をtrueに変更
 
   const handleSignOut = async () => {
     try {
@@ -36,26 +36,30 @@ const useAuth = () => {
     }
   };
 
-  // ※ログインのセットより初期描画の方が早いため、
-  // これをしないと、初期描画時にログイン状態がセットされず、
-  // 初期描画時にログインが必要なページを表示できない。
+  // 認証状態の監視とトークン取得を1つのuseEffectで統合
   useEffect(() => {
-    setIsWaiting(true);
-    onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setLoginUser(user);
+
+      // ユーザーがログインしている場合のみトークンを取得
       if (user) {
-        setLoginUser(user);
+        try {
+          const idToken = await user.getIdToken(false);
+          setToken(idToken);
+        } catch (error) {
+          console.error("Failed to get ID token:", error);
+          setToken(null);
+        }
+      } else {
+        setToken(null);
       }
+
       setIsWaiting(false);
     });
-  }, [auth]);
 
-  useEffect(() => {
-    if (loginUser) {
-      loginUser.getIdToken(true).then((idToken) => {
-        setToken(idToken);
-      });
-    }
-  }, [loginUser]);
+    // クリーンアップ関数でリスナーを解除
+    return () => unsubscribe();
+  }, [auth]);
 
   return { auth, loginUser, token, isWaiting, handleSignOut };
 };
