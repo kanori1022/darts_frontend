@@ -2,11 +2,11 @@
 
 import { Button } from "@/components/Button/Button";
 import { Card } from "@/components/Card/Card";
+import { useFavorites } from "@/hooks/api/useFavorites";
 import useAuth from "@/hooks/auth/useAuth";
 import { useFetch } from "@/hooks/fetch/useFetch";
 import { Combination } from "@/types/combination";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 export default function Home() {
   const { data: popularData, isLoading: popularLoading } =
@@ -14,32 +14,18 @@ export default function Home() {
   const { data: newestData, isLoading: newestLoading } = useFetch<
     Combination[]
   >("/combinations/newest");
-  const { loginUser } = useAuth();
-  const [favorites, setFavorites] = useState<string[]>([]);
+  const { loginUser, isWaiting } = useAuth();
+  const { isFavorite, toggleFavorite } = useFavorites();
 
-  // --- LocalStorage からお気に入りを読み込む ---
-  useEffect(() => {
-    const storedFavorites = localStorage.getItem("favorites");
-    if (storedFavorites) {
-      setFavorites(JSON.parse(storedFavorites));
+  const handleToggleFavorite = async (id: string) => {
+    if (!loginUser) {
+      alert("お気に入り機能を使用するにはログインが必要です");
+      return;
     }
-  }, []);
-
-  // --- favorites が変わるたびに LocalStorage に保存 ---
-  useEffect(() => {
-    // 空配列でも保存して最新状態を保持
-    localStorage.setItem("favorites", JSON.stringify(favorites));
-  }, [favorites]);
-
-  const toggleFavorite = (id: string) => {
-    if (!loginUser) return;
-
-    setFavorites((prev) =>
-      prev.includes(id) ? prev.filter((fid) => fid !== id) : [...prev, id]
-    );
+    await toggleFavorite(id);
   };
 
-  if (popularLoading || newestLoading) {
+  if (popularLoading || newestLoading || isWaiting) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
@@ -91,8 +77,10 @@ export default function Home() {
                     <Card
                       src={combination.image}
                       title={combination.title}
-                      isFavorite={favorites.includes(combination.id)}
-                      onToggleFavorite={() => toggleFavorite(combination.id)}
+                      isFavorite={isFavorite(combination.id)}
+                      onToggleFavorite={() =>
+                        handleToggleFavorite(combination.id)
+                      }
                     />
 
                     <Link href={"/item/" + combination.id}>
@@ -130,8 +118,10 @@ export default function Home() {
                     <Card
                       src={combination.image}
                       title={combination.title}
-                      isFavorite={favorites.includes(combination.id)}
-                      onToggleFavorite={() => toggleFavorite(combination.id)}
+                      isFavorite={isFavorite(combination.id)}
+                      onToggleFavorite={() =>
+                        handleToggleFavorite(combination.id)
+                      }
                     />
 
                     <Link href={"/item/" + combination.id}>
