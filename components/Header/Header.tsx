@@ -30,7 +30,7 @@ export const Header = () => {
         onLogout={handleLogout}
       />
 
-      <div className="bg-[#333333] p-5 flex justify-between items-center relative">
+      <div className="bg-[#333333] p-5 flex justify-between items-center relative z-50">
         <p className="text-3xl font-serif text-[#CCCCCC] mx-auto text-center cursor-pointer">
           <Link href="/home">Combines Darts</Link>
         </p>
