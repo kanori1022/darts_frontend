@@ -9,7 +9,11 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Home() {
-  const { data, isLoading } = useFetch<Combination[]>("/combinations");
+  const { data: popularData, isLoading: popularLoading } =
+    useFetch<Combination[]>("/combinations");
+  const { data: newestData, isLoading: newestLoading } = useFetch<
+    Combination[]
+  >("/combinations/newest");
   const { loginUser } = useAuth();
   const [favorites, setFavorites] = useState<string[]>([]);
 
@@ -35,7 +39,7 @@ export default function Home() {
     );
   };
 
-  if (isLoading) {
+  if (popularLoading || newestLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
@@ -71,7 +75,7 @@ export default function Home() {
 
           <div className="overflow-x-auto pb-2">
             <div className="flex gap-3 min-w-max">
-              {data?.map((combination, index) => (
+              {popularData?.map((combination, index) => (
                 <div
                   key={combination.id}
                   className="flex-shrink-0 w-52 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 overflow-hidden relative"
@@ -117,7 +121,7 @@ export default function Home() {
 
           <div className="overflow-x-auto pb-2">
             <div className="flex gap-3 min-w-max">
-              {data?.map((combination) => (
+              {newestData?.map((combination) => (
                 <div
                   key={combination.id}
                   className="flex-shrink-0 w-52 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 overflow-hidden relative z-0"
