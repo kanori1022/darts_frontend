@@ -2,11 +2,13 @@
 
 import { Button } from "@/components/Button/Button";
 import { Card } from "@/components/Card/Card";
+import { useFavorites } from "@/hooks/api/useFavorites";
 import useAuth from "@/hooks/auth/useAuth";
 import { useFetch } from "@/hooks/fetch/useFetch";
 import { Combination } from "@/types/combination";
+import { faCrown } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 export default function Home() {
   const { data: popularData, isLoading: popularLoading } =
@@ -14,32 +16,18 @@ export default function Home() {
   const { data: newestData, isLoading: newestLoading } = useFetch<
     Combination[]
   >("/combinations/newest");
-  const { loginUser } = useAuth();
-  const [favorites, setFavorites] = useState<string[]>([]);
+  const { loginUser, isWaiting } = useAuth();
+  const { isFavorite, toggleFavorite } = useFavorites();
 
-  // --- LocalStorage からお気に入りを読み込む ---
-  useEffect(() => {
-    const storedFavorites = localStorage.getItem("favorites");
-    if (storedFavorites) {
-      setFavorites(JSON.parse(storedFavorites));
+  const handleToggleFavorite = async (id: string) => {
+    if (!loginUser) {
+      alert("お気に入り機能を使用するにはログインが必要です");
+      return;
     }
-  }, []);
-
-  // --- favorites が変わるたびに LocalStorage に保存 ---
-  useEffect(() => {
-    // 空配列でも保存して最新状態を保持
-    localStorage.setItem("favorites", JSON.stringify(favorites));
-  }, [favorites]);
-
-  const toggleFavorite = (id: string) => {
-    if (!loginUser) return;
-
-    setFavorites((prev) =>
-      prev.includes(id) ? prev.filter((fid) => fid !== id) : [...prev, id]
-    );
+    await toggleFavorite(id);
   };
 
-  if (popularLoading || newestLoading) {
+  if (popularLoading || newestLoading || isWaiting) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
@@ -52,18 +40,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-700 text-white py-8 px-6 mb-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100">
-            ダーツコンビネーション
-          </h1>
-          <p className="text-blue-100 text-lg">最新のダーツ戦略を見つけよう</p>
-        </div>
-      </div>
-
       {/* Popular Rankings Section */}
-      <section className="mb-8 px-4 relative z-0">
+      <section className="mb-6 px-4 pt-6 relative z-0">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-1 h-6 bg-red-500 rounded-full"></div>
@@ -73,36 +51,83 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="overflow-x-auto pb-2">
+          <div className="overflow-x-auto ">
             <div className="flex gap-3 min-w-max">
-              {popularData?.map((combination, index) => (
-                <div
-                  key={combination.id}
-                  className="flex-shrink-0 w-52 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 overflow-hidden relative"
-                >
-                  {/* モダンなランキング番号 */}
-                  <div className="absolute -top-2 -left-2 w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center shadow-lg border-2 border-white z-10">
-                    <span className="text-white text-xs font-bold">
-                      {index + 1}
-                    </span>
-                  </div>
+              {popularData?.map((combination, index) => {
+                const getCrownStyle = (rank: number) => {
+                  switch (rank) {
+                    case 1:
+                      return {
+                        color: "text-yellow-400",
+                        bgColor: "bg-yellow-50",
+                      };
+                    case 2:
+                      return {
+                        color: "text-gray-400",
+                        bgColor: "bg-gray-50",
+                      };
+                    case 3:
+                      return {
+                        color: "text-orange-600",
+                        bgColor: "bg-orange-50",
+                      };
+                    default:
+                      return {
+                        color: "text-gray-400",
+                        bgColor: "bg-gray-50",
+                      };
+                  }
+                };
+                const crownStyle = getCrownStyle(index + 1);
 
-                  <div className="p-3 pt-4">
-                    <Card
-                      src={combination.image}
-                      title={combination.title}
-                      isFavorite={favorites.includes(combination.id)}
-                      onToggleFavorite={() => toggleFavorite(combination.id)}
-                    />
+                return (
+                  <div
+                    key={combination.id}
+                    className="flex-shrink-0 w-52 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 overflow-hidden relative"
+                  >
+                    {/* 王冠ランキング（3位まで） */}
+                    {index < 3 && (
+                      <div
+                        className={`absolute -top-1 left-0 w-10 h-10 ${crownStyle.bgColor} rounded-full flex items-center justify-center shadow-xl border-2 border-white z-10`}
+                      >
+                        <div className="relative flex items-center justify-center">
+                          <FontAwesomeIcon
+                            icon={faCrown}
+                            className={`text-lg ${crownStyle.color}`}
+                          />
+                          <span
+                            className="absolute text-xs font-bold text-gray-900 drop-shadow-sm"
+                            style={{
+                              top: "50%",
+                              left: "50%",
+                              transform: "translate(-50%, -50%)",
+                            }}
+                          >
+                            {index + 1}
+                          </span>
+                        </div>
+                      </div>
+                    )}
 
-                    <Link href={"/item/" + combination.id}>
-                      <button className="mt-3 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-3 rounded text-sm font-medium transition-colors duration-200">
-                        詳細を見る
-                      </button>
-                    </Link>
+                    <div className="p-3 pt-4 flex flex-col items-center">
+                      <Card
+                        src={combination.image}
+                        title={combination.title}
+                        isFavorite={isFavorite(combination.id)}
+                        onToggleFavorite={() =>
+                          handleToggleFavorite(combination.id)
+                        }
+                      />
+
+                      <Link href={"/item/" + combination.id}>
+                        <button className="mt-3 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-3 rounded text-sm font-medium transition-colors duration-200 border border-blue-600 hover:border-blue-700">
+                          詳細を見る
+                        </button>
+                      </Link>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
@@ -126,16 +151,18 @@ export default function Home() {
                   key={combination.id}
                   className="flex-shrink-0 w-52 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 overflow-hidden relative z-0"
                 >
-                  <div className="p-3">
+                  <div className="p-3 flex flex-col items-center">
                     <Card
                       src={combination.image}
                       title={combination.title}
-                      isFavorite={favorites.includes(combination.id)}
-                      onToggleFavorite={() => toggleFavorite(combination.id)}
+                      isFavorite={isFavorite(combination.id)}
+                      onToggleFavorite={() =>
+                        handleToggleFavorite(combination.id)
+                      }
                     />
 
                     <Link href={"/item/" + combination.id}>
-                      <button className="mt-3 w-full bg-green-500 hover:bg-green-600 text-white py-2 px-3 rounded text-sm font-medium transition-colors duration-200">
+                      <button className="mt-3 w-full bg-green-500 hover:bg-green-600 text-white py-2 px-3 rounded text-sm font-medium transition-colors duration-200 border border-green-600 hover:border-green-700">
                         詳細を見る
                       </button>
                     </Link>
