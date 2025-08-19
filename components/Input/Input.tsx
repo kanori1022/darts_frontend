@@ -3,6 +3,7 @@ import { ChangeEventHandler } from "react";
 type InputProps = {
   children?: React.ReactNode;
   placeholder: string;
+  value?: string;
   onChange?: ChangeEventHandler<HTMLInputElement>;
 };
 
@@ -47,7 +48,7 @@ export const InputShort = (props: InputProps) => {
 };
 
 export const InputLong = (props: InputProps) => {
-  const { children, placeholder, onChange } = props;
+  const { children, placeholder, value, onChange } = props;
   return (
     <>
       <p className="mt-5 text-left">{children}</p>
@@ -55,6 +56,7 @@ export const InputLong = (props: InputProps) => {
         className="border-2 rounded-sm w-full placeholder-[#A39C9C] border-[#E0E0E0]"
         type="text"
         placeholder={placeholder}
+        value={value}
         onChange={onChange}
       ></input>
     </>
