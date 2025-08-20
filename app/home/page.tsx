@@ -23,9 +23,9 @@ type CombinationsResponse = {
 
 export default function Home() {
   const { data: popularData, isLoading: popularLoading } =
-    useFetch<CombinationsResponse>("/combinations?limit=6&offset=0");
+    useFetch<CombinationsResponse>("/combinations?limit=10&offset=0");
   const { data: newestData, isLoading: newestLoading } =
-    useFetch<CombinationsResponse>("/combinations/newest?limit=6&offset=0");
+    useFetch<CombinationsResponse>("/combinations/newest?limit=15&offset=0");
   const { loginUser, isWaiting } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
 

@@ -49,6 +49,6 @@ export default function Item({ params }: Props) {
   );
 }
 
-// https://firebase.google.com/docs/auth/web/start?hl=ja&_gl=1*187nh6y*_up*MQ..*_ga*MTYxOTA3OTYzLjE3NTA0OTY2MzE.*_ga_CW55HF8NVT*czE3NTA0OTY2MzEkbzEkZzAkdDE3NTA0OTY2MzEkajYwJGwwJGgw
+// https://firebase.google.com/docs/auth/web/start?hl=ja&_gl=1*187nh6y*_up*MQ..*_ga*MTYxOTA3OTYzLjE3NTA0OTY2MzE.*_ga_CW55HF8NVT*czE3NTA0OTY2MzEkajYwJGwwJGgw
 
 // https://github.com/fuku01/konbini-recipe-front/blob/main/src/hooks/auth/useAuth.ts
