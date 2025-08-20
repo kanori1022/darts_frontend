@@ -8,45 +8,39 @@ import { useMemo, useState } from "react";
 
 export default function SearchResult() {
   const searchParams = useSearchParams();
-  const { data, isLoading } = useFetch<Combination[]>("/combinations");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  // 検索条件に基づいてデータをフィルタリング
-  const filteredData = useMemo(() => {
-    if (!data) return [];
+  // 検索条件を取得
+  const searchWord = searchParams.get("searchWord") || "";
+  const tags = searchParams.get("tags") || "";
 
-    const searchWord = searchParams.get("searchWord") || "";
-    const tags = searchParams.get("tags") || "";
+  // 検索条件に基づいてAPIからデータを取得
+  const searchQuery = useMemo(() => {
+    const params = new URLSearchParams();
+    if (searchWord) params.set("searchWord", searchWord);
+    if (tags) params.set("tags", tags);
+    return params.toString();
+  }, [searchWord, tags]);
 
-    return data.filter((combination) => {
-      const searchWordMatch =
-        searchWord === "" ||
-        combination.title.toLowerCase().includes(searchWord.toLowerCase()) ||
-        combination.description
-          .toLowerCase()
-          .includes(searchWord.toLowerCase()) ||
-        combination.flight.toLowerCase().includes(searchWord.toLowerCase()) ||
-        combination.shaft.toLowerCase().includes(searchWord.toLowerCase()) ||
-        combination.barrel.toLowerCase().includes(searchWord.toLowerCase()) ||
-        combination.tip.toLowerCase().includes(searchWord.toLowerCase());
-
-      const tagsMatch =
-        tags === "" ||
-        combination.description.toLowerCase().includes(tags.toLowerCase());
-
-      return searchWordMatch && tagsMatch;
-    });
-  }, [data, searchParams]);
-
-  // 現在のページのデータを取得
-  const currentData = filteredData.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+  const { data, isLoading } = useFetch<Combination[]>(
+    searchQuery ? `/combinations/search?${searchQuery}` : "/combinations"
   );
 
+  // 現在のページのデータを取得
+  const currentData = useMemo(() => {
+    if (!data) return [];
+    return data.slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage
+    );
+  }, [data, currentPage, itemsPerPage]);
+
   // 総ページ数を計算
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  const totalPages = useMemo(() => {
+    if (!data) return 0;
+    return Math.ceil(data.length / itemsPerPage);
+  }, [data, itemsPerPage]);
 
   // ページネーション処理
   const goToNextPage = () => {
@@ -84,9 +78,7 @@ export default function SearchResult() {
           検索条件: {searchParams.get("searchWord") || "なし"} / タグ:{" "}
           {searchParams.get("tags") || "なし"}
         </p>
-        <p className="text-sm text-gray-600">
-          結果件数: {filteredData.length}件
-        </p>
+        <p className="text-sm text-gray-600">結果件数: {data?.length || 0}件</p>
       </div>
 
       {/* スクロール可能なコンテンツエリア */}
@@ -145,7 +137,7 @@ export default function SearchResult() {
       </div>
 
       {/* ページネーション（固定位置） */}
-      {filteredData.length > itemsPerPage && (
+      {totalPages > 1 && (
         <div className="p-3 font-bold bg-white border-t">
           <div className="flex justify-between items-center">
             <button
