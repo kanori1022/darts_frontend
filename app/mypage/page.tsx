@@ -63,7 +63,7 @@ export default function Mypage() {
         </Link>
 
         <Link href="/myposts">
-          <Button color="bg-green-600 hover:bg-green-700">私の投稿一覧</Button>
+          <Button color="bg-green-600 hover:bg-green-700">投稿一覧</Button>
         </Link>
       </div>
     </div>
