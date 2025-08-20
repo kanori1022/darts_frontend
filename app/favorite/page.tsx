@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/Button/Button";
-import { Card } from "@/components/Card/Card";
 import { useFavorites } from "@/hooks/api/useFavorites";
 import useAuth from "@/hooks/auth/useAuth";
 import { useFetch } from "@/hooks/fetch/useFetch";
@@ -51,22 +50,17 @@ export default function Favorite() {
   const favoriteItems = combinations.filter((item) => isFavorite(item.id));
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-pink-50">
+    <div className="min-h-screen bg-gray-50">
       {/* Header Section */}
-      <div className="bg-gradient-to-r from-pink-500 via-pink-600 to-pink-700 text-white py-8 px-6 mb-8">
+      <div className="bg-white border-b border-gray-200 py-6 px-6 mb-6">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-white to-pink-100">
-            あなたのお気に入り
-          </h1>
-          <p className="text-pink-100 text-lg">
-            お気に入りのダーツコンビネーション一覧
-          </p>
+          <h1 className="text-3xl font-bold text-gray-800">お気に入り</h1>
         </div>
       </div>
 
       {/* Favorites Section */}
-      <section className="mb-8 px-4">
-        <div className="max-w-6xl mx-auto">
+      <div className="max-w-4xl mx-auto px-4">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-1 h-6 bg-pink-500 rounded-full"></div>
             <h2 className="text-xl font-bold text-gray-800">
@@ -78,30 +72,65 @@ export default function Favorite() {
           </div>
 
           {favoriteItems.length > 0 ? (
-            <div className="overflow-x-auto pb-2">
-              <div className="flex gap-3 min-w-max">
-                {favoriteItems.map((combination) => (
-                  <div
-                    key={combination.id}
-                    className="flex-shrink-0 w-52 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 overflow-hidden"
-                  >
-                    <div className="p-3">
-                      <Card
-                        src={combination.image}
-                        title={combination.title}
-                        isFavorite={isFavorite(combination.id)}
-                        onToggleFavorite={() => toggleFavorite(combination.id)}
-                      />
+            <div className="space-y-4">
+              {favoriteItems.map((combination) => (
+                <div
+                  key={combination.id}
+                  className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow duration-200"
+                >
+                  <div className="flex items-start gap-4">
+                    {/* 画像 */}
+                    <div className="flex-shrink-0">
+                      <div className="w-24 h-24 bg-gray-200 rounded-lg overflow-hidden">
+                        {combination.image ? (
+                          <img
+                            src={combination.image}
+                            alt={combination.title}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gray-300 flex items-center justify-center">
+                            <span className="text-gray-500 text-xs">
+                              No Image
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
 
-                      <Link href={"/item/" + combination.id}>
-                        <button className="mt-3 w-full bg-pink-500 hover:bg-pink-600 text-white py-2 px-3 rounded text-sm font-medium transition-colors duration-200">
-                          詳細を見る
+                    {/* コンテンツ */}
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg font-semibold text-gray-800 mb-2 truncate">
+                        {combination.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                        {combination.description || "説明がありません"}
+                      </p>
+
+                      {/* ボタン群 */}
+                      <div className="flex gap-2">
+                        <Link href={"/item/" + combination.id}>
+                          <button className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded text-sm font-medium transition-colors duration-200">
+                            詳細を見る
+                          </button>
+                        </Link>
+                        <button
+                          onClick={() => toggleFavorite(combination.id)}
+                          className={`py-2 px-3 rounded text-sm font-medium transition-colors duration-200 ${
+                            isFavorite(combination.id)
+                              ? "bg-pink-500 hover:bg-pink-600 text-white"
+                              : "bg-gray-200 hover:bg-gray-300 text-gray-700"
+                          }`}
+                        >
+                          {isFavorite(combination.id)
+                            ? "♥ お気に入り解除"
+                            : "♡ お気に入り追加"}
                         </button>
-                      </Link>
+                      </div>
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           ) : (
             <div className="text-center py-12">
@@ -124,7 +153,7 @@ export default function Favorite() {
             </div>
           )}
         </div>
-      </section>
+      </div>
     </div>
   );
 }

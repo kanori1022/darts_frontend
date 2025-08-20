@@ -80,37 +80,13 @@ export default function MyPosts() {
       {/* Header Section */}
       <div className="bg-white border-b border-gray-200 py-6 px-6 mb-6">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-2xl font-bold mb-2 text-gray-800">
-            私の投稿一覧
-          </h1>
-          <p className="text-gray-600">
-            あなたが投稿したダーツコンビネーション
-          </p>
+          <h1 className="text-2xl font-bold mb-2 text-gray-800">投稿一覧</h1>
         </div>
       </div>
 
       {/* My Posts Section */}
       <section className="mb-8 px-4">
         <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <div className="w-1 h-6 bg-gray-400 rounded-full"></div>
-              <h2 className="text-xl font-bold text-gray-800">
-                投稿したコンビネーション
-              </h2>
-              <div className="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded">
-                {myCombinations.length}件
-              </div>
-            </div>
-
-            <Link href="/post">
-              <Button color="bg-blue-600 hover:bg-blue-700">
-                <FontAwesomeIcon icon={faPlus} className="mr-2" />
-                新規投稿
-              </Button>
-            </Link>
-          </div>
-
           {myCombinations.length > 0 ? (
             <>
               <div className="space-y-4">
@@ -134,40 +110,23 @@ export default function MyPosts() {
                         </div>
 
                         {/* 詳細情報とボタン */}
-                        <div className="flex-1 flex flex-col justify-between">
-                          <div>
-                            <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                              {combination.title}
-                            </h3>
-                            <div className="text-sm text-gray-600 space-y-1">
-                              <p>フライト: {combination.flight}</p>
-                              <p>シャフト: {combination.shaft}</p>
-                              <p>バレル: {combination.barrel}</p>
-                              <p>チップ: {combination.tip}</p>
-                            </div>
-                          </div>
-
-                          <div className="mt-4 flex space-x-2">
-                            <Link href={"/item/" + combination.id}>
-                              <button className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded text-sm font-medium transition-colors duration-200">
-                                詳細を見る
-                              </button>
-                            </Link>
+                        <div className="flex-2 flex flex-col justify-between">
+                          <div className="mt-4 flex space-x-5">
                             <Link href={`/edit/${combination.id}`}>
                               <button className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded text-sm font-medium transition-colors duration-200">
                                 <FontAwesomeIcon
                                   icon={faEdit}
                                   className="mr-1"
                                 />
-                                編集
+                                編集する
                               </button>
                             </Link>
-                            <button className="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded text-sm font-medium transition-colors duration-200">
+                            <button className="bg-red-400 hover:bg-red-500 text-white py-2 px-4 rounded text-sm font-medium transition-colors duration-200">
                               <FontAwesomeIcon
                                 icon={faTrash}
                                 className="mr-1"
                               />
-                              削除
+                              削除する
                             </button>
                           </div>
                         </div>
