@@ -57,9 +57,15 @@ export default function Mypage() {
         </p>
       </div>
 
-      <Link href="/profile">
-        <Button color="bg-[#3B82F6]">プロフィール編集</Button>
-      </Link>
+      <div className="flex flex-col space-y-3">
+        <Link href="/profile">
+          <Button color="bg-[#3B82F6]">プロフィール編集</Button>
+        </Link>
+
+        <Link href="/myposts">
+          <Button color="bg-green-600 hover:bg-green-700">私の投稿一覧</Button>
+        </Link>
+      </div>
     </div>
   );
 }
