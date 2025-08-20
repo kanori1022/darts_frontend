@@ -20,7 +20,7 @@ type SearchResponse = {
 export default function SearchResult() {
   const searchParams = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 2;
 
   // 検索条件を取得
   const searchWord = searchParams.get("searchWord") || "";
