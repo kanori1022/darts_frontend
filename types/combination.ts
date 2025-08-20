@@ -9,7 +9,8 @@ export type CombinationParams = {
 };
 
 export type Combination = {
-  id:string;
+  user_id: string | number;
+  id: string;
   title: string;
   image: string;
   flight: string;
