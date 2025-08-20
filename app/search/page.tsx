@@ -6,22 +6,22 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 type Word = {
-  seachWord: string;
+  searchWord: string;
   tags: string;
 };
 
 export default function search() {
   const router = useRouter();
   const [word, setWord] = useState<Word>({
-    seachWord: "",
+    searchWord: "",
     tags: "",
   });
 
   const handleSearch = () => {
     // 検索条件をクエリパラメータとして検索結果ページに渡す
     const searchParams = new URLSearchParams();
-    if (word.seachWord) {
-      searchParams.set("searchWord", word.seachWord);
+    if (word.searchWord) {
+      searchParams.set("searchWord", word.searchWord);
     }
     if (word.tags) {
       searchParams.set("tags", word.tags);
@@ -40,9 +40,9 @@ export default function search() {
       <div className="p-5 font-bold bg-white ">
         <InputLong
           placeholder="検索"
-          value={word.seachWord}
+          value={word.searchWord}
           onChange={(e) => {
-            setWord({ ...word, seachWord: e.target.value });
+            setWord({ ...word, searchWord: e.target.value });
           }}
         >
           検索
