@@ -8,6 +8,17 @@ import { useFetch } from "@/hooks/fetch/useFetch";
 import { Combination } from "@/types/combination";
 import Link from "next/link";
 
+// APIレスポンスの型定義
+type CombinationsResponse = {
+  combinations: Combination[];
+  pagination: {
+    current_page: number;
+    per_page: number;
+    total_count: number;
+    total_pages: number;
+  };
+};
+
 export default function Favorite() {
   const { loginUser } = useAuth();
   const {
@@ -15,7 +26,7 @@ export default function Favorite() {
     isFavorite,
     isLoading: favoritesLoading,
   } = useFavorites();
-  const { data, isLoading } = useFetch<Combination[]>("/combinations");
+  const { data, isLoading } = useFetch<CombinationsResponse>("/combinations");
 
   if (!loginUser) {
     return (
@@ -35,7 +46,9 @@ export default function Favorite() {
 
   if (isLoading || favoritesLoading) return <div>ローディング中</div>;
 
-  const favoriteItems = data?.filter((item) => isFavorite(item.id)) || [];
+  // 新しいAPIレスポンス形式に対応
+  const combinations = data?.combinations || [];
+  const favoriteItems = combinations.filter((item) => isFavorite(item.id));
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-pink-50">

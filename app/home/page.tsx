@@ -10,12 +10,22 @@ import { faCrown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 
+// APIレスポンスの型定義
+type CombinationsResponse = {
+  combinations: Combination[];
+  pagination: {
+    current_page: number;
+    per_page: number;
+    total_count: number;
+    total_pages: number;
+  };
+};
+
 export default function Home() {
   const { data: popularData, isLoading: popularLoading } =
-    useFetch<Combination[]>("/combinations");
-  const { data: newestData, isLoading: newestLoading } = useFetch<
-    Combination[]
-  >("/combinations/newest");
+    useFetch<CombinationsResponse>("/combinations?limit=6&offset=0");
+  const { data: newestData, isLoading: newestLoading } =
+    useFetch<CombinationsResponse>("/combinations/newest?limit=6&offset=0");
   const { loginUser, isWaiting } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
 
@@ -38,6 +48,10 @@ export default function Home() {
     );
   }
 
+  // デバッグ情報（開発時のみ）
+  console.log("Popular data:", popularData);
+  console.log("Newest data:", newestData);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
       {/* Popular Rankings Section */}
@@ -51,83 +65,93 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="overflow-x-auto ">
+          <div className="overflow-x-auto">
             <div className="flex gap-3 min-w-max">
-              {popularData?.map((combination, index) => {
-                const getCrownStyle = (rank: number) => {
-                  switch (rank) {
-                    case 1:
-                      return {
-                        color: "text-yellow-400",
-                        bgColor: "bg-yellow-50",
-                      };
-                    case 2:
-                      return {
-                        color: "text-gray-400",
-                        bgColor: "bg-gray-50",
-                      };
-                    case 3:
-                      return {
-                        color: "text-orange-600",
-                        bgColor: "bg-orange-50",
-                      };
-                    default:
-                      return {
-                        color: "text-gray-400",
-                        bgColor: "bg-gray-50",
-                      };
-                  }
-                };
-                const crownStyle = getCrownStyle(index + 1);
+              {popularData?.combinations &&
+              popularData.combinations.length > 0 ? (
+                popularData.combinations.map((combination, index) => {
+                  const getCrownStyle = (rank: number) => {
+                    switch (rank) {
+                      case 1:
+                        return {
+                          color: "text-yellow-400",
+                          bgColor: "bg-yellow-50",
+                        };
+                      case 2:
+                        return {
+                          color: "text-gray-400",
+                          bgColor: "bg-gray-50",
+                        };
+                      case 3:
+                        return {
+                          color: "text-orange-600",
+                          bgColor: "bg-orange-50",
+                        };
+                      default:
+                        return {
+                          color: "text-gray-400",
+                          bgColor: "bg-gray-50",
+                        };
+                    }
+                  };
+                  const crownStyle = getCrownStyle(index + 1);
 
-                return (
-                  <div
-                    key={combination.id}
-                    className="flex-shrink-0 w-52 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 overflow-hidden relative"
-                  >
-                    {/* 王冠ランキング（3位まで） */}
-                    {index < 3 && (
-                      <div
-                        className={`absolute -top-1 left-0 w-10 h-10 ${crownStyle.bgColor} rounded-full flex items-center justify-center shadow-xl border-2 border-white z-10`}
-                      >
-                        <div className="relative flex items-center justify-center">
-                          <FontAwesomeIcon
-                            icon={faCrown}
-                            className={`text-lg ${crownStyle.color}`}
-                          />
-                          <span
-                            className="absolute text-xs font-bold text-gray-900 drop-shadow-sm"
-                            style={{
-                              top: "50%",
-                              left: "50%",
-                              transform: "translate(-50%, -50%)",
-                            }}
-                          >
-                            {index + 1}
-                          </span>
+                  return (
+                    <div
+                      key={combination.id}
+                      className="flex-shrink-0 w-52 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 overflow-hidden relative"
+                    >
+                      {/* 王冠ランキング（3位まで） */}
+                      {index < 3 && (
+                        <div
+                          className={`absolute -top-1 left-0 w-10 h-10 ${crownStyle.bgColor} rounded-full flex items-center justify-center shadow-xl border-2 border-white z-10`}
+                        >
+                          <div className="relative flex items-center justify-center">
+                            <FontAwesomeIcon
+                              icon={faCrown}
+                              className={`text-lg ${crownStyle.color}`}
+                            />
+                            <span
+                              className="absolute text-xs font-bold text-gray-900 drop-shadow-sm"
+                              style={{
+                                top: "50%",
+                                left: "50%",
+                                transform: "translate(-50%, -50%)",
+                              }}
+                            >
+                              {index + 1}
+                            </span>
+                          </div>
                         </div>
+                      )}
+
+                      <div className="p-3 pt-4 flex flex-col items-center">
+                        <Card
+                          src={combination.image}
+                          title={combination.title}
+                          isFavorite={isFavorite(combination.id)}
+                          onToggleFavorite={() =>
+                            handleToggleFavorite(combination.id)
+                          }
+                        />
+
+                        <Link href={"/item/" + combination.id}>
+                          <button className="mt-3 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-3 rounded text-sm font-medium transition-colors duration-200 border border-blue-600 hover:border-blue-700">
+                            詳細を見る
+                          </button>
+                        </Link>
                       </div>
-                    )}
-
-                    <div className="p-3 pt-4 flex flex-col items-center">
-                      <Card
-                        src={combination.image}
-                        title={combination.title}
-                        isFavorite={isFavorite(combination.id)}
-                        onToggleFavorite={() =>
-                          handleToggleFavorite(combination.id)
-                        }
-                      />
-
-                      <Link href={"/item/" + combination.id}>
-                        <button className="mt-3 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-3 rounded text-sm font-medium transition-colors duration-200 border border-blue-600 hover:border-blue-700">
-                          詳細を見る
-                        </button>
-                      </Link>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              ) : (
+                <div className="text-center text-gray-500 py-8">
+                  <p>人気ランキングのデータが読み込まれていません</p>
+                  <p className="text-sm">
+                    データ: {JSON.stringify(popularData)}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -146,29 +170,39 @@ export default function Home() {
 
           <div className="overflow-x-auto pb-2">
             <div className="flex gap-3 min-w-max">
-              {newestData?.map((combination) => (
-                <div
-                  key={combination.id}
-                  className="flex-shrink-0 w-52 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 overflow-hidden relative z-0"
-                >
-                  <div className="p-3 flex flex-col items-center">
-                    <Card
-                      src={combination.image}
-                      title={combination.title}
-                      isFavorite={isFavorite(combination.id)}
-                      onToggleFavorite={() =>
-                        handleToggleFavorite(combination.id)
-                      }
-                    />
+              {newestData?.combinations &&
+              newestData.combinations.length > 0 ? (
+                newestData.combinations.map((combination) => (
+                  <div
+                    key={combination.id}
+                    className="flex-shrink-0 w-52 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 overflow-hidden relative z-0"
+                  >
+                    <div className="p-3 flex flex-col items-center">
+                      <Card
+                        src={combination.image}
+                        title={combination.title}
+                        isFavorite={isFavorite(combination.id)}
+                        onToggleFavorite={() =>
+                          handleToggleFavorite(combination.id)
+                        }
+                      />
 
-                    <Link href={"/item/" + combination.id}>
-                      <button className="mt-3 w-full bg-green-500 hover:bg-green-600 text-white py-2 px-3 rounded text-sm font-medium transition-colors duration-200 border border-green-600 hover:border-green-700">
-                        詳細を見る
-                      </button>
-                    </Link>
+                      <Link href={"/item/" + combination.id}>
+                        <button className="mt-3 w-full bg-green-500 hover:bg-green-600 text-white py-2 px-3 rounded text-sm font-medium transition-colors duration-200 border border-green-600 hover:border-green-700">
+                          詳細を見る
+                        </button>
+                      </Link>
+                    </div>
                   </div>
+                ))
+              ) : (
+                <div className="text-center text-gray-500 py-8">
+                  <p>新着データが読み込まれていません</p>
+                  <p className="text-sm">
+                    データ: {JSON.stringify(newestData)}
+                  </p>
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </div>

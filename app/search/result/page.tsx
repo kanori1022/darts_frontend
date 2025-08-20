@@ -6,6 +6,17 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 
+// APIレスポンスの型定義
+type SearchResponse = {
+  combinations: Combination[];
+  pagination: {
+    current_page: number;
+    per_page: number;
+    total_count: number;
+    total_pages: number;
+  };
+};
+
 export default function SearchResult() {
   const searchParams = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
@@ -20,27 +31,31 @@ export default function SearchResult() {
     const params = new URLSearchParams();
     if (searchWord) params.set("searchWord", searchWord);
     if (tags) params.set("tags", tags);
-    return params.toString();
-  }, [searchWord, tags]);
 
-  const { data, isLoading } = useFetch<Combination[]>(
+    // limitとoffsetを直接計算して送信
+    const limit = itemsPerPage;
+    const offset = (currentPage - 1) * itemsPerPage;
+    params.set("limit", limit.toString());
+    params.set("offset", offset.toString());
+
+    return params.toString();
+  }, [searchWord, tags, currentPage, itemsPerPage]);
+
+  const { data, isLoading } = useFetch<SearchResponse>(
     searchQuery ? `/combinations/search?${searchQuery}` : "/combinations"
   );
 
   // 現在のページのデータを取得
   const currentData = useMemo(() => {
-    if (!data) return [];
-    return data.slice(
-      (currentPage - 1) * itemsPerPage,
-      currentPage * itemsPerPage
-    );
-  }, [data, currentPage, itemsPerPage]);
+    if (!data?.combinations) return [];
+    return data.combinations;
+  }, [data]);
 
-  // 総ページ数を計算
+  // 総ページ数を取得
   const totalPages = useMemo(() => {
-    if (!data) return 0;
-    return Math.ceil(data.length / itemsPerPage);
-  }, [data, itemsPerPage]);
+    if (!data?.pagination) return 0;
+    return data.pagination.total_pages;
+  }, [data]);
 
   // ページネーション処理
   const goToNextPage = () => {
@@ -78,7 +93,9 @@ export default function SearchResult() {
           検索条件: {searchParams.get("searchWord") || "なし"} / タグ:{" "}
           {searchParams.get("tags") || "なし"}
         </p>
-        <p className="text-sm text-gray-600">結果件数: {data?.length || 0}件</p>
+        <p className="text-sm text-gray-600">
+          結果件数: {data?.pagination.total_count || 0}件
+        </p>
       </div>
 
       {/* スクロール可能なコンテンツエリア */}
