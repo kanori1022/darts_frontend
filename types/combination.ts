@@ -6,6 +6,7 @@ export type CombinationParams = {
   barrel: string;
   tip: string;
   description: string;
+  tags: string[];
 };
 
 export type Combination = {
@@ -18,4 +19,5 @@ export type Combination = {
   barrel: string;
   tip: string;
   description: string;
+  tags: string[];
 };

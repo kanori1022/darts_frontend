@@ -20,8 +20,10 @@ export default function Post() {
     barrel: "",
     tip: "",
     description: "",
+    tags: [], // タグ配列を追加
   });
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [tagInput, setTagInput] = useState(""); // タグ入力用の状態
   const { createCombination } = useCreateCombination();
   const inputRef = useRef<HTMLInputElement>(null);
   const { loginUser } = useAuth();
@@ -186,9 +188,60 @@ export default function Post() {
           </div>
 
           <div>
-            <InputLong placeholder="タグを入力してください（任意）">
-              タグ
-            </InputLong>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              タグ（最大5個、/で区切って入力）
+            </label>
+            <input
+              type="text"
+              placeholder="例：初心者向け/バランス重視/軽量"
+              value={tagInput}
+              onChange={(e) => setTagInput(e.target.value)}
+              onBlur={() => {
+                if (tagInput.trim()) {
+                  const newTags = tagInput
+                    .split("/")
+                    .map((tag) => tag.trim())
+                    .filter((tag) => tag.length > 0)
+                    .slice(0, 5); // 最大5個まで
+
+                  setCombination({ ...combination, tags: newTags });
+                  setTagInput("");
+                }
+              }}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+
+            {/* タグ表示エリア */}
+            {combination.tags && combination.tags.length > 0 && (
+              <div className="mt-3">
+                <p className="text-sm text-gray-700 mb-2">設定されたタグ：</p>
+                <div className="flex flex-wrap gap-2">
+                  {combination.tags.map((tag, index) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                    >
+                      {tag}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newTags =
+                            combination.tags?.filter((_, i) => i !== index) ||
+                            [];
+                          setCombination({ ...combination, tags: newTags });
+                        }}
+                        className="ml-1.5 text-blue-600 hover:text-blue-800"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  {combination.tags.length}/5個
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
@@ -198,8 +251,8 @@ export default function Post() {
             <Button
               color="bg-blue-600 hover:bg-blue-700"
               onClick={async () => {
-                const hasEmptyField = Object.values(combination).some(
-                  (value) => !value
+                const hasEmptyField = Object.entries(combination).some(
+                  ([key, value]) => key !== "tags" && !value
                 );
 
                 if (hasEmptyField) {
