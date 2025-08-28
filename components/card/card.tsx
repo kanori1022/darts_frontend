@@ -29,7 +29,7 @@ export const Card = ({
           src={src}
           alt={title}
         />
-        {onToggleFavorite && userId !== currentUserId && (
+        {onToggleFavorite && String(userId) !== String(currentUserId) && (
           <button
             onClick={(e) => {
               e.preventDefault();

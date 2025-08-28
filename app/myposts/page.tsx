@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/Button/Button";
 import { Card } from "@/components/Card/Card";
+import { useDeleteCombination } from "@/hooks/api/useDeleteCombination";
 import useAuth from "@/hooks/auth/useAuth";
 import { useFetch } from "@/hooks/fetch/useFetch";
 import { Combination } from "@/types/combination";
@@ -23,12 +24,15 @@ type CombinationsResponse = {
 
 export default function MyPosts() {
   const { loginUser } = useAuth();
+  const { deleteCombination, isLoading: deleteLoading } =
+    useDeleteCombination();
   const [currentPage, setCurrentPage] = useState(1);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   const itemsPerPage = 10;
 
   // 自分が投稿したコンビネーションを直接APIから取得
   const { data, isLoading } = useFetch<CombinationsResponse>(
-    `/combinations/my_posts?limit=${itemsPerPage}&offset=${(currentPage - 1) * itemsPerPage}`
+    `/combinations/my_posts?limit=${itemsPerPage}&offset=${(currentPage - 1) * itemsPerPage}&refresh=${refreshTrigger}`
   );
 
   if (!loginUser) {
@@ -70,6 +74,30 @@ export default function MyPosts() {
   const goToPrevPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleDelete = async (combinationId: string, title: string) => {
+    const confirmDelete = window.confirm(
+      `「${title}」を削除しますか？\nこの操作は取り消せません。`
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      await deleteCombination(combinationId);
+      alert("投稿を削除しました");
+
+      // データを再取得
+      setRefreshTrigger((prev) => prev + 1);
+
+      // ページ数が変わった場合の調整
+      if (myCombinations.length === 1 && currentPage > 1) {
+        setCurrentPage(currentPage - 1);
+      }
+    } catch (error) {
+      console.error("削除エラー:", error);
+      alert(error instanceof Error ? error.message : "削除に失敗しました");
     }
   };
 
@@ -117,12 +145,18 @@ export default function MyPosts() {
                                 編集する
                               </button>
                             </Link>
-                            <button className="bg-red-400 hover:bg-red-500 text-white py-2 px-4 rounded text-sm font-medium transition-colors duration-200">
+                            <button
+                              onClick={() =>
+                                handleDelete(combination.id, combination.title)
+                              }
+                              disabled={deleteLoading}
+                              className="bg-red-400 hover:bg-red-500 disabled:bg-red-300 text-white py-2 px-4 rounded text-sm font-medium transition-colors duration-200"
+                            >
                               <FontAwesomeIcon
                                 icon={faTrash}
                                 className="mr-1"
                               />
-                              削除する
+                              {deleteLoading ? "削除中..." : "削除する"}
                             </button>
                           </div>
                         </div>
