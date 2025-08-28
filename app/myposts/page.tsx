@@ -3,7 +3,6 @@
 import { Button } from "@/components/Button/Button";
 import { Card } from "@/components/Card/Card";
 import { useDeleteCombination } from "@/hooks/api/useDeleteCombination";
-import { useFavorites } from "@/hooks/api/useFavorites";
 import useAuth from "@/hooks/auth/useAuth";
 import { useFetch } from "@/hooks/fetch/useFetch";
 import { Combination } from "@/types/combination";
@@ -25,7 +24,6 @@ type CombinationsResponse = {
 
 export default function MyPosts() {
   const { loginUser } = useAuth();
-  const { isFavorite, toggleFavorite } = useFavorites();
   const { deleteCombination, isLoading: deleteLoading } =
     useDeleteCombination();
   const [currentPage, setCurrentPage] = useState(1);
@@ -33,7 +31,7 @@ export default function MyPosts() {
   const itemsPerPage = 10;
 
   // 自分が投稿したコンビネーションを直接APIから取得
-  const { data, isLoading, refetch } = useFetch<CombinationsResponse>(
+  const { data, isLoading } = useFetch<CombinationsResponse>(
     `/combinations/my_posts?limit=${itemsPerPage}&offset=${(currentPage - 1) * itemsPerPage}&refresh=${refreshTrigger}`
   );
 
@@ -130,7 +128,8 @@ export default function MyPosts() {
                           <Card
                             src={combination.image}
                             title={combination.title}
-                            // 自分の投稿なのでお気に入り機能は無効
+                            // 自分の投稿なので、お気に入り機能は無効
+                            // onToggleFavoriteとisFavoriteを渡さないことで、お気に入りボタンは表示されない
                           />
                         </div>
 
