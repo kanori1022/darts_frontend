@@ -1,5 +1,7 @@
 "use client";
 import { Card } from "@/components/Card/Card";
+import { useFavorites } from "@/hooks/api/useFavorites";
+import useAuth from "@/hooks/auth/useAuth";
 import { useFetch } from "@/hooks/fetch/useFetch";
 import { Combination } from "@/types/combination";
 import Link from "next/link";
@@ -21,6 +23,8 @@ export default function SearchResult() {
   const searchParams = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 2;
+  const { loginUser } = useAuth();
+  const { isFavorite, toggleFavorite } = useFavorites();
 
   // 検索条件を取得
   const searchWord = searchParams.get("searchWord") || "";
@@ -115,6 +119,17 @@ export default function SearchResult() {
                         <Card
                           src={combination.image}
                           title={combination.title}
+                          isFavorite={isFavorite(combination.id)}
+                          onToggleFavorite={() =>
+                            loginUser &&
+                            toggleFavorite(
+                              combination.id,
+                              combination.user_id,
+                              combination.firebase_uid
+                            )
+                          }
+                          userId={combination.user_id}
+                          currentUserId={loginUser?.uid}
                         />
                       </div>
 

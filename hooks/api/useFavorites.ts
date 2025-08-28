@@ -17,13 +17,19 @@ export const useFavorites = () => {
   const addFavorite = async (combinationId: string) => {
     if (!loginUser) return false;
 
+    console.log(
+      "🔍 addFavorite が呼び出されました - combinationId:",
+      combinationId
+    );
+
     try {
       await axios.post("/favorites", {
         combination_id: combinationId,
       });
+      console.log("✅ お気に入り追加成功");
       return true;
     } catch (error) {
-      console.error("Failed to add favorite:", error);
+      console.error("❌ Failed to add favorite:", error);
       return false;
     }
   };
@@ -42,8 +48,59 @@ export const useFavorites = () => {
   };
 
   // お気に入りのトグル（楽観的更新）
-  const toggleFavorite = async (combinationId: string) => {
+  const toggleFavorite = async (
+    combinationId: string,
+    combinationUserId?: string | number,
+    combinationFirebaseUid?: string
+  ) => {
     if (!loginUser) return false;
+
+    // 自分の投稿の場合はお気に入りに追加できない
+    console.log("=== デバッグ情報 ===");
+    console.log("combinationUserId:", combinationUserId);
+    console.log("loginUser.uid:", loginUser.uid);
+    console.log("combinationUserId の型:", typeof combinationUserId);
+    console.log("loginUser.uid の型:", typeof loginUser.uid);
+    console.log("文字列変換後 - combinationUserId:", String(combinationUserId));
+    console.log("文字列変換後 - loginUser.uid:", String(loginUser.uid));
+    console.log("厳密等価比較:", combinationUserId === loginUser.uid);
+    console.log(
+      "文字列比較:",
+      String(combinationUserId) === String(loginUser.uid)
+    );
+    console.log(
+      "比較結果:",
+      String(combinationUserId) === String(loginUser.uid)
+    );
+    console.log("==================");
+
+    // より詳細な比較情報を出力
+    // firebase_uidが利用可能な場合はそれを使用、そうでなければ従来のuser_idを使用
+    const isOwnPost = combinationFirebaseUid
+      ? combinationFirebaseUid === loginUser.uid
+      : combinationUserId &&
+        String(combinationUserId) === String(loginUser.uid);
+
+    console.log("最終判定結果:", isOwnPost);
+    console.log("combinationFirebaseUid:", combinationFirebaseUid);
+    console.log("firebase_uid比較:", combinationFirebaseUid === loginUser.uid);
+    console.log(
+      "従来のuser_id比較:",
+      combinationUserId && String(combinationUserId) === String(loginUser.uid)
+    );
+
+    if (isOwnPost) {
+      console.log("✅ 自分の投稿を検出！お気に入りに追加できません");
+      return false;
+    } else {
+      console.log("❌ 自分の投稿ではありません。お気に入りに追加可能");
+      console.log(
+        "理由:",
+        !combinationFirebaseUid && !combinationUserId
+          ? "両方のIDが undefined/null"
+          : "値が一致しない"
+      );
+    }
 
     const currentlyFavorite = favorites.includes(combinationId);
 

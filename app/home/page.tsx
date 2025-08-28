@@ -29,12 +29,37 @@ export default function Home() {
   const { loginUser, isWaiting } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
 
-  const handleToggleFavorite = async (id: string) => {
+  const handleToggleFavorite = async (
+    id: string,
+    userId?: string | number,
+    firebaseUid?: string
+  ) => {
     if (!loginUser) {
       alert("お気に入り機能を使用するにはログインが必要です");
       return;
     }
-    await toggleFavorite(id);
+
+    // デバッグ用：実際の値を確認
+    console.log("=== ホームページ デバッグ情報 ===");
+    console.log("投稿のuser_id:", userId, "型:", typeof userId);
+    console.log("投稿のfirebase_uid:", firebaseUid, "型:", typeof firebaseUid);
+    console.log(
+      "ログインユーザーのuid:",
+      loginUser.uid,
+      "型:",
+      typeof loginUser.uid
+    );
+    console.log("firebase_uid比較:", firebaseUid === loginUser.uid);
+    console.log(
+      "従来のuser_id比較:",
+      userId && String(userId) === String(loginUser.uid)
+    );
+
+    // 投稿データ全体を確認
+    console.log("投稿データ全体:", { id, userId, firebaseUid });
+    console.log("=================================");
+
+    await toggleFavorite(id, userId, firebaseUid);
   };
 
   if (popularLoading || newestLoading || isWaiting) {
@@ -131,8 +156,14 @@ export default function Home() {
                           title={combination.title}
                           isFavorite={isFavorite(combination.id)}
                           onToggleFavorite={() =>
-                            handleToggleFavorite(combination.id)
+                            handleToggleFavorite(
+                              combination.id,
+                              combination.user_id,
+                              combination.firebase_uid
+                            )
                           }
+                          userId={combination.user_id}
+                          currentUserId={loginUser?.uid}
                         />
 
                         <Link href={"/item/" + combination.id}>
@@ -183,8 +214,14 @@ export default function Home() {
                         title={combination.title}
                         isFavorite={isFavorite(combination.id)}
                         onToggleFavorite={() =>
-                          handleToggleFavorite(combination.id)
+                          handleToggleFavorite(
+                            combination.id,
+                            combination.user_id,
+                            combination.firebase_uid
+                          )
                         }
+                        userId={combination.user_id}
+                        currentUserId={loginUser?.uid}
                       />
 
                       <Link href={"/item/" + combination.id}>

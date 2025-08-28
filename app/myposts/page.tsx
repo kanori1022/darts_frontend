@@ -102,10 +102,7 @@ export default function MyPosts() {
                           <Card
                             src={combination.image}
                             title={combination.title}
-                            isFavorite={isFavorite(combination.id)}
-                            onToggleFavorite={() =>
-                              toggleFavorite(combination.id)
-                            }
+                            // 自分の投稿なのでお気に入り機能は無効
                           />
                         </div>
 

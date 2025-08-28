@@ -1,6 +1,8 @@
 "use client";
 
 import LabelValueRow from "@/components/LabelValueRow/LabelValueRow";
+import { useFavorites } from "@/hooks/api/useFavorites";
+import useAuth from "@/hooks/auth/useAuth";
 import { useFetch } from "@/hooks/fetch/useFetch";
 import { Combination } from "@/types/combination";
 import { use } from "react";
@@ -17,6 +19,8 @@ export default function Item({ params }: Props) {
   const { data, error, isLoading } = useFetch<Combination>(
     "/combinations/" + id
   );
+  const { loginUser } = useAuth();
+  const { isFavorite, toggleFavorite } = useFavorites();
 
   if (isLoading) return <div>読み込み中…</div>;
   if (error) return <div>エラーが発生しました: {error.message}</div>;
@@ -27,7 +31,28 @@ export default function Item({ params }: Props) {
 
       {data && (
         <div className="p-6 bg-white rounded shadow">
-          <div>Title: {data.title}</div>
+          <div className="flex justify-between items-start mb-4">
+            <h1 className="text-2xl font-bold">{data.title}</h1>
+            {loginUser && data.user_id !== loginUser.uid && (
+              <button
+                onClick={() =>
+                  toggleFavorite(data.id, data.user_id, data.firebase_uid)
+                }
+                className={`py-2 px-4 rounded text-sm font-medium transition-colors duration-200 ${
+                  isFavorite(data.id)
+                    ? "bg-pink-500 hover:bg-pink-600 text-white"
+                    : "bg-gray-200 hover:bg-gray-300 text-gray-700"
+                }`}
+              >
+                {isFavorite(data.id) ? "♥ お気に入り解除" : "♡ お気に入り追加"}
+              </button>
+            )}
+            {loginUser && data.user_id === loginUser.uid && (
+              <span className="py-2 px-4 rounded text-sm font-medium bg-gray-100 text-gray-500 cursor-not-allowed">
+                自分の投稿
+              </span>
+            )}
+          </div>
           <div className="w-auto pl-25 py-3">
             <img
               src={data.image}
