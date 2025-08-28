@@ -21,4 +21,7 @@ export type Combination = {
   tip: string;
   description: string;
   tags?: string[];
+  user_name?: string; // 投稿者名を追加
+  created_at?: string; // 作成日時を追加
+  updated_at?: string; // 更新日時を追加
 };

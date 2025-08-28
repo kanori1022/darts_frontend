@@ -54,6 +54,44 @@ export default function EditCombination({
       console.log("バレル:", combinationData.barrel); // デバッグ用
       console.log("チップ:", combinationData.tip); // デバッグ用
 
+      // 自分の投稿かチェック
+      console.log("=== 編集認可チェック ===");
+      console.log(
+        "combinationData.user_id:",
+        combinationData.user_id,
+        "型:",
+        typeof combinationData.user_id
+      );
+      console.log(
+        "combinationData.firebase_uid:",
+        combinationData.firebase_uid,
+        "型:",
+        typeof combinationData.firebase_uid
+      );
+      console.log(
+        "loginUser?.uid:",
+        loginUser?.uid,
+        "型:",
+        typeof loginUser?.uid
+      );
+      console.log("user_id比較:", combinationData.user_id === loginUser?.uid);
+      console.log(
+        "firebase_uid比較:",
+        combinationData.firebase_uid === loginUser?.uid
+      );
+      console.log("========================");
+
+      // Firebase UIDまたはuser_idで認可チェック
+      const isOwner =
+        combinationData.firebase_uid === loginUser?.uid ||
+        String(combinationData.user_id) === String(loginUser?.uid);
+
+      if (!isOwner) {
+        alert("自分の投稿のみ編集できます");
+        router.push("/myposts");
+        return;
+      }
+
       setCombination({
         id: combinationData.id,
         user_id: combinationData.user_id,
@@ -67,7 +105,7 @@ export default function EditCombination({
       });
       setImagePreview(combinationData.image || null);
     }
-  }, [combinationData]);
+  }, [combinationData, loginUser, router]);
 
   if (!loginUser) {
     return (

@@ -114,7 +114,11 @@ export default function Favorite() {
                             詳細を見る
                           </button>
                         </Link>
-                        {loginUser && combination.user_id !== loginUser.uid ? (
+                        {loginUser &&
+                        !(
+                          combination.firebase_uid === loginUser.uid ||
+                          String(combination.user_id) === String(loginUser.uid)
+                        ) ? (
                           <button
                             onClick={() =>
                               toggleFavorite(
