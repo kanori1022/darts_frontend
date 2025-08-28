@@ -6,11 +6,12 @@ export type CombinationParams = {
   barrel: string;
   tip: string;
   description: string;
-  tags: string[];
+  tags?: string[];
 };
 
 export type Combination = {
   user_id: string | number;
+  firebase_uid?: string; // 投稿者のFirebase UIDを追加
   id: string;
   title: string;
   image: string;
@@ -19,5 +20,5 @@ export type Combination = {
   barrel: string;
   tip: string;
   description: string;
-  tags: string[];
+  tags?: string[];
 };

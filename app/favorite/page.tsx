@@ -114,18 +114,30 @@ export default function Favorite() {
                             詳細を見る
                           </button>
                         </Link>
-                        <button
-                          onClick={() => toggleFavorite(combination.id)}
-                          className={`py-2 px-3 rounded text-sm font-medium transition-colors duration-200 ${
-                            isFavorite(combination.id)
-                              ? "bg-pink-500 hover:bg-pink-600 text-white"
-                              : "bg-gray-200 hover:bg-gray-300 text-gray-700"
-                          }`}
-                        >
-                          {isFavorite(combination.id)
-                            ? "♥ お気に入り解除"
-                            : "♡ お気に入り追加"}
-                        </button>
+                        {loginUser && combination.user_id !== loginUser.uid ? (
+                          <button
+                            onClick={() =>
+                              toggleFavorite(
+                                combination.id,
+                                combination.user_id,
+                                combination.firebase_uid
+                              )
+                            }
+                            className={`py-2 px-3 rounded text-sm font-medium transition-colors duration-200 ${
+                              isFavorite(combination.id)
+                                ? "bg-pink-500 hover:bg-pink-600 text-white"
+                                : "bg-gray-200 hover:bg-gray-300 text-gray-700"
+                            }`}
+                          >
+                            {isFavorite(combination.id)
+                              ? "♥ お気に入り解除"
+                              : "♡ お気に入り追加"}
+                          </button>
+                        ) : (
+                          <span className="py-2 px-3 rounded text-sm font-medium bg-gray-100 text-gray-500 cursor-not-allowed">
+                            自分の投稿
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>

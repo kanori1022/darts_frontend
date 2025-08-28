@@ -8,6 +8,8 @@ type CardProps = {
   title: string;
   isFavorite?: boolean;
   onToggleFavorite?: () => void;
+  userId?: string | number;
+  currentUserId?: string | number;
 };
 
 export const Card = ({
@@ -15,6 +17,8 @@ export const Card = ({
   title,
   isFavorite,
   onToggleFavorite,
+  userId,
+  currentUserId,
 }: CardProps) => {
   return (
     <div className="px-4 pb-2 w-40 flex flex-col justify-between">
@@ -25,7 +29,7 @@ export const Card = ({
           src={src}
           alt={title}
         />
-        {onToggleFavorite && (
+        {onToggleFavorite && userId !== currentUserId && (
           <button
             onClick={(e) => {
               e.preventDefault();
