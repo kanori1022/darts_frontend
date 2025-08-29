@@ -10,7 +10,7 @@ import Link from "next/link";
 
 export default function Mypage() {
   const { loginUser } = useAuth();
-  const { data } = useFetch<User>("/users");
+  const { data, isLoading } = useFetch<User>(loginUser ? "/users" : null);
 
   if (!loginUser) {
     return (
@@ -24,6 +24,15 @@ export default function Mypage() {
         <div className="pt-3">
           ※登録済みの方はメニューよりログインをしてください。
         </div>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
+        <span className="ml-3 text-gray-600 font-medium">読み込み中...</span>
       </div>
     );
   }
