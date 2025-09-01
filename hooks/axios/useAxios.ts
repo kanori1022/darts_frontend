@@ -9,7 +9,8 @@ export const useAxios = () => {
     baseURL: process.env.NEXT_PUBLIC_API_HOST,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`, // トークンをヘッダーに追加
+      // トークンが存在する場合のみAuthorizationヘッダーを追加
+      ...(token && { Authorization: `Bearer ${token}` }),
     },
     // withCredentials: true,
   });
