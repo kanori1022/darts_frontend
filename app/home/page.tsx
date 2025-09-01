@@ -84,16 +84,16 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <div className="w-1 h-6 bg-red-500 rounded-full"></div>
+              <div className="w-1 h-6 bg-blue-500 rounded-full"></div>
               <h2 className="text-xl font-bold text-gray-800">
                 人気ランキング
               </h2>
-              <div className="px-2 py-1 bg-red-100 text-red-600 text-xs font-medium rounded">
+              <div className="px-2 py-1 bg-blue-100 text-blue-600 text-xs font-medium rounded">
                 HOT
               </div>
             </div>
             <Link href="/popular">
-              <button className="text-red-500 hover:text-red-600 font-medium text-sm transition-colors duration-200 flex items-center gap-1">
+              <button className="text-blue-500 hover:text-blue-600 font-medium text-sm transition-colors duration-200 flex items-center gap-1">
                 全て表示
                 <svg
                   className="w-4 h-4"

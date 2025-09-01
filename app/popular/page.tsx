@@ -85,11 +85,11 @@ export default function PopularPage() {
       <div className="p-5 font-bold bg-white border-b">
         <div className="text-center">
           <div className="flex items-center justify-center gap-3 mb-2">
-            <div className="w-1 h-6 bg-red-500 rounded-full"></div>
+            <div className="w-1 h-6 bg-blue-500 rounded-full"></div>
             <h1 className="text-2xl font-bold text-gray-800">
               人気ランキング一覧
             </h1>
-            <div className="px-2 py-1 bg-red-100 text-red-600 text-xs font-medium rounded">
+            <div className="px-2 py-1 bg-blue-100 text-blue-600 text-xs font-medium rounded">
               HOT
             </div>
           </div>
@@ -206,7 +206,7 @@ export default function PopularPage() {
 
                           <div className="mt-4">
                             <Link href={"/item/" + combination.id}>
-                              <button className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded text-sm font-medium transition-colors duration-200 border border-red-600 hover:border-red-700">
+                              <button className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded text-sm font-medium transition-colors duration-200 border border-blue-600 hover:border-blue-700">
                                 詳細を見る
                               </button>
                             </Link>
@@ -236,7 +236,7 @@ export default function PopularPage() {
               className={`px-4 py-2 rounded ${
                 currentPage === 1
                   ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-red-500 text-white hover:bg-red-600"
+                  : "bg-blue-500 text-white hover:bg-blue-600"
               }`}
             >
               前のページ
@@ -252,7 +252,7 @@ export default function PopularPage() {
               className={`px-4 py-2 rounded ${
                 currentPage === totalPages
                   ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-red-500 text-white hover:bg-red-600"
+                  : "bg-blue-500 text-white hover:bg-blue-600"
               }`}
             >
               次のページ
