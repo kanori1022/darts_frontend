@@ -23,7 +23,7 @@ export default function Login() {
     pass: "",
   });
   console.log(login);
-  const { auth } = useAuth();
+  const { auth, loginUser: currentUser, handleSignOut } = useAuth();
   const router = useRouter();
   const loginUser = async () => {
     try {
@@ -44,6 +44,38 @@ export default function Login() {
       // await router.push('/login');
     }
   };
+
+  const handleLogout = () => {
+    handleSignOut();
+    router.push("/login");
+  };
+
+  // すでにログイン済みの場合の表示
+  if (currentUser) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="bg-white rounded-lg shadow-md p-8 text-center max-w-md">
+          <h1 className="text-2xl font-bold mb-6 text-gray-800">
+            すでにログインしています。
+          </h1>
+          <p className="mb-6 text-gray-600">
+            ログアウトしますか？Homeに画面に戻りますか？
+          </p>
+          <div className="space-y-4">
+            <Button
+              color="bg-blue-400 hover:bg-blue-500"
+              onClick={() => router.push("/home")}
+            >
+              Homeに戻る
+            </Button>
+            <Button color="bg-red-400 hover:bg-red-500" onClick={handleLogout}>
+              ログアウト
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
