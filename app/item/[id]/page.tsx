@@ -85,46 +85,52 @@ export default function Item({ params }: Props) {
         <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
           {/* Title and Actions */}
           <div className="p-6 border-b border-gray-100">
-            <div className="flex justify-between items-start mb-4">
-              <h1 className="text-3xl font-bold text-gray-800 leading-tight">
+            {/* タイトル */}
+            <div className="mb-4">
+              <h1
+                className="text-2xl sm:text-3xl font-bold text-gray-800 leading-tight whitespace-nowrap overflow-hidden text-ellipsis"
+                title={data.title}
+              >
                 {data.title}
               </h1>
-              <div className="flex gap-2">
-                {loginUser &&
-                  !(
-                    data.firebase_uid === loginUser.uid ||
-                    String(data.user_id) === String(loginUser.uid)
-                  ) && (
-                    <button
-                      onClick={() =>
-                        toggleFavorite(data.id, data.user_id, data.firebase_uid)
-                      }
-                      className={`py-2 px-4 rounded-lg text-sm font-medium transition-all duration-200 shadow-md hover:shadow-lg ${
-                        isFavorite(data.id)
-                          ? "bg-pink-500 hover:bg-pink-600 text-white"
-                          : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-                      }`}
-                    >
-                      {isFavorite(data.id)
-                        ? "♥ お気に入り解除"
-                        : "♡ お気に入り追加"}
-                    </button>
-                  )}
-                {loginUser &&
-                  (data.firebase_uid === loginUser.uid ||
-                    String(data.user_id) === String(loginUser.uid)) && (
-                    <div className="flex gap-2">
-                      <Link href={`/edit/${data.id}`}>
-                        <button className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg text-sm font-medium transition-all duration-200 shadow-md hover:shadow-lg">
-                          編集する
-                        </button>
-                      </Link>
-                      <span className="py-2 px-4 rounded-lg text-sm font-medium bg-blue-50 text-blue-600 border border-blue-200">
-                        自分の投稿
-                      </span>
-                    </div>
-                  )}
-              </div>
+            </div>
+
+            {/* アクションボタン */}
+            <div className="flex justify-end gap-2 mb-4">
+              {loginUser &&
+                !(
+                  data.firebase_uid === loginUser.uid ||
+                  String(data.user_id) === String(loginUser.uid)
+                ) && (
+                  <button
+                    onClick={() =>
+                      toggleFavorite(data.id, data.user_id, data.firebase_uid)
+                    }
+                    className={`whitespace-nowrap py-2 px-4 rounded-lg text-sm font-medium transition-all duration-200 shadow-md hover:shadow-lg ${
+                      isFavorite(data.id)
+                        ? "bg-pink-500 hover:bg-pink-600 text-white"
+                        : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                    }`}
+                  >
+                    {isFavorite(data.id)
+                      ? "♥ お気に入り解除"
+                      : "♡ お気に入り追加"}
+                  </button>
+                )}
+              {loginUser &&
+                (data.firebase_uid === loginUser.uid ||
+                  String(data.user_id) === String(loginUser.uid)) && (
+                  <div className="flex gap-2 flex-shrink-0">
+                    <Link href={`/edit/${data.id}`}>
+                      <button className="whitespace-nowrap bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg text-sm font-medium transition-all duration-200 shadow-md hover:shadow-lg">
+                        編集する
+                      </button>
+                    </Link>
+                    <span className="whitespace-nowrap py-2 px-4 rounded-lg text-sm font-medium bg-blue-50 text-blue-600 border border-blue-200">
+                      自分の投稿
+                    </span>
+                  </div>
+                )}
             </div>
 
             {/* User and Date Info */}
