@@ -69,6 +69,7 @@ export const Header = () => {
           className="h-8 w-8 z-50 text-[#CCCCCC] hover:text-white transition-colors duration-200"
           onClick={toggleDrawer}
           aria-label="メニューを開く"
+          data-menu-button="true"
         >
           <FontAwesomeIcon icon={faBars} size="lg" className="cursor-pointer" />
         </button>
