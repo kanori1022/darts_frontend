@@ -92,7 +92,7 @@ export default function Home() {
                 HOT
               </div>
             </div>
-            <Link href="/search/result?sort=popular">
+            <Link href="/popular">
               <button className="text-red-500 hover:text-red-600 font-medium text-sm transition-colors duration-200 flex items-center gap-1">
                 全て表示
                 <svg
@@ -221,7 +221,7 @@ export default function Home() {
                 NEW
               </div>
             </div>
-            <Link href="/search/result?sort=newest">
+            <Link href="/newest">
               <button className="text-green-500 hover:text-green-600 font-medium text-sm transition-colors duration-200 flex items-center gap-1">
                 全て表示
                 <svg

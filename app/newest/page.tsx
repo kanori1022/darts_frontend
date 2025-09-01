@@ -1,15 +1,15 @@
 "use client";
+
 import { Card } from "@/components/Card/Card";
 import { useFavorites } from "@/hooks/api/useFavorites";
 import useAuth from "@/hooks/auth/useAuth";
 import { useFetch } from "@/hooks/fetch/useFetch";
 import { Combination } from "@/types/combination";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 // APIレスポンスの型定義
-type SearchResponse = {
+type CombinationsResponse = {
   combinations: Combination[];
   pagination: {
     current_page: number;
@@ -19,41 +19,15 @@ type SearchResponse = {
   };
 };
 
-export default function SearchResult() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
+export default function NewestPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
   const { loginUser } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
 
-  // 検索フォームの状態
-  const [searchForm, setSearchForm] = useState({
-    searchWord: searchParams.get("searchWord") || "",
-    tags: searchParams.get("tags") || "",
-  });
-
-  // 検索条件を取得
-  const searchWord = searchParams.get("searchWord") || "";
-  const tags = searchParams.get("tags") || "";
-
-  // 検索条件に基づいてAPIからデータを取得
-  const searchQuery = useMemo(() => {
-    const params = new URLSearchParams();
-    if (searchWord) params.set("searchWord", searchWord);
-    if (tags) params.set("tags", tags);
-
-    // limitとoffsetを直接計算して送信
-    const limit = itemsPerPage;
-    const offset = (currentPage - 1) * itemsPerPage;
-    params.set("limit", limit.toString());
-    params.set("offset", offset.toString());
-
-    return params.toString();
-  }, [searchWord, tags, currentPage, itemsPerPage]);
-
-  const { data, isLoading } = useFetch<SearchResponse>(
-    searchQuery ? `/combinations/search?${searchQuery}` : "/combinations"
+  // 新着データを取得
+  const { data, isLoading } = useFetch<CombinationsResponse>(
+    `/combinations/newest?limit=${itemsPerPage}&offset=${(currentPage - 1) * itemsPerPage}`
   );
 
   // 現在のページのデータを取得
@@ -68,6 +42,19 @@ export default function SearchResult() {
     return data.pagination.total_pages;
   }, [data]);
 
+  // お気に入り処理
+  const handleToggleFavorite = async (
+    id: string,
+    userId?: string | number,
+    firebaseUid?: string
+  ) => {
+    if (!loginUser) {
+      alert("お気に入り機能を使用するにはログインが必要です");
+      return;
+    }
+    await toggleFavorite(id, userId, firebaseUid);
+  };
+
   // ページネーション処理
   const goToNextPage = () => {
     if (currentPage < totalPages) {
@@ -81,31 +68,11 @@ export default function SearchResult() {
     }
   };
 
-  // 検索条件が変わったら1ページ目に戻す
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchWord, tags]);
-
-  // 検索実行
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    const params = new URLSearchParams();
-    if (searchForm.searchWord.trim()) {
-      params.set("searchWord", searchForm.searchWord.trim());
-    }
-    if (searchForm.tags.trim()) {
-      params.set("tags", searchForm.tags.trim());
-    }
-
-    const queryString = params.toString();
-    router.push(`/search/result${queryString ? `?${queryString}` : ""}`);
-  };
-
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-        <span className="ml-3 text-gray-600 font-medium">検索中...</span>
+        <span className="ml-3 text-gray-600 font-medium">読み込み中...</span>
       </div>
     );
   }
@@ -114,61 +81,17 @@ export default function SearchResult() {
     <div className="flex flex-col h-screen">
       {/* ヘッダー部分（固定） */}
       <div className="p-5 font-bold bg-white border-b">
-        <div className="space-y-4">
-          {/* 最上段: タイトル */}
-          <div className="text-center">
-            <h1 className="text-xl">検索結果</h1>
-          </div>
-
-          {/* 中段: 検索フォーム */}
-          <div className="flex justify-center">
-            <div className="w-80">
-              <form onSubmit={handleSearch} className="space-y-2">
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    placeholder="キーワード検索"
-                    value={searchForm.searchWord}
-                    onChange={(e) =>
-                      setSearchForm({
-                        ...searchForm,
-                        searchWord: e.target.value,
-                      })
-                    }
-                    className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-600 transition-colors duration-200 whitespace-nowrap"
-                  >
-                    検索
-                  </button>
-                </div>
-                <input
-                  type="text"
-                  placeholder="タグ検索（例: 初心者向け）"
-                  value={searchForm.tags}
-                  onChange={(e) =>
-                    setSearchForm({ ...searchForm, tags: e.target.value })
-                  }
-                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-              </form>
+        <div className="text-center">
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <div className="w-1 h-6 bg-green-500 rounded-full"></div>
+            <h1 className="text-2xl font-bold text-gray-800">新着一覧</h1>
+            <div className="px-2 py-1 bg-green-100 text-green-600 text-xs font-medium rounded">
+              NEW
             </div>
           </div>
-
-          {/* 下段: 検索条件と結果件数 */}
-          <div className="border-t pt-3">
-            <div className="space-y-1 text-center">
-              <p className="text-sm text-gray-600">
-                検索条件: {searchParams.get("searchWord") || "なし"} / タグ:{" "}
-                {searchParams.get("tags") || "なし"}
-              </p>
-              <p className="text-sm text-gray-600">
-                結果件数: {data?.pagination.total_count || 0}件
-              </p>
-            </div>
-          </div>
+          <p className="text-sm text-gray-600">
+            総件数: {data?.pagination.total_count || 0}件
+          </p>
         </div>
       </div>
 
@@ -184,6 +107,15 @@ export default function SearchResult() {
                 >
                   <div className="p-4">
                     <div className="flex items-center space-x-4">
+                      {/* NEW バッジ */}
+                      <div className="flex-shrink-0">
+                        <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center border-2 border-green-200">
+                          <div className="px-2 py-1 bg-green-500 text-white text-xs font-medium rounded">
+                            NEW
+                          </div>
+                        </div>
+                      </div>
+
                       {/* 画像とタイトル */}
                       <div className="flex-shrink-0">
                         <Card
@@ -191,8 +123,7 @@ export default function SearchResult() {
                           title={combination.title}
                           isFavorite={isFavorite(combination.id)}
                           onToggleFavorite={() =>
-                            loginUser &&
-                            toggleFavorite(
+                            handleToggleFavorite(
                               combination.id,
                               combination.user_id,
                               combination.firebase_uid
@@ -219,7 +150,7 @@ export default function SearchResult() {
 
                         <div className="mt-4">
                           <Link href={"/item/" + combination.id}>
-                            <button className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded text-sm font-medium transition-colors duration-200 border border-blue-600 hover:border-blue-700">
+                            <button className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded text-sm font-medium transition-colors duration-200 border border-green-600 hover:border-green-700">
                               詳細を見る
                             </button>
                           </Link>
@@ -233,7 +164,7 @@ export default function SearchResult() {
           </div>
         ) : (
           <div className="text-center text-gray-500 py-8">
-            検索結果が見つかりませんでした
+            データが見つかりませんでした
           </div>
         )}
       </div>
@@ -248,7 +179,7 @@ export default function SearchResult() {
               className={`px-4 py-2 rounded ${
                 currentPage === 1
                   ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-blue-500 text-white hover:bg-blue-600"
+                  : "bg-green-500 text-white hover:bg-green-600"
               }`}
             >
               前のページ
@@ -264,7 +195,7 @@ export default function SearchResult() {
               className={`px-4 py-2 rounded ${
                 currentPage === totalPages
                   ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-blue-500 text-white hover:bg-blue-600"
+                  : "bg-green-500 text-white hover:bg-green-600"
               }`}
             >
               次のページ
