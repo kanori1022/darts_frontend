@@ -66,13 +66,25 @@ export default function Post() {
           {/* タイトル入力 */}
           <div className="mb-6">
             <InputLong
-              placeholder="タイトルを入力してください"
+              placeholder="タイトルを入力してください（20文字以内）"
+              maxLength={20}
+              value={combination.title}
               onChange={(e) => {
                 setCombination({ ...combination, title: e.target.value });
               }}
             >
               タイトル
             </InputLong>
+            <div className="mt-1 flex justify-between items-center">
+              <p className="text-xs text-gray-500">
+                ※20文字以内で入力してください
+              </p>
+              <span
+                className={`text-xs ${combination.title.length > 15 ? "text-orange-500" : combination.title.length === 20 ? "text-red-500" : "text-gray-400"}`}
+              >
+                {combination.title.length}/20文字
+              </span>
+            </div>
           </div>
 
           {/* 画像アップロード */}

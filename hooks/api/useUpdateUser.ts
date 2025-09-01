@@ -6,9 +6,16 @@ const API_BASE_URL =
 
 export const useUpdateUser = () => {
   const updateUser = useCallback(
-    async ({ user }: { user: { name: string; image: File | null } }) => {
+    async ({
+      user,
+    }: {
+      user: { name: string; image: File | null; introduction?: string };
+    }) => {
       const formData = new FormData();
       formData.append("user[name]", user.name);
+      if (user.introduction !== undefined) {
+        formData.append("user[introduction]", user.introduction);
+      }
       if (user.image) {
         formData.append("user[image]", user.image);
       }

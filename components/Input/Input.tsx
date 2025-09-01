@@ -4,6 +4,7 @@ type InputProps = {
   children?: React.ReactNode;
   placeholder: string;
   value?: string;
+  maxLength?: number;
   onChange?: ChangeEventHandler<HTMLInputElement>;
 };
 
@@ -48,7 +49,7 @@ export const InputShort = (props: InputProps) => {
 };
 
 export const InputLong = (props: InputProps) => {
-  const { children, placeholder, value, onChange } = props;
+  const { children, placeholder, value, maxLength, onChange } = props;
   return (
     <>
       <p className="mt-5 text-left">{children}</p>
@@ -57,6 +58,7 @@ export const InputLong = (props: InputProps) => {
         type="text"
         placeholder={placeholder}
         value={value}
+        maxLength={maxLength}
         onChange={onChange}
       ></input>
     </>

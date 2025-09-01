@@ -9,7 +9,7 @@ import { Combination } from "@/types/combination";
 import { faEdit, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
-import { useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 
 // APIレスポンスの型定義
 type CombinationsResponse = {
@@ -22,18 +22,118 @@ type CombinationsResponse = {
   };
 };
 
+// 個別のコンビネーションカードコンポーネント（メモ化で最適化）
+const CombinationCard = memo(function CombinationCard({
+  combination,
+  onDelete,
+  deleteLoading,
+}: {
+  combination: Combination;
+  onDelete: (id: string, title: string) => void;
+  deleteLoading: boolean;
+}) {
+  return (
+    <div className="w-full bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200 overflow-hidden">
+      <div className="p-4">
+        <div className="flex items-center space-x-4">
+          {/* 画像とタイトル */}
+          <div className="flex-shrink-0">
+            <Card
+              src={combination.image}
+              title={combination.title}
+              // 自分の投稿なので、お気に入り機能は無効
+              // onToggleFavoriteとisFavoriteを渡さないことで、お気に入りボタンは表示されない
+            />
+          </div>
+
+          {/* 詳細情報とボタン */}
+          <div className="flex-2 flex flex-col justify-between">
+            <div className="mt-4 flex space-x-5">
+              <Link href={`/edit/${combination.id}`}>
+                <button className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded text-sm font-medium transition-colors duration-200">
+                  <FontAwesomeIcon icon={faEdit} className="mr-1" />
+                  編集する
+                </button>
+              </Link>
+              <button
+                onClick={() => onDelete(combination.id, combination.title)}
+                disabled={deleteLoading}
+                className="bg-red-400 hover:bg-red-500 disabled:bg-red-300 text-white py-2 px-4 rounded text-sm font-medium transition-colors duration-200"
+              >
+                <FontAwesomeIcon icon={faTrash} className="mr-1" />
+                {deleteLoading ? "削除中..." : "削除する"}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+});
+
 export default function MyPosts() {
-  const { loginUser } = useAuth();
+  const { loginUser, isWaiting } = useAuth();
   const { deleteCombination, isLoading: deleteLoading } =
     useDeleteCombination();
   const [currentPage, setCurrentPage] = useState(1);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const itemsPerPage = 10;
 
-  // 自分が投稿したコンビネーションを直接APIから取得
+  // 認証が完了し、ログインユーザーが存在する場合のみAPIリクエストを送信
+  const shouldFetch = !isWaiting && loginUser;
   const { data, isLoading } = useFetch<CombinationsResponse>(
-    `/combinations/my_posts?limit=${itemsPerPage}&offset=${(currentPage - 1) * itemsPerPage}&refresh=${refreshTrigger}`
+    shouldFetch
+      ? `/combinations/my_posts?limit=${itemsPerPage}&offset=${(currentPage - 1) * itemsPerPage}&refresh=${refreshTrigger}`
+      : null
   );
+
+  // APIから直接取得したデータを使用（hooksは早期returnの前に配置）
+  const myCombinations = useMemo(
+    () => data?.combinations || [],
+    [data?.combinations]
+  );
+  const totalPages = useMemo(
+    () => data?.pagination?.total_pages || 0,
+    [data?.pagination?.total_pages]
+  );
+  const currentData = myCombinations;
+
+  const handleDelete = useCallback(
+    async (combinationId: string, title: string) => {
+      const confirmDelete = window.confirm(
+        `「${title}」を削除しますか？\nこの操作は取り消せません。`
+      );
+
+      if (!confirmDelete) return;
+
+      try {
+        await deleteCombination(combinationId);
+        alert("投稿を削除しました");
+
+        // データを再取得
+        setRefreshTrigger((prev) => prev + 1);
+
+        // ページ数が変わった場合の調整
+        if (myCombinations.length === 1 && currentPage > 1) {
+          setCurrentPage(currentPage - 1);
+        }
+      } catch (error) {
+        console.error("削除エラー:", error);
+        alert(error instanceof Error ? error.message : "削除に失敗しました");
+      }
+    },
+    [deleteCombination, myCombinations.length, currentPage]
+  );
+
+  // 認証待機中の表示
+  if (isWaiting) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+        <span className="ml-3 text-gray-600 font-medium">認証中...</span>
+      </div>
+    );
+  }
 
   if (!loginUser) {
     return (
@@ -60,11 +160,6 @@ export default function MyPosts() {
     );
   }
 
-  // APIから直接取得したデータを使用
-  const myCombinations = data?.combinations || [];
-  const totalPages = data?.pagination?.total_pages || 0;
-  const currentData = myCombinations;
-
   const goToNextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
@@ -77,29 +172,27 @@ export default function MyPosts() {
     }
   };
 
-  const handleDelete = async (combinationId: string, title: string) => {
-    const confirmDelete = window.confirm(
-      `「${title}」を削除しますか？\nこの操作は取り消せません。`
-    );
-
-    if (!confirmDelete) return;
-
-    try {
-      await deleteCombination(combinationId);
-      alert("投稿を削除しました");
-
-      // データを再取得
-      setRefreshTrigger((prev) => prev + 1);
-
-      // ページ数が変わった場合の調整
-      if (myCombinations.length === 1 && currentPage > 1) {
-        setCurrentPage(currentPage - 1);
-      }
-    } catch (error) {
-      console.error("削除エラー:", error);
-      alert(error instanceof Error ? error.message : "削除に失敗しました");
-    }
-  };
+  // スケルトンローディングコンポーネント
+  const SkeletonCard = () => (
+    <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+      <div className="p-4">
+        <div className="flex items-center space-x-4">
+          <div className="flex-shrink-0">
+            <div className="px-4 pb-2 w-40 flex flex-col justify-between">
+              <div className="w-32 h-4 bg-gray-200 animate-pulse rounded mb-2"></div>
+              <div className="w-32 h-24 bg-gray-200 animate-pulse rounded-lg"></div>
+            </div>
+          </div>
+          <div className="flex-2 flex flex-col justify-between">
+            <div className="mt-4 flex space-x-5">
+              <div className="w-20 h-8 bg-gray-200 animate-pulse rounded"></div>
+              <div className="w-20 h-8 bg-gray-200 animate-pulse rounded"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -113,56 +206,23 @@ export default function MyPosts() {
       {/* My Posts Section */}
       <section className="mb-8 px-4">
         <div className="max-w-6xl mx-auto">
-          {myCombinations.length > 0 ? (
+          {isLoading ? (
+            // スケルトンローディング表示
+            <div className="space-y-4">
+              {Array.from({ length: 3 }).map((_, index) => (
+                <SkeletonCard key={index} />
+              ))}
+            </div>
+          ) : myCombinations.length > 0 ? (
             <>
               <div className="space-y-4">
                 {currentData.map((combination) => (
-                  <div
+                  <CombinationCard
                     key={combination.id}
-                    className="w-full bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200 overflow-hidden"
-                  >
-                    <div className="p-4">
-                      <div className="flex items-center space-x-4">
-                        {/* 画像とタイトル */}
-                        <div className="flex-shrink-0">
-                          <Card
-                            src={combination.image}
-                            title={combination.title}
-                            // 自分の投稿なので、お気に入り機能は無効
-                            // onToggleFavoriteとisFavoriteを渡さないことで、お気に入りボタンは表示されない
-                          />
-                        </div>
-
-                        {/* 詳細情報とボタン */}
-                        <div className="flex-2 flex flex-col justify-between">
-                          <div className="mt-4 flex space-x-5">
-                            <Link href={`/edit/${combination.id}`}>
-                              <button className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded text-sm font-medium transition-colors duration-200">
-                                <FontAwesomeIcon
-                                  icon={faEdit}
-                                  className="mr-1"
-                                />
-                                編集する
-                              </button>
-                            </Link>
-                            <button
-                              onClick={() =>
-                                handleDelete(combination.id, combination.title)
-                              }
-                              disabled={deleteLoading}
-                              className="bg-red-400 hover:bg-red-500 disabled:bg-red-300 text-white py-2 px-4 rounded text-sm font-medium transition-colors duration-200"
-                            >
-                              <FontAwesomeIcon
-                                icon={faTrash}
-                                className="mr-1"
-                              />
-                              {deleteLoading ? "削除中..." : "削除する"}
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                    combination={combination}
+                    onDelete={handleDelete}
+                    deleteLoading={deleteLoading}
+                  />
                 ))}
               </div>
 

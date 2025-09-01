@@ -11,6 +11,14 @@ const nextConfig: NextConfig = {
         pathname: "/rails/active_storage/**",
       },
     ],
+    // パフォーマンス最適化のための設定
+    formats: ["image/webp", "image/avif"],
+    minimumCacheTTL: 60,
+    dangerouslyAllowSVG: false,
+  },
+  // 実験的機能でパフォーマンス向上
+  experimental: {
+    optimizePackageImports: ["@fortawesome/react-fontawesome"],
   },
 };
 
