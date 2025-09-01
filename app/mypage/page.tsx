@@ -134,7 +134,6 @@ export default function Mypage() {
                   <h2 className="text-2xl font-bold text-white mt-4 mb-2">
                     {data?.name || "未設定のユーザー"}
                   </h2>
-                  <p className="text-blue-100">ダーツプレイヤー</p>
                 </div>
 
                 {/* 背景の装飾 */}
