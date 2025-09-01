@@ -7,6 +7,7 @@ import {
   faChevronUp,
   faSearch,
   faTags,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
@@ -15,6 +16,7 @@ import { useState } from "react";
 type Word = {
   searchWord: string;
   tags: string;
+  username: string;
 };
 
 export default function search() {
@@ -22,6 +24,7 @@ export default function search() {
   const [word, setWord] = useState<Word>({
     searchWord: "",
     tags: "",
+    username: "",
   });
   const [showHints, setShowHints] = useState(false);
 
@@ -33,6 +36,9 @@ export default function search() {
     }
     if (word.tags) {
       searchParams.set("tags", word.tags);
+    }
+    if (word.username) {
+      searchParams.set("username", word.username);
     }
 
     const queryString = searchParams.toString();
@@ -77,7 +83,7 @@ export default function search() {
           </div>
 
           {/* タグ検索入力 */}
-          <div className="mb-8">
+          <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               <FontAwesomeIcon icon={faTags} className="mr-2 text-green-600" />
               タグ検索
@@ -90,6 +96,23 @@ export default function search() {
               }}
             >
               タグ
+            </InputLong>
+          </div>
+
+          {/* ユーザー名検索入力 */}
+          <div className="mb-8">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              <FontAwesomeIcon icon={faUser} className="mr-2 text-purple-600" />
+              ユーザー名検索
+            </label>
+            <InputLong
+              placeholder="投稿者のユーザー名で検索（任意）"
+              value={word.username}
+              onChange={(e) => {
+                setWord({ ...word, username: e.target.value });
+              }}
+            >
+              ユーザー名
             </InputLong>
           </div>
 
@@ -132,11 +155,15 @@ export default function search() {
                   ：特定の特徴や用途で絞り込みができます
                 </p>
                 <p>
+                  • <strong>ユーザー名検索</strong>
+                  ：特定のユーザーの投稿を検索できます
+                </p>
+                <p>
                   • <strong>例</strong>：「初心者」「初心者向け」「安定性」など
                 </p>
                 <p>
                   • <strong>組み合わせ検索</strong>
-                  ：キーワードとタグを両方入力すると、より絞り込めます
+                  ：複数の条件を組み合わせて、より詳細に絞り込めます
                 </p>
               </div>
             </div>

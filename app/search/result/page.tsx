@@ -31,17 +31,20 @@ export default function SearchResult() {
   const [searchForm, setSearchForm] = useState({
     searchWord: searchParams.get("searchWord") || "",
     tags: searchParams.get("tags") || "",
+    username: searchParams.get("username") || "",
   });
 
   // 検索条件を取得
   const searchWord = searchParams.get("searchWord") || "";
   const tags = searchParams.get("tags") || "";
+  const username = searchParams.get("username") || "";
 
   // 検索条件に基づいてAPIからデータを取得
   const searchQuery = useMemo(() => {
     const params = new URLSearchParams();
     if (searchWord) params.set("searchWord", searchWord);
     if (tags) params.set("tags", tags);
+    if (username) params.set("username", username);
 
     // limitとoffsetを直接計算して送信
     const limit = itemsPerPage;
@@ -50,7 +53,7 @@ export default function SearchResult() {
     params.set("offset", offset.toString());
 
     return params.toString();
-  }, [searchWord, tags, currentPage, itemsPerPage]);
+  }, [searchWord, tags, username, currentPage, itemsPerPage]);
 
   const { data, isLoading } = useFetch<SearchResponse>(
     searchQuery ? `/combinations/search?${searchQuery}` : "/combinations"
@@ -84,7 +87,7 @@ export default function SearchResult() {
   // 検索条件が変わったら1ページ目に戻す
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchWord, tags]);
+  }, [searchWord, tags, username]);
 
   // 検索実行
   const handleSearch = (e: React.FormEvent) => {
@@ -95,6 +98,9 @@ export default function SearchResult() {
     }
     if (searchForm.tags.trim()) {
       params.set("tags", searchForm.tags.trim());
+    }
+    if (searchForm.username.trim()) {
+      params.set("username", searchForm.username.trim());
     }
 
     const queryString = params.toString();
@@ -112,70 +118,82 @@ export default function SearchResult() {
 
   return (
     <div className="flex flex-col h-screen">
-      {/* ヘッダー部分（固定） */}
+      {/* ヘッダー部分（タイトルのみ） */}
       <div className="p-5 font-bold bg-white border-b">
-        <div className="space-y-4">
-          {/* 最上段: タイトル */}
-          <div className="text-center">
-            <h1 className="text-xl">検索結果</h1>
-          </div>
+        <div className="text-center">
+          <h1 className="text-xl">検索結果</h1>
+        </div>
+      </div>
 
-          {/* 中段: 検索フォーム */}
-          <div className="flex justify-center">
-            <div className="w-80">
-              <form onSubmit={handleSearch} className="space-y-2">
-                <div className="flex gap-2">
+      {/* スクロール可能なコンテンツエリア */}
+      <div className="flex-1 overflow-y-auto p-4">
+        <div className="max-w-6xl mx-auto">
+          {/* 検索フォーム */}
+          <div className="mb-6 bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <h2 className="text-lg font-semibold text-gray-800 mb-4 text-center">
+              検索条件を変更
+            </h2>
+            <div className="flex justify-center">
+              <div className="w-full max-w-lg">
+                <form onSubmit={handleSearch} className="space-y-3">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="キーワード検索"
+                      value={searchForm.searchWord}
+                      onChange={(e) =>
+                        setSearchForm({
+                          ...searchForm,
+                          searchWord: e.target.value,
+                        })
+                      }
+                      className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                    <button
+                      type="submit"
+                      className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-600 transition-colors duration-200 whitespace-nowrap"
+                    >
+                      検索
+                    </button>
+                  </div>
                   <input
                     type="text"
-                    placeholder="キーワード検索"
-                    value={searchForm.searchWord}
+                    placeholder="タグ検索（例: 初心者向け）"
+                    value={searchForm.tags}
                     onChange={(e) =>
-                      setSearchForm({
-                        ...searchForm,
-                        searchWord: e.target.value,
-                      })
+                      setSearchForm({ ...searchForm, tags: e.target.value })
                     }
-                    className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-600 transition-colors duration-200 whitespace-nowrap"
-                  >
-                    検索
-                  </button>
-                </div>
-                <input
-                  type="text"
-                  placeholder="タグ検索（例: 初心者向け）"
-                  value={searchForm.tags}
-                  onChange={(e) =>
-                    setSearchForm({ ...searchForm, tags: e.target.value })
-                  }
-                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-              </form>
+                  <input
+                    type="text"
+                    placeholder="ユーザー名検索（例: username）"
+                    value={searchForm.username}
+                    onChange={(e) =>
+                      setSearchForm({ ...searchForm, username: e.target.value })
+                    }
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </form>
+              </div>
             </div>
           </div>
 
-          {/* 下段: 検索条件と結果件数 */}
-          <div className="border-t pt-3">
+          {/* 検索条件と結果件数 */}
+          <div className="mb-6 bg-gray-50 border border-gray-200 rounded-lg p-4">
             <div className="space-y-1 text-center">
               <p className="text-sm text-gray-600">
                 検索条件: {searchParams.get("searchWord") || "なし"} / タグ:{" "}
-                {searchParams.get("tags") || "なし"}
+                {searchParams.get("tags") || "なし"} / ユーザー名:{" "}
+                {searchParams.get("username") || "なし"}
               </p>
               <p className="text-sm text-gray-600">
                 結果件数: {data?.pagination.total_count || 0}件
               </p>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* スクロール可能なコンテンツエリア */}
-      <div className="flex-1 overflow-y-auto p-4">
-        {currentData.length > 0 ? (
-          <div className="max-w-6xl mx-auto">
+          {currentData.length > 0 ? (
             <div className="space-y-4">
               {currentData.map((combination) => (
                 <div
@@ -230,12 +248,12 @@ export default function SearchResult() {
                 </div>
               ))}
             </div>
-          </div>
-        ) : (
-          <div className="text-center text-gray-500 py-8">
-            検索結果が見つかりませんでした
-          </div>
-        )}
+          ) : (
+            <div className="text-center text-gray-500 py-8">
+              検索結果が見つかりませんでした
+            </div>
+          )}
+        </div>
       </div>
 
       {/* ページネーション（固定位置） */}
