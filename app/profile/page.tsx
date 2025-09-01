@@ -3,9 +3,12 @@
 import { Button } from "@/components/Button/Button";
 import { useUpdateUser } from "@/hooks/api/useUpdateUser";
 import useAuth from "@/hooks/auth/useAuth";
+import { useFetch } from "@/hooks/fetch/useFetch";
+import { User } from "@/types/user";
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { updateProfile } from "firebase/auth";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -13,18 +16,45 @@ import { useEffect, useRef, useState } from "react";
 export default function Profile() {
   const { loginUser } = useAuth();
   const [displayName, setDisplayName] = useState("");
+  const [introduction, setIntroduction] = useState("");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [hasNewImage, setHasNewImage] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const { updateUser } = useUpdateUser();
+  const { data: userData, isLoading } = useFetch<User>(
+    loginUser ? "/users" : null
+  );
 
   // ログインユーザー情報を初期セット
   useEffect(() => {
     if (loginUser) {
       setDisplayName(loginUser.displayName || "");
-      setPreviewUrl(loginUser.photoURL || null);
+      // Firebase photoURLは最初のフォールバックとして使用
+      if (!hasNewImage) {
+        setPreviewUrl(loginUser.photoURL || null);
+      }
     }
-  }, [loginUser]);
+  }, [loginUser, hasNewImage]);
+
+  // APIから取得したユーザーデータを使用して画像URLを設定
+  useEffect(() => {
+    if (userData && !hasNewImage) {
+      setDisplayName(userData.name || "");
+      setIntroduction(userData.introduction || "");
+      // APIから取得した画像URLを優先的に使用
+      setPreviewUrl(userData.image || loginUser?.photoURL || null);
+    }
+  }, [userData, loginUser, hasNewImage]);
+
+  // ObjectURLのクリーンアップ
+  useEffect(() => {
+    return () => {
+      if (previewUrl && previewUrl.startsWith("blob:")) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
 
   if (!loginUser) {
     return (
@@ -41,6 +71,14 @@ export default function Profile() {
       </div>
     );
   }
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
+        <span className="ml-3 text-gray-600 font-medium">読み込み中...</span>
+      </div>
+    );
+  }
 
   const handleUpdate = async () => {
     if (!loginUser) return;
@@ -51,6 +89,7 @@ export default function Profile() {
         user: {
           image: inputRef.current?.files?.[0] || null,
           name: displayName,
+          introduction: introduction,
         },
       });
 
@@ -61,6 +100,8 @@ export default function Profile() {
       });
 
       alert("プロフィールを更新しました");
+      // 更新成功後、新しい画像フラグをリセット
+      setHasNewImage(false);
       router.push("/mypage");
     } catch (error) {
       alert("更新に失敗しました");
@@ -89,9 +130,11 @@ export default function Profile() {
 
           {/* プレビュー画像 or 既存画像 */}
           {previewUrl && (
-            <img
+            <Image
               src={previewUrl}
               alt="プロフィール画像"
+              width={96}
+              height={96}
               className="top-0 left-0 w-24 h-24 rounded-full object-cover shadow-lg"
             />
           )}
@@ -108,6 +151,7 @@ export default function Profile() {
             if (file) {
               const preview = URL.createObjectURL(file);
               setPreviewUrl(preview);
+              setHasNewImage(true);
             }
           }}
           className="hidden"
@@ -123,6 +167,19 @@ export default function Profile() {
           onChange={(e) => setDisplayName(e.target.value)}
           className="border border-gray-300 rounded p-2 w-full"
         />
+      </div>
+
+      {/* 自己紹介 */}
+      <div className="mb-4">
+        <label className="block font-semibold mb-1">自己紹介</label>
+        <textarea
+          value={introduction}
+          onChange={(e) => setIntroduction(e.target.value)}
+          placeholder="あなたの自己紹介を入力してください..."
+          rows={4}
+          className="border border-gray-300 rounded p-2 w-full resize-vertical"
+        />
+        <p className="text-sm text-gray-500 mt-1">改行は自動的に反映されます</p>
       </div>
 
       {/* ボタンエリア */}

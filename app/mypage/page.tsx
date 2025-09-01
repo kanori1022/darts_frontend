@@ -6,6 +6,7 @@ import { useFetch } from "@/hooks/fetch/useFetch";
 import { User } from "@/types/user";
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Mypage() {
@@ -43,10 +44,12 @@ export default function Mypage() {
 
       {/* プロフィール画像 */}
       <div className="flex justify-center mb-4">
-        {data ? (
-          <img
+        {data?.image ? (
+          <Image
             src={data.image}
             alt="プロフィール画像"
+            width={96}
+            height={96}
             className="w-24 h-24 rounded-full object-cover shadow"
           />
         ) : (
@@ -61,9 +64,27 @@ export default function Mypage() {
       <div className="text-left space-y-4">
         <p>
           <span className="font-semibold">ユーザー名：</span>
-
           {data?.name ?? "未設定"}
         </p>
+
+        {/* 自己紹介カード */}
+        <div className="bg-gray-50 p-4 rounded-lg border">
+          <h3 className="font-semibold text-gray-700 mb-2">自己紹介</h3>
+          <p className="text-gray-600 leading-relaxed">
+            {data?.introduction ? (
+              data.introduction.split("\n").map((line, index) => (
+                <span key={index}>
+                  {line}
+                  <br />
+                </span>
+              ))
+            ) : (
+              <span className="text-gray-400 italic">
+                自己紹介が設定されていません
+              </span>
+            )}
+          </p>
+        </div>
       </div>
 
       <div className="flex flex-col space-y-3">
