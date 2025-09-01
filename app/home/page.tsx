@@ -82,12 +82,34 @@ export default function Home() {
       {/* Popular Rankings Section */}
       <section className="mb-6 px-4 pt-6 relative z-0">
         <div className="max-w-6xl mx-auto">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-1 h-6 bg-red-500 rounded-full"></div>
-            <h2 className="text-xl font-bold text-gray-800">人気ランキング</h2>
-            <div className="px-2 py-1 bg-red-100 text-red-600 text-xs font-medium rounded">
-              HOT
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-1 h-6 bg-red-500 rounded-full"></div>
+              <h2 className="text-xl font-bold text-gray-800">
+                人気ランキング
+              </h2>
+              <div className="px-2 py-1 bg-red-100 text-red-600 text-xs font-medium rounded">
+                HOT
+              </div>
             </div>
+            <Link href="/search/result?sort=popular">
+              <button className="text-red-500 hover:text-red-600 font-medium text-sm transition-colors duration-200 flex items-center gap-1">
+                全て表示
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </button>
+            </Link>
           </div>
 
           <div className="overflow-x-auto">
@@ -191,12 +213,32 @@ export default function Home() {
       {/* New Arrivals Section */}
       <section className="mb-8 px-4 relative z-0">
         <div className="max-w-6xl mx-auto">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-1 h-6 bg-green-500 rounded-full"></div>
-            <h2 className="text-xl font-bold text-gray-800">新着一覧</h2>
-            <div className="px-2 py-1 bg-green-100 text-green-600 text-xs font-medium rounded">
-              NEW
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-1 h-6 bg-green-500 rounded-full"></div>
+              <h2 className="text-xl font-bold text-gray-800">新着一覧</h2>
+              <div className="px-2 py-1 bg-green-100 text-green-600 text-xs font-medium rounded">
+                NEW
+              </div>
             </div>
+            <Link href="/search/result?sort=newest">
+              <button className="text-green-500 hover:text-green-600 font-medium text-sm transition-colors duration-200 flex items-center gap-1">
+                全て表示
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </button>
+            </Link>
           </div>
 
           <div className="overflow-x-auto pb-2">
