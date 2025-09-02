@@ -76,9 +76,12 @@ export default function Favorite() {
               {favoriteItems.map((combination) => (
                 <div
                   key={combination.id}
-                  className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow duration-200"
+                  className="bg-white rounded-lg border border-gray-200 p-4 hover:bg-gray-50 hover:shadow-md transition duration-200 cursor-pointer"
+                  onClick={() =>
+                    (window.location.href = `/item/${combination.id}`)
+                  }
                 >
-                  <div className="flex items-start gap-4">
+                  <div className="flex items-start gap-5">
                     {/* 画像 */}
                     <div className="flex-shrink-0">
                       <div className="w-24 h-24 bg-gray-200 rounded-lg overflow-hidden">
@@ -99,29 +102,30 @@ export default function Favorite() {
                     </div>
 
                     {/* コンテンツ */}
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2 truncate">
+                    <div className="flex-1 min-w-0 pl-1">
+                      <h3 className="text-[17px] sm:text-lg font-semibold text-gray-900 leading-snug mb-1 truncate">
                         {combination.title}
                       </h3>
-                      <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                      <p className="text-gray-600 text-sm leading-relaxed mb-2 line-clamp-2">
                         {combination.description || "説明がありません"}
                       </p>
 
                       {/* ボタン群 */}
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 pt-1">
                         {loginUser &&
                         !(
                           combination.firebase_uid === loginUser.uid ||
                           String(combination.user_id) === String(loginUser.uid)
                         ) ? (
                           <button
-                            onClick={() =>
+                            onClick={(e) => {
+                              e.stopPropagation();
                               toggleFavorite(
                                 combination.id,
                                 combination.user_id,
                                 combination.firebase_uid
-                              )
-                            }
+                              );
+                            }}
                             className={`py-2 px-3 rounded text-sm font-medium transition-colors duration-200 cursor-pointer ${
                               isFavorite(combination.id)
                                 ? "bg-pink-500 hover:bg-pink-600 text-white"

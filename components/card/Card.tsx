@@ -31,7 +31,7 @@ export const Card = ({
     <div className="px-4 pb-2 w-40 flex flex-col justify-between">
       <div className="w-40 text-[#000000]">{title}</div>
       <div
-        className={`flex justify-center relative ${onClick ? "cursor-pointer" : ""}`}
+        className={`flex justify-center relative ${onClick ? "cursor-pointer group" : ""}`}
         onClick={onClick}
       >
         {/* 画像読み込み中のスケルトン */}
@@ -46,7 +46,7 @@ export const Card = ({
           </div>
         ) : (
           <Image
-            className={`w-32 h-24 shadow-sm border rounded-lg object-cover ${imageLoading ? "opacity-0" : "opacity-100"} transition-opacity duration-200 ${onClick ? "hover:opacity-90" : ""}`}
+            className={`w-32 h-24 shadow-sm border rounded-lg object-cover ${imageLoading ? "opacity-0" : "opacity-100"} transition-transform duration-200 ${onClick ? "hover:opacity-90 group-hover:scale-105" : ""}`}
             src={src}
             alt={title}
             width={128}
