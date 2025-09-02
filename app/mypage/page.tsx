@@ -181,7 +181,7 @@ export default function Mypage() {
                 {/* アクションボタン */}
                 <div className="space-y-4">
                   <Link href="/profile" className="block">
-                    <div className="group bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white p-4 rounded-xl transition-all duration-200 transform hover:scale-105 hover:shadow-lg">
+                    <div className="group bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white p-4 rounded-xl transition-all duration-200 transform hover:scale-105 hover:shadow-lg cursor-pointer">
                       <div className="flex items-center justify-between">
                         <span className="font-medium">プロフィール編集</span>
                         <div className="text-blue-200 group-hover:text-white transition-colors">
@@ -192,7 +192,7 @@ export default function Mypage() {
                   </Link>
 
                   <Link href="/myposts" className="block">
-                    <div className="group bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white p-4 rounded-xl transition-all duration-200 transform hover:scale-105 hover:shadow-lg">
+                    <div className="group bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white p-4 rounded-xl transition-all duration-200 transform hover:scale-105 hover:shadow-lg cursor-pointer">
                       <div className="flex items-center justify-between">
                         <span className="font-medium">投稿一覧</span>
                         <div className="text-green-200 group-hover:text-white transition-colors">

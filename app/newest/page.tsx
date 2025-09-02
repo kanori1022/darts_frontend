@@ -5,7 +5,6 @@ import { useFavorites } from "@/hooks/api/useFavorites";
 import useAuth from "@/hooks/auth/useAuth";
 import { useFetch } from "@/hooks/fetch/useFetch";
 import { Combination } from "@/types/combination";
-import Link from "next/link";
 import { useMemo, useState } from "react";
 
 // APIレスポンスの型定義
@@ -79,130 +78,132 @@ export default function NewestPage() {
 
   return (
     <div className="flex flex-col h-screen">
-      {/* ヘッダー部分（固定） */}
-      <div className="p-5 font-bold bg-white border-b">
-        <div className="text-center">
-          <div className="flex items-center justify-center gap-3 mb-2">
-            <div className="w-1 h-6 bg-green-500 rounded-full"></div>
-            <h1 className="text-2xl font-bold text-gray-800">新着一覧</h1>
-            <div className="px-2 py-1 bg-green-100 text-green-600 text-xs font-medium rounded">
-              NEW
+      {/* スクロール可能なコンテンツエリア */}
+      <div className="flex-1 overflow-y-auto min-h-0">
+        <div className="p-4">
+          {/* ヘッダー部分（スクロール対象） */}
+          <div className="p-5 font-bold bg-white border-b shadow-sm mb-4 rounded-lg">
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-3 mb-2">
+                <div className="w-1 h-6 bg-green-500 rounded-full"></div>
+                <h1 className="text-2xl font-bold text-gray-800">新着一覧</h1>
+                <div className="px-2 py-1 bg-green-100 text-green-600 text-xs font-medium rounded">
+                  NEW
+                </div>
+              </div>
+              <p className="text-sm text-gray-600">
+                総件数: {data?.pagination.total_count || 0}件
+              </p>
             </div>
           </div>
-          <p className="text-sm text-gray-600">
-            総件数: {data?.pagination.total_count || 0}件
-          </p>
-        </div>
-      </div>
 
-      {/* スクロール可能なコンテンツエリア */}
-      <div className="flex-1 overflow-y-auto p-4">
-        {currentData.length > 0 ? (
-          <div className="max-w-6xl mx-auto">
-            <div className="space-y-4">
-              {currentData.map((combination) => (
-                <div
-                  key={combination.id}
-                  className="w-full bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 overflow-hidden"
-                >
-                  <div className="p-4">
-                    <div className="flex items-center space-x-4">
-                      {/* NEW バッジ */}
-                      <div className="flex-shrink-0">
-                        <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center border-2 border-green-200">
-                          <div className="px-2 py-1 bg-green-500 text-white text-xs font-medium rounded">
-                            NEW
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* 画像とタイトル */}
-                      <div className="flex-shrink-0">
-                        <Card
-                          src={combination.image}
-                          title={combination.title}
-                          isFavorite={isFavorite(combination.id)}
-                          onToggleFavorite={() =>
-                            handleToggleFavorite(
-                              combination.id,
-                              combination.user_id,
-                              combination.firebase_uid
-                            )
-                          }
-                          userId={combination.user_id}
-                          currentUserId={loginUser?.uid}
-                        />
-                      </div>
-
-                      {/* 詳細情報とボタン */}
-                      <div className="flex-1 flex flex-col justify-between">
-                        <div>
-                          <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                            {combination.title}
-                          </h3>
-                          <div className="text-sm text-gray-600 space-y-1">
-                            <p>フライト: {combination.flight}</p>
-                            <p>シャフト: {combination.shaft}</p>
-                            <p>バレル: {combination.barrel}</p>
-                            <p>チップ: {combination.tip}</p>
+          {currentData.length > 0 ? (
+            <div className="max-w-6xl mx-auto">
+              <div className="space-y-4">
+                {currentData.map((combination) => (
+                  <div
+                    key={combination.id}
+                    className="w-full bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 overflow-hidden"
+                  >
+                    <div className="p-4">
+                      <div className="flex items-center space-x-4">
+                        {/* NEW バッジ */}
+                        <div className="flex-shrink-0">
+                          <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center border-2 border-green-200">
+                            <div className="px-2 py-1 bg-green-500 text-white text-xs font-medium rounded">
+                              NEW
+                            </div>
                           </div>
                         </div>
 
-                        <div className="mt-4">
-                          <Link href={"/item/" + combination.id}>
-                            <button className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded text-sm font-medium transition-colors duration-200 border border-green-600 hover:border-green-700">
-                              詳細を見る
-                            </button>
-                          </Link>
+                        {/* 画像とタイトル */}
+                        <div className="flex-shrink-0">
+                          <Card
+                            src={combination.image}
+                            title={combination.title}
+                            isFavorite={isFavorite(combination.id)}
+                            onToggleFavorite={() =>
+                              handleToggleFavorite(
+                                combination.id,
+                                combination.user_id,
+                                combination.firebase_uid
+                              )
+                            }
+                            userId={combination.user_id}
+                            currentUserId={loginUser?.uid}
+                            onClick={() =>
+                              (window.location.href = `/item/${combination.id}`)
+                            }
+                          />
+                        </div>
+
+                        {/* 詳細情報とボタン */}
+                        <div className="flex-1 flex flex-col justify-between">
+                          <div>
+                            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                              {combination.title}
+                            </h3>
+                            <div className="text-sm text-gray-600 space-y-1">
+                              <p>フライト: {combination.flight}</p>
+                              <p>シャフト: {combination.shaft}</p>
+                              <p>バレル: {combination.barrel}</p>
+                              <p>チップ: {combination.tip}</p>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="text-center text-gray-500 py-8">
-            データが見つかりませんでした
-          </div>
-        )}
-      </div>
-
-      {/* ページネーション（固定位置） */}
-      {totalPages > 1 && (
-        <div className="p-3 font-bold bg-white border-t">
-          <div className="flex justify-between items-center">
-            <button
-              onClick={goToPrevPage}
-              disabled={currentPage === 1}
-              className={`px-4 py-2 rounded ${
-                currentPage === 1
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-green-500 text-white hover:bg-green-600"
-              }`}
-            >
-              前のページ
-            </button>
-
-            <span className="text-center">
-              {currentPage} / {totalPages}
-            </span>
-
-            <button
-              onClick={goToNextPage}
-              disabled={currentPage === totalPages}
-              className={`px-4 py-2 rounded ${
-                currentPage === totalPages
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-green-500 text-white hover:bg-green-600"
-              }`}
-            >
-              次のページ
-            </button>
-          </div>
+          ) : (
+            <div className="text-center text-gray-500 py-8">
+              データが見つかりませんでした
+            </div>
+          )}
         </div>
-      )}
+      </div>
+      {/* ページネーション（固定位置） */}
+      <div className="flex-shrink-0 p-3 font-bold bg-white border-t shadow-lg">
+        <div className="flex justify-between items-center max-w-6xl mx-auto">
+          {totalPages > 1 ? (
+            <>
+              <button
+                onClick={goToPrevPage}
+                disabled={currentPage === 1}
+                className={`px-4 py-2 rounded ${
+                  currentPage === 1
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-green-500 text-white hover:bg-green-600 cursor-pointer"
+                }`}
+              >
+                前のページ
+              </button>
+
+              <span className="text-center">
+                {currentPage} / {totalPages}
+              </span>
+
+              <button
+                onClick={goToNextPage}
+                disabled={currentPage === totalPages}
+                className={`px-4 py-2 rounded ${
+                  currentPage === totalPages
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-green-500 text-white hover:bg-green-600 cursor-pointer"
+                }`}
+              >
+                次のページ
+              </button>
+            </>
+          ) : (
+            <div className="text-center text-gray-600">
+              <span>ページ: 1 / 1</span>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

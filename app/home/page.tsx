@@ -93,7 +93,7 @@ export default function Home() {
               </div>
             </div>
             <Link href="/popular">
-              <button className="text-blue-500 hover:text-blue-600 font-medium text-sm transition-colors duration-200 flex items-center gap-1">
+              <button className="text-blue-500 hover:text-blue-600 font-medium text-sm transition-colors duration-200 flex items-center gap-1 cursor-pointer">
                 全て表示
                 <svg
                   className="w-4 h-4"
@@ -186,13 +186,10 @@ export default function Home() {
                           }
                           userId={combination.user_id}
                           currentUserId={loginUser?.uid}
+                          onClick={() =>
+                            (window.location.href = `/item/${combination.id}`)
+                          }
                         />
-
-                        <Link href={"/item/" + combination.id}>
-                          <button className="mt-3 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-3 rounded text-sm font-medium transition-colors duration-200 border border-blue-600 hover:border-blue-700">
-                            詳細を見る
-                          </button>
-                        </Link>
                       </div>
                     </div>
                   );
@@ -222,7 +219,7 @@ export default function Home() {
               </div>
             </div>
             <Link href="/newest">
-              <button className="text-green-500 hover:text-green-600 font-medium text-sm transition-colors duration-200 flex items-center gap-1">
+              <button className="text-green-500 hover:text-green-600 font-medium text-sm transition-colors duration-200 flex items-center gap-1 cursor-pointer">
                 全て表示
                 <svg
                   className="w-4 h-4"
@@ -264,13 +261,10 @@ export default function Home() {
                         }
                         userId={combination.user_id}
                         currentUserId={loginUser?.uid}
+                        onClick={() =>
+                          (window.location.href = `/item/${combination.id}`)
+                        }
                       />
-
-                      <Link href={"/item/" + combination.id}>
-                        <button className="mt-3 w-full bg-green-500 hover:bg-green-600 text-white py-2 px-3 rounded text-sm font-medium transition-colors duration-200 border border-green-600 hover:border-green-700">
-                          詳細を見る
-                        </button>
-                      </Link>
                     </div>
                   </div>
                 ))

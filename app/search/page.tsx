@@ -132,7 +132,7 @@ export default function search() {
         <div className="mt-8 bg-white border border-gray-200 rounded-lg overflow-hidden">
           <button
             onClick={() => setShowHints(!showHints)}
-            className="w-full px-6 py-4 bg-blue-50 hover:bg-blue-100 transition-colors flex items-center justify-between text-left"
+            className="w-full px-6 py-4 bg-blue-50 hover:bg-blue-100 transition-colors flex items-center justify-between text-left cursor-pointer"
           >
             <h3 className="text-lg font-semibold text-blue-800">
               💡 検索のヒント

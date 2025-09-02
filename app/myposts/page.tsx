@@ -50,7 +50,7 @@ const CombinationCard = memo(function CombinationCard({
           <div className="flex-2 flex flex-col justify-between">
             <div className="mt-4 flex space-x-5">
               <Link href={`/edit/${combination.id}`}>
-                <button className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded text-sm font-medium transition-colors duration-200">
+                <button className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded text-sm font-medium transition-colors duration-200 cursor-pointer">
                   <FontAwesomeIcon icon={faEdit} className="mr-1" />
                   編集する
                 </button>
@@ -58,7 +58,7 @@ const CombinationCard = memo(function CombinationCard({
               <button
                 onClick={() => onDelete(combination.id, combination.title)}
                 disabled={deleteLoading}
-                className="bg-red-400 hover:bg-red-500 disabled:bg-red-300 text-white py-2 px-4 rounded text-sm font-medium transition-colors duration-200"
+                className="bg-red-400 hover:bg-red-500 disabled:bg-red-300 text-white py-2 px-4 rounded text-sm font-medium transition-colors duration-200 cursor-pointer disabled:cursor-not-allowed"
               >
                 <FontAwesomeIcon icon={faTrash} className="mr-1" />
                 {deleteLoading ? "削除中..." : "削除する"}
@@ -236,7 +236,7 @@ export default function MyPosts() {
                       className={`px-4 py-2 rounded ${
                         currentPage === 1
                           ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                          : "bg-blue-600 text-white hover:bg-blue-700"
+                          : "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
                       }`}
                     >
                       前のページ
@@ -250,7 +250,7 @@ export default function MyPosts() {
                       className={`px-4 py-2 rounded ${
                         currentPage === totalPages
                           ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                          : "bg-blue-600 text-white hover:bg-blue-700"
+                          : "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
                       }`}
                     >
                       次のページ
@@ -276,7 +276,7 @@ export default function MyPosts() {
                 初めてのコンビネーションを投稿してみましょう
               </p>
               <Link href="/post">
-                <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200">
+                <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200 cursor-pointer">
                   投稿する
                 </button>
               </Link>

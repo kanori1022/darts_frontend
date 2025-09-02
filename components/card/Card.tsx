@@ -12,6 +12,7 @@ type CardProps = {
   onToggleFavorite?: () => void;
   userId?: string | number;
   currentUserId?: string | number;
+  onClick?: () => void;
 };
 
 export const Card = ({
@@ -21,6 +22,7 @@ export const Card = ({
   onToggleFavorite,
   userId,
   currentUserId,
+  onClick,
 }: CardProps) => {
   const [imageError, setImageError] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
@@ -28,7 +30,10 @@ export const Card = ({
   return (
     <div className="px-4 pb-2 w-40 flex flex-col justify-between">
       <div className="w-40 text-[#000000]">{title}</div>
-      <div className="flex justify-center relative">
+      <div
+        className={`flex justify-center relative ${onClick ? "cursor-pointer group" : ""}`}
+        onClick={onClick}
+      >
         {/* 画像読み込み中のスケルトン */}
         {imageLoading && (
           <div className="w-32 h-24 bg-gray-200 animate-pulse rounded-lg border shadow-sm" />
@@ -41,7 +46,7 @@ export const Card = ({
           </div>
         ) : (
           <Image
-            className={`w-32 h-24 shadow-sm border rounded-lg object-cover ${imageLoading ? "opacity-0" : "opacity-100"} transition-opacity duration-200`}
+            className={`w-32 h-24 shadow-sm border rounded-lg object-cover ${imageLoading ? "opacity-0" : "opacity-100"} transition-transform duration-200 ${onClick ? "hover:opacity-90 group-hover:scale-105" : ""}`}
             src={src}
             alt={title}
             width={128}
@@ -63,7 +68,7 @@ export const Card = ({
               e.stopPropagation();
               onToggleFavorite();
             }}
-            className="absolute -bottom-1 right-1 text-xl"
+            className="absolute -bottom-1 right-1 text-xl cursor-pointer"
           >
             <FontAwesomeIcon
               icon={isFavorite ? solidHeart : regularHeart}

@@ -106,7 +106,7 @@ export default function Item({ params }: Props) {
                     onClick={() =>
                       toggleFavorite(data.id, data.user_id, data.firebase_uid)
                     }
-                    className={`whitespace-nowrap py-2 px-4 rounded-lg text-sm font-medium transition-all duration-200 shadow-md hover:shadow-lg ${
+                    className={`whitespace-nowrap py-2 px-4 rounded-lg text-sm font-medium transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer ${
                       isFavorite(data.id)
                         ? "bg-pink-500 hover:bg-pink-600 text-white"
                         : "bg-gray-100 hover:bg-gray-200 text-gray-700"
@@ -122,7 +122,7 @@ export default function Item({ params }: Props) {
                   String(data.user_id) === String(loginUser.uid)) && (
                   <div className="flex gap-2 flex-shrink-0">
                     <Link href={`/edit/${data.id}`}>
-                      <button className="whitespace-nowrap bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg text-sm font-medium transition-all duration-200 shadow-md hover:shadow-lg">
+                      <button className="whitespace-nowrap bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg text-sm font-medium transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer">
                         編集する
                       </button>
                     </Link>

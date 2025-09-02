@@ -4,7 +4,6 @@ import { useFavorites } from "@/hooks/api/useFavorites";
 import useAuth from "@/hooks/auth/useAuth";
 import { useFetch } from "@/hooks/fetch/useFetch";
 import { Combination } from "@/types/combination";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
@@ -151,7 +150,7 @@ export default function SearchResult() {
                     />
                     <button
                       type="submit"
-                      className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-600 transition-colors duration-200 whitespace-nowrap"
+                      className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-600 transition-colors duration-200 whitespace-nowrap cursor-pointer"
                     >
                       検索
                     </button>
@@ -218,6 +217,9 @@ export default function SearchResult() {
                           }
                           userId={combination.user_id}
                           currentUserId={loginUser?.uid}
+                          onClick={() =>
+                            (window.location.href = `/item/${combination.id}`)
+                          }
                         />
                       </div>
 
@@ -233,14 +235,6 @@ export default function SearchResult() {
                             <p>バレル: {combination.barrel}</p>
                             <p>チップ: {combination.tip}</p>
                           </div>
-                        </div>
-
-                        <div className="mt-4">
-                          <Link href={"/item/" + combination.id}>
-                            <button className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded text-sm font-medium transition-colors duration-200 border border-blue-600 hover:border-blue-700">
-                              詳細を見る
-                            </button>
-                          </Link>
                         </div>
                       </div>
                     </div>
@@ -266,7 +260,7 @@ export default function SearchResult() {
               className={`px-4 py-2 rounded ${
                 currentPage === 1
                   ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-blue-500 text-white hover:bg-blue-600"
+                  : "bg-blue-500 text-white hover:bg-blue-600 cursor-pointer"
               }`}
             >
               前のページ
@@ -282,7 +276,7 @@ export default function SearchResult() {
               className={`px-4 py-2 rounded ${
                 currentPage === totalPages
                   ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-blue-500 text-white hover:bg-blue-600"
+                  : "bg-blue-500 text-white hover:bg-blue-600 cursor-pointer"
               }`}
             >
               次のページ
