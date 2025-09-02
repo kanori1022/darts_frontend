@@ -29,6 +29,26 @@ export default function Post() {
   const { loginUser } = useAuth();
   const router = useRouter();
 
+  // タグ追加処理の関数
+  const handleAddTags = () => {
+    const currentTags = combination.tags || [];
+    if (tagInput.trim() && currentTags.length < 5) {
+      const newTags = tagInput
+        .split("/")
+        .map((tag) => tag.trim())
+        .filter((tag) => tag.length > 0 && !currentTags.includes(tag)) // 重複チェック
+        .slice(0, 5 - currentTags.length); // 残り追加可能数まで
+
+      if (newTags.length > 0) {
+        setCombination({
+          ...combination,
+          tags: [...currentTags, ...newTags],
+        });
+      }
+      setTagInput("");
+    }
+  };
+
   if (!loginUser) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -201,27 +221,37 @@ export default function Post() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              タグ（最大5個、/で区切って入力）
+              タグ（最大5個）
             </label>
-            <input
-              type="text"
-              placeholder="例：初心者向け/バランス重視/軽量"
-              value={tagInput}
-              onChange={(e) => setTagInput(e.target.value)}
-              onBlur={() => {
-                if (tagInput.trim()) {
-                  const newTags = tagInput
-                    .split("/")
-                    .map((tag) => tag.trim())
-                    .filter((tag) => tag.length > 0)
-                    .slice(0, 5); // 最大5個まで
-
-                  setCombination({ ...combination, tags: newTags });
-                  setTagInput("");
+            <p className="text-xs text-gray-500 mb-2">
+              /で区切って複数入力可能。「タグを追加」ボタンまたはEnterキーで追加
+            </p>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="例：初心者向け/バランス重視/軽量"
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                onBlur={handleAddTags}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleAddTags();
+                  }
+                }}
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+              <button
+                type="button"
+                onClick={handleAddTags}
+                disabled={
+                  !tagInput.trim() || (combination.tags || []).length >= 5
                 }
-              }}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-md font-medium transition-colors duration-200 cursor-pointer whitespace-nowrap"
+              >
+                タグを追加
+              </button>
+            </div>
 
             {/* タグ表示エリア */}
             {combination.tags && combination.tags.length > 0 && (
@@ -242,7 +272,7 @@ export default function Post() {
                             [];
                           setCombination({ ...combination, tags: newTags });
                         }}
-                        className="ml-1.5 text-blue-600 hover:text-blue-800"
+                        className="ml-1.5 text-blue-600 hover:text-blue-800 cursor-pointer"
                       >
                         ×
                       </button>
@@ -250,7 +280,7 @@ export default function Post() {
                   ))}
                 </div>
                 <p className="text-xs text-gray-500 mt-1">
-                  {combination.tags.length}/5個
+                  {(combination.tags || []).length}/5個
                 </p>
               </div>
             )}

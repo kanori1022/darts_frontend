@@ -194,7 +194,7 @@ export default function EditCombination({
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between">
             <Link href="/myposts">
-              <button className="flex items-center text-gray-600 hover:text-gray-800 transition-colors">
+              <button className="flex items-center text-gray-600 hover:text-gray-800 transition-colors cursor-pointer">
                 <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
                 投稿一覧に戻る
               </button>
@@ -357,7 +357,7 @@ export default function EditCombination({
               <Link href="/myposts">
                 <button
                   type="button"
-                  className="bg-gray-500 hover:bg-gray-600 text-white px-8 py-3 rounded-lg font-medium transition-colors duration-200"
+                  className="bg-gray-500 hover:bg-gray-600 text-white px-8 py-3 rounded-lg font-medium transition-colors duration-200 cursor-pointer"
                 >
                   キャンセル
                 </button>
@@ -365,7 +365,7 @@ export default function EditCombination({
               <button
                 type="submit"
                 disabled={isLoading}
-                className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-8 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center"
+                className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-8 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center cursor-pointer disabled:cursor-not-allowed"
               >
                 <FontAwesomeIcon icon={faSave} className="mr-2" />
                 {isLoading ? "保存中..." : "保存する"}

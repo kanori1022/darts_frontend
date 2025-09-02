@@ -110,7 +110,7 @@ export default function Favorite() {
                       {/* ボタン群 */}
                       <div className="flex gap-2">
                         <Link href={"/item/" + combination.id}>
-                          <button className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded text-sm font-medium transition-colors duration-200">
+                          <button className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded text-sm font-medium transition-colors duration-200 cursor-pointer">
                             詳細を見る
                           </button>
                         </Link>
@@ -127,7 +127,7 @@ export default function Favorite() {
                                 combination.firebase_uid
                               )
                             }
-                            className={`py-2 px-3 rounded text-sm font-medium transition-colors duration-200 ${
+                            className={`py-2 px-3 rounded text-sm font-medium transition-colors duration-200 cursor-pointer ${
                               isFavorite(combination.id)
                                 ? "bg-pink-500 hover:bg-pink-600 text-white"
                                 : "bg-gray-200 hover:bg-gray-300 text-gray-700"
@@ -162,7 +162,7 @@ export default function Favorite() {
                 気になるコンビネーションを見つけてお気に入りに追加しましょう
               </p>
               <Link href="/home">
-                <button className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200">
+                <button className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200 cursor-pointer">
                   コンビネーションを探す
                 </button>
               </Link>
