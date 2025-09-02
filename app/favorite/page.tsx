@@ -109,11 +109,6 @@ export default function Favorite() {
 
                       {/* ボタン群 */}
                       <div className="flex gap-2">
-                        <Link href={"/item/" + combination.id}>
-                          <button className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded text-sm font-medium transition-colors duration-200 cursor-pointer">
-                            詳細を見る
-                          </button>
-                        </Link>
                         {loginUser &&
                         !(
                           combination.firebase_uid === loginUser.uid ||

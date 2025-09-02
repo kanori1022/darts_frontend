@@ -5,7 +5,6 @@ import { useFavorites } from "@/hooks/api/useFavorites";
 import useAuth from "@/hooks/auth/useAuth";
 import { useFetch } from "@/hooks/fetch/useFetch";
 import { Combination } from "@/types/combination";
-import Link from "next/link";
 import { useMemo, useState } from "react";
 
 // APIレスポンスの型定義
@@ -150,14 +149,6 @@ export default function NewestPage() {
                               <p>バレル: {combination.barrel}</p>
                               <p>チップ: {combination.tip}</p>
                             </div>
-                          </div>
-
-                          <div className="mt-4">
-                            <Link href={"/item/" + combination.id}>
-                              <button className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded text-sm font-medium transition-colors duration-200 border border-green-600 hover:border-green-700 cursor-pointer">
-                                詳細を見る
-                              </button>
-                            </Link>
                           </div>
                         </div>
                       </div>
