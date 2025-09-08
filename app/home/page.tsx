@@ -4,11 +4,13 @@ import { Button } from "@/components/Button/Button";
 import { Card } from "@/components/Card/Card";
 import { useFavorites } from "@/hooks/api/useFavorites";
 import useAuth from "@/hooks/auth/useAuth";
+import { useAxios } from "@/hooks/axios/useAxios";
 import { useFetch } from "@/hooks/fetch/useFetch";
 import { Combination } from "@/types/combination";
 import { faCrown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 // APIレスポンスの型定義
 type CombinationsResponse = {
@@ -21,13 +23,17 @@ type CombinationsResponse = {
   };
 };
 
+type HistoryItem = { id: string; title: string; image: string };
+
 export default function Home() {
+  const [viewHistory, setViewHistory] = useState<HistoryItem[]>([]);
   const { data: popularData, isLoading: popularLoading } =
     useFetch<CombinationsResponse>("/combinations?limit=10&offset=0");
   const { data: newestData, isLoading: newestLoading } =
     useFetch<CombinationsResponse>("/combinations/newest?limit=15&offset=0");
   const { loginUser, isWaiting } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
+  const axios = useAxios();
 
   const handleToggleFavorite = async (
     id: string,
@@ -39,28 +45,36 @@ export default function Home() {
       return;
     }
 
-    // デバッグ用：実際の値を確認
-    console.log("=== ホームページ デバッグ情報 ===");
-    console.log("投稿のuser_id:", userId, "型:", typeof userId);
-    console.log("投稿のfirebase_uid:", firebaseUid, "型:", typeof firebaseUid);
-    console.log(
-      "ログインユーザーのuid:",
-      loginUser.uid,
-      "型:",
-      typeof loginUser.uid
-    );
-    console.log("firebase_uid比較:", firebaseUid === loginUser.uid);
-    console.log(
-      "従来のuser_id比較:",
-      userId && String(userId) === String(loginUser.uid)
-    );
-
-    // 投稿データ全体を確認
-    console.log("投稿データ全体:", { id, userId, firebaseUid });
-    console.log("=================================");
-
     await toggleFavorite(id, userId, firebaseUid);
   };
+
+  // 不要なデバッグ出力を削除
+
+  // 閲覧履歴の読み込み（APIから）
+  useEffect(() => {
+    if (isWaiting) return; // 認証確定まで待機
+    if (!loginUser) {
+      setViewHistory([]);
+      return;
+    }
+    (async () => {
+      try {
+        const { data } = await axios.get("/view_histories", {
+          params: { limit: 12, offset: 0 },
+        });
+        const mapped: HistoryItem[] = (data?.histories || []).map(
+          (h: { id: string | number; title: string; image: string }) => ({
+            id: String(h.id),
+            title: h.title,
+            image: h.image,
+          })
+        );
+        setViewHistory(mapped);
+      } catch {
+        setViewHistory([]);
+      }
+    })();
+  }, [axios, loginUser, isWaiting]);
 
   if (popularLoading || newestLoading || isWaiting) {
     return (
@@ -72,10 +86,6 @@ export default function Home() {
       </div>
     );
   }
-
-  // デバッグ情報（開発時のみ）
-  console.log("Popular data:", popularData);
-  console.log("Newest data:", newestData);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
@@ -189,6 +199,7 @@ export default function Home() {
                           onClick={() =>
                             (window.location.href = `/item/${combination.id}`)
                           }
+                          priority={index === 0}
                         />
                       </div>
                     </div>
@@ -242,7 +253,7 @@ export default function Home() {
             <div className="flex gap-3 min-w-max">
               {newestData?.combinations &&
               newestData.combinations.length > 0 ? (
-                newestData.combinations.map((combination) => (
+                newestData.combinations.map((combination, index) => (
                   <div
                     key={combination.id}
                     className="flex-shrink-0 w-52 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 overflow-hidden relative z-0"
@@ -264,6 +275,7 @@ export default function Home() {
                         onClick={() =>
                           (window.location.href = `/item/${combination.id}`)
                         }
+                        priority={index === 0}
                       />
                     </div>
                   </div>
@@ -323,31 +335,94 @@ export default function Home() {
 
           {/* ログイン後に表示させる画面 */}
           {loginUser && (
-            <div className="bg-gradient-to-r from-green-50 to-emerald-100 rounded-2xl p-8 text-center border border-green-200 shadow-lg">
-              <div className="max-w-md mx-auto">
-                <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg
-                    className="w-8 h-8 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
+            <>
+              {viewHistory.length > 0 && (
+                <section className="mb-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-1 h-6 bg-purple-500 rounded-full"></div>
+                      <h2 className="text-xl font-bold text-gray-800">
+                        閲覧履歴
+                      </h2>
+                      <div className="px-2 py-1 bg-purple-100 text-purple-600 text-xs font-medium rounded">
+                        RECENT
+                      </div>
+                    </div>
+                    <Link href="/history">
+                      <button className="text-purple-600 hover:text-purple-700 font-medium text-sm transition-colors duration-200 flex items-center gap-1 cursor-pointer">
+                        全て表示
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                      </button>
+                    </Link>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <div className="flex gap-3 min-w-max">
+                      {viewHistory.slice(0, 12).map((combination, index) => (
+                        <div
+                          key={combination.id}
+                          className="flex-shrink-0 w-52 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 overflow-hidden relative"
+                        >
+                          <div className="p-3 pt-4 flex flex-col items-center">
+                            <Card
+                              src={combination.image}
+                              title={combination.title}
+                              isFavorite={isFavorite(combination.id)}
+                              onToggleFavorite={() =>
+                                handleToggleFavorite(combination.id)
+                              }
+                              userId={undefined}
+                              currentUserId={loginUser?.uid}
+                              onClick={() =>
+                                (window.location.href = `/item/${combination.id}`)
+                              }
+                              priority={index === 0}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </section>
+              )}
+
+              <div className="bg-gradient-to-r from-green-50 to-emerald-100 rounded-2xl p-8 text-center border border-green-200 shadow-lg">
+                <div className="max-w-md mx-auto">
+                  <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg
+                      className="w-8 h-8 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-800 mb-2">
+                    ログインありがとうございます！
+                  </h3>
+                  <p className="text-gray-600">
+                    限定コンテンツやパーソナライズ機能が利用可能になりました
+                  </p>
                 </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-2">
-                  ログインありがとうございます！
-                </h3>
-                <p className="text-gray-600">
-                  限定コンテンツやパーソナライズ機能が利用可能になりました
-                </p>
               </div>
-            </div>
+            </>
           )}
         </div>
       </div>

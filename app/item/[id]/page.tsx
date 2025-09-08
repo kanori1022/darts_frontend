@@ -3,13 +3,14 @@
 import LabelValueRow from "@/components/LabelValueRow/LabelValueRow";
 import { useFavorites } from "@/hooks/api/useFavorites";
 import useAuth from "@/hooks/auth/useAuth";
+import { useAxios } from "@/hooks/axios/useAxios";
 import { useFetch } from "@/hooks/fetch/useFetch";
 import { Combination } from "@/types/combination";
 import { faCalendarAlt, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
-import { use } from "react";
+import { use, useEffect } from "react";
 
 type Props = {
   params: Promise<{
@@ -25,6 +26,19 @@ export default function Item({ params }: Props) {
   );
   const { loginUser } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
+  const axios = useAxios();
+
+  // 閲覧履歴をAPIに保存
+  useEffect(() => {
+    if (!data || !loginUser) return;
+    (async () => {
+      try {
+        await axios.post("/view_histories", { combination_id: data.id });
+      } catch {
+        // 失敗してもUIには影響させない
+      }
+    })();
+  }, [data?.id, loginUser]);
 
   // 日付フォーマット関数
   const formatDate = (dateString: string | undefined) => {

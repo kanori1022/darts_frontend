@@ -55,6 +55,15 @@ export const useFavorites = () => {
   ) => {
     if (!loginUser) return false;
 
+    // 履歴など投稿の所有者情報が無い場合は静かに何もしない
+    // （APIを叩いてエラーを出さないためのガード）
+    if (
+      (combinationUserId === undefined || combinationUserId === null) &&
+      (combinationFirebaseUid === undefined || combinationFirebaseUid === null)
+    ) {
+      return false;
+    }
+
     // 自分の投稿の場合はお気に入りに追加できない
     console.log("=== デバッグ情報 ===");
     console.log("combinationUserId:", combinationUserId);
@@ -90,16 +99,8 @@ export const useFavorites = () => {
     );
 
     if (isOwnPost) {
-      console.log("✅ 自分の投稿を検出！お気に入りに追加できません");
+      // 自分の投稿の場合は静かに何もしない（コンソールにエラー/警告を出さない）
       return false;
-    } else {
-      console.log("❌ 自分の投稿ではありません。お気に入りに追加可能");
-      console.log(
-        "理由:",
-        !combinationFirebaseUid && !combinationUserId
-          ? "両方のIDが undefined/null"
-          : "値が一致しない"
-      );
     }
 
     const currentlyFavorite = favorites.includes(combinationId);
