@@ -9,6 +9,7 @@ import { Combination } from "@/types/combination";
 import { faCrown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 // APIレスポンスの型定義
 type CombinationsResponse = {
@@ -21,7 +22,10 @@ type CombinationsResponse = {
   };
 };
 
+type HistoryItem = { id: string; title: string; image: string };
+
 export default function Home() {
+  const [viewHistory, setViewHistory] = useState<HistoryItem[]>([]);
   const { data: popularData, isLoading: popularLoading } =
     useFetch<CombinationsResponse>("/combinations?limit=10&offset=0");
   const { data: newestData, isLoading: newestLoading } =
@@ -62,6 +66,35 @@ export default function Home() {
     await toggleFavorite(id, userId, firebaseUid);
   };
 
+  // デバッグ情報（開発時のみ）
+  console.log("Popular data:", popularData);
+  console.log("Newest data:", newestData);
+
+  // 閲覧履歴の読み込み（初期表示のみ）
+  useEffect(() => {
+    try {
+      const raw =
+        typeof window !== "undefined"
+          ? localStorage.getItem("view_history")
+          : null;
+      if (!raw) return;
+      const list: Array<{
+        id: string;
+        title: string;
+        image: string;
+        viewedAt: string;
+      }> = JSON.parse(raw);
+      const mapped: HistoryItem[] = list.map((e) => ({
+        id: e.id,
+        title: e.title,
+        image: e.image,
+      }));
+      setViewHistory(mapped);
+    } catch {
+      // noop
+    }
+  }, []);
+
   if (popularLoading || newestLoading || isWaiting) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -72,10 +105,6 @@ export default function Home() {
       </div>
     );
   }
-
-  // デバッグ情報（開発時のみ）
-  console.log("Popular data:", popularData);
-  console.log("Newest data:", newestData);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
@@ -323,31 +352,73 @@ export default function Home() {
 
           {/* ログイン後に表示させる画面 */}
           {loginUser && (
-            <div className="bg-gradient-to-r from-green-50 to-emerald-100 rounded-2xl p-8 text-center border border-green-200 shadow-lg">
-              <div className="max-w-md mx-auto">
-                <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg
-                    className="w-8 h-8 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
+            <>
+              {viewHistory.length > 0 && (
+                <section className="mb-6">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-1 h-6 bg-purple-500 rounded-full"></div>
+                    <h2 className="text-xl font-bold text-gray-800">
+                      閲覧履歴
+                    </h2>
+                    <div className="px-2 py-1 bg-purple-100 text-purple-600 text-xs font-medium rounded">
+                      RECENT
+                    </div>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <div className="flex gap-3 min-w-max">
+                      {viewHistory.slice(0, 12).map((combination) => (
+                        <div
+                          key={combination.id}
+                          className="flex-shrink-0 w-52 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 overflow-hidden relative"
+                        >
+                          <div className="p-3 pt-4 flex flex-col items-center">
+                            <Card
+                              src={combination.image}
+                              title={combination.title}
+                              isFavorite={isFavorite(combination.id)}
+                              onToggleFavorite={() =>
+                                handleToggleFavorite(combination.id)
+                              }
+                              userId={undefined}
+                              currentUserId={loginUser?.uid}
+                              onClick={() =>
+                                (window.location.href = `/item/${combination.id}`)
+                              }
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </section>
+              )}
+
+              <div className="bg-gradient-to-r from-green-50 to-emerald-100 rounded-2xl p-8 text-center border border-green-200 shadow-lg">
+                <div className="max-w-md mx-auto">
+                  <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg
+                      className="w-8 h-8 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-800 mb-2">
+                    ログインありがとうございます！
+                  </h3>
+                  <p className="text-gray-600">
+                    限定コンテンツやパーソナライズ機能が利用可能になりました
+                  </p>
                 </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-2">
-                  ログインありがとうございます！
-                </h3>
-                <p className="text-gray-600">
-                  限定コンテンツやパーソナライズ機能が利用可能になりました
-                </p>
               </div>
-            </div>
+            </>
           )}
         </div>
       </div>

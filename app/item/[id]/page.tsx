@@ -9,7 +9,7 @@ import { faCalendarAlt, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
-import { use } from "react";
+import { use, useEffect } from "react";
 
 type Props = {
   params: Promise<{
@@ -25,6 +25,33 @@ export default function Item({ params }: Props) {
   );
   const { loginUser } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
+
+  // 閲覧履歴を保存（最大20件、最新が先頭）
+  useEffect(() => {
+    if (!data) return;
+    try {
+      const key = "view_history";
+      const raw =
+        typeof window !== "undefined" ? localStorage.getItem(key) : null;
+      const list: Array<{
+        id: string;
+        title: string;
+        image: string;
+        viewedAt: string;
+      }> = raw ? JSON.parse(raw) : [];
+      const next = list.filter((e) => (e.id === data.id ? false : true));
+      next.unshift({
+        id: data.id as string,
+        title: data.title || "",
+        image: data.image || "",
+        viewedAt: new Date().toISOString(),
+      });
+      const limited = next.slice(0, 20);
+      localStorage.setItem(key, JSON.stringify(limited));
+    } catch (e) {
+      // noop
+    }
+  }, [data?.id]);
 
   // 日付フォーマット関数
   const formatDate = (dateString: string | undefined) => {
