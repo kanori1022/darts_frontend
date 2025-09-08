@@ -13,6 +13,7 @@ type CardProps = {
   userId?: string | number;
   currentUserId?: string | number;
   onClick?: () => void;
+  priority?: boolean;
 };
 
 export const Card = ({
@@ -23,6 +24,7 @@ export const Card = ({
   userId,
   currentUserId,
   onClick,
+  priority,
 }: CardProps) => {
   const [imageError, setImageError] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
@@ -51,8 +53,8 @@ export const Card = ({
             alt={title}
             width={128}
             height={96}
-            priority={false}
-            loading="lazy"
+            priority={!!priority}
+            loading={priority ? undefined : "lazy"}
             onLoad={() => setImageLoading(false)}
             onError={() => {
               setImageError(true);
@@ -82,7 +84,7 @@ export const Card = ({
 };
 
 export const SrcCard = (props: CardProps) => {
-  const { src, title } = props;
+  const { src, title, priority } = props;
   const [imageError, setImageError] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
 
@@ -104,8 +106,8 @@ export const SrcCard = (props: CardProps) => {
             alt={title}
             width={80}
             height={64}
-            priority={false}
-            loading="lazy"
+            priority={!!priority}
+            loading={priority ? undefined : "lazy"}
             onLoad={() => setImageLoading(false)}
             onError={() => {
               setImageError(true);

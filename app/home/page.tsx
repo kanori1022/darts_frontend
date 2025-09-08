@@ -45,35 +45,18 @@ export default function Home() {
       return;
     }
 
-    // デバッグ用：実際の値を確認
-    console.log("=== ホームページ デバッグ情報 ===");
-    console.log("投稿のuser_id:", userId, "型:", typeof userId);
-    console.log("投稿のfirebase_uid:", firebaseUid, "型:", typeof firebaseUid);
-    console.log(
-      "ログインユーザーのuid:",
-      loginUser.uid,
-      "型:",
-      typeof loginUser.uid
-    );
-    console.log("firebase_uid比較:", firebaseUid === loginUser.uid);
-    console.log(
-      "従来のuser_id比較:",
-      userId && String(userId) === String(loginUser.uid)
-    );
-
-    // 投稿データ全体を確認
-    console.log("投稿データ全体:", { id, userId, firebaseUid });
-    console.log("=================================");
-
     await toggleFavorite(id, userId, firebaseUid);
   };
 
-  // デバッグ情報（開発時のみ）
-  console.log("Popular data:", popularData);
-  console.log("Newest data:", newestData);
+  // 不要なデバッグ出力を削除
 
   // 閲覧履歴の読み込み（APIから）
   useEffect(() => {
+    if (isWaiting) return; // 認証確定まで待機
+    if (!loginUser) {
+      setViewHistory([]);
+      return;
+    }
     (async () => {
       try {
         const { data } = await axios.get("/view_histories", {
@@ -91,7 +74,7 @@ export default function Home() {
         setViewHistory([]);
       }
     })();
-  }, [axios]);
+  }, [axios, loginUser, isWaiting]);
 
   if (popularLoading || newestLoading || isWaiting) {
     return (
@@ -216,6 +199,7 @@ export default function Home() {
                           onClick={() =>
                             (window.location.href = `/item/${combination.id}`)
                           }
+                          priority={index === 0}
                         />
                       </div>
                     </div>
@@ -269,7 +253,7 @@ export default function Home() {
             <div className="flex gap-3 min-w-max">
               {newestData?.combinations &&
               newestData.combinations.length > 0 ? (
-                newestData.combinations.map((combination) => (
+                newestData.combinations.map((combination, index) => (
                   <div
                     key={combination.id}
                     className="flex-shrink-0 w-52 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 overflow-hidden relative z-0"
@@ -291,6 +275,7 @@ export default function Home() {
                         onClick={() =>
                           (window.location.href = `/item/${combination.id}`)
                         }
+                        priority={index === 0}
                       />
                     </div>
                   </div>
@@ -373,9 +358,9 @@ export default function Home() {
                           viewBox="0 0 24 24"
                         >
                           <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
                             d="M9 5l7 7-7 7"
                           />
                         </svg>
@@ -384,7 +369,7 @@ export default function Home() {
                   </div>
                   <div className="overflow-x-auto">
                     <div className="flex gap-3 min-w-max">
-                      {viewHistory.slice(0, 12).map((combination) => (
+                      {viewHistory.slice(0, 12).map((combination, index) => (
                         <div
                           key={combination.id}
                           className="flex-shrink-0 w-52 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 overflow-hidden relative"
@@ -402,6 +387,7 @@ export default function Home() {
                               onClick={() =>
                                 (window.location.href = `/item/${combination.id}`)
                               }
+                              priority={index === 0}
                             />
                           </div>
                         </div>
