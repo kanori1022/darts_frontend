@@ -353,14 +353,34 @@ export default function Home() {
             <>
               {viewHistory.length > 0 && (
                 <section className="mb-6">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-1 h-6 bg-purple-500 rounded-full"></div>
-                    <h2 className="text-xl font-bold text-gray-800">
-                      閲覧履歴
-                    </h2>
-                    <div className="px-2 py-1 bg-purple-100 text-purple-600 text-xs font-medium rounded">
-                      RECENT
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-1 h-6 bg-purple-500 rounded-full"></div>
+                      <h2 className="text-xl font-bold text-gray-800">
+                        閲覧履歴
+                      </h2>
+                      <div className="px-2 py-1 bg-purple-100 text-purple-600 text-xs font-medium rounded">
+                        RECENT
+                      </div>
                     </div>
+                    <Link href="/history">
+                      <button className="text-purple-600 hover:text-purple-700 font-medium text-sm transition-colors duration-200 flex items-center gap-1 cursor-pointer">
+                        全て表示
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                      </button>
+                    </Link>
                   </div>
                   <div className="overflow-x-auto">
                     <div className="flex gap-3 min-w-max">
