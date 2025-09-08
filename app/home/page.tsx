@@ -4,6 +4,7 @@ import { Button } from "@/components/Button/Button";
 import { Card } from "@/components/Card/Card";
 import { useFavorites } from "@/hooks/api/useFavorites";
 import useAuth from "@/hooks/auth/useAuth";
+import { useAxios } from "@/hooks/axios/useAxios";
 import { useFetch } from "@/hooks/fetch/useFetch";
 import { Combination } from "@/types/combination";
 import { faCrown } from "@fortawesome/free-solid-svg-icons";
@@ -32,6 +33,7 @@ export default function Home() {
     useFetch<CombinationsResponse>("/combinations/newest?limit=15&offset=0");
   const { loginUser, isWaiting } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
+  const axios = useAxios();
 
   const handleToggleFavorite = async (
     id: string,
@@ -70,30 +72,26 @@ export default function Home() {
   console.log("Popular data:", popularData);
   console.log("Newest data:", newestData);
 
-  // 閲覧履歴の読み込み（初期表示のみ）
+  // 閲覧履歴の読み込み（APIから）
   useEffect(() => {
-    try {
-      const raw =
-        typeof window !== "undefined"
-          ? localStorage.getItem("view_history")
-          : null;
-      if (!raw) return;
-      const list: Array<{
-        id: string;
-        title: string;
-        image: string;
-        viewedAt: string;
-      }> = JSON.parse(raw);
-      const mapped: HistoryItem[] = list.map((e) => ({
-        id: e.id,
-        title: e.title,
-        image: e.image,
-      }));
-      setViewHistory(mapped);
-    } catch {
-      // noop
-    }
-  }, []);
+    (async () => {
+      try {
+        const { data } = await axios.get("/view_histories", {
+          params: { limit: 12, offset: 0 },
+        });
+        const mapped: HistoryItem[] = (data?.histories || []).map(
+          (h: { id: string | number; title: string; image: string }) => ({
+            id: String(h.id),
+            title: h.title,
+            image: h.image,
+          })
+        );
+        setViewHistory(mapped);
+      } catch {
+        setViewHistory([]);
+      }
+    })();
+  }, [axios]);
 
   if (popularLoading || newestLoading || isWaiting) {
     return (

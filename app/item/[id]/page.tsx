@@ -3,6 +3,7 @@
 import LabelValueRow from "@/components/LabelValueRow/LabelValueRow";
 import { useFavorites } from "@/hooks/api/useFavorites";
 import useAuth from "@/hooks/auth/useAuth";
+import { useAxios } from "@/hooks/axios/useAxios";
 import { useFetch } from "@/hooks/fetch/useFetch";
 import { Combination } from "@/types/combination";
 import { faCalendarAlt, faUser } from "@fortawesome/free-solid-svg-icons";
@@ -25,33 +26,19 @@ export default function Item({ params }: Props) {
   );
   const { loginUser } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
+  const axios = useAxios();
 
-  // 閲覧履歴を保存（最大20件、最新が先頭）
+  // 閲覧履歴をAPIに保存
   useEffect(() => {
-    if (!data) return;
-    try {
-      const key = "view_history";
-      const raw =
-        typeof window !== "undefined" ? localStorage.getItem(key) : null;
-      const list: Array<{
-        id: string;
-        title: string;
-        image: string;
-        viewedAt: string;
-      }> = raw ? JSON.parse(raw) : [];
-      const next = list.filter((e) => (e.id === data.id ? false : true));
-      next.unshift({
-        id: data.id as string,
-        title: data.title || "",
-        image: data.image || "",
-        viewedAt: new Date().toISOString(),
-      });
-      const limited = next.slice(0, 20);
-      localStorage.setItem(key, JSON.stringify(limited));
-    } catch (e) {
-      // noop
-    }
-  }, [data?.id]);
+    if (!data || !loginUser) return;
+    (async () => {
+      try {
+        await axios.post("/view_histories", { combination_id: data.id });
+      } catch {
+        // 失敗してもUIには影響させない
+      }
+    })();
+  }, [data?.id, loginUser]);
 
   // 日付フォーマット関数
   const formatDate = (dateString: string | undefined) => {
