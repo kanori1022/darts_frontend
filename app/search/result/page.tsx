@@ -1,5 +1,5 @@
 "use client";
-import { Card } from "@/components/Card/Card";
+import { Card } from "@/components/Card";
 import { useFavorites } from "@/hooks/api/useFavorites";
 import useAuth from "@/hooks/auth/useAuth";
 import { useFetch } from "@/hooks/fetch/useFetch";

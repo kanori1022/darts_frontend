@@ -16,7 +16,7 @@ type CardProps = {
   priority?: boolean;
 };
 
-const Card = ({
+export const Card = ({
   src,
   title,
   isFavorite,
@@ -120,5 +120,4 @@ const SrcCard = (props: CardProps) => {
   );
 };
 
-export default Card;
 export { SrcCard };
