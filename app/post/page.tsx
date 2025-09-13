@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@/components/Button";
-import { InputLong, InputShort } from "@/components/Input";
+import { Button } from "@/components/Button/Button";
+import { InputLong, InputShort } from "@/components/Input/Input";
 import { useCreateCombination } from "@/hooks/api/useCreateCombination";
 import useAuth from "@/hooks/auth/useAuth";
 import { CombinationParams } from "@/types/combination";
