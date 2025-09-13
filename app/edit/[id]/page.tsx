@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@/components/Button/Button";
-import { InputLong, InputShort } from "@/components/Input/Input";
+import { Button } from "@/components/Button";
+import { InputLong, InputShort } from "@/components/Input";
 import useAuth from "@/hooks/auth/useAuth";
 import { useFetch } from "@/hooks/fetch/useFetch";
 import { Combination } from "@/types/combination";
