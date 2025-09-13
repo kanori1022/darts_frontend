@@ -83,7 +83,7 @@ export const Card = ({
   );
 };
 
-export const SrcCard = (props: CardProps) => {
+const SrcCard = (props: CardProps) => {
   const { src, title, priority } = props;
   const [imageError, setImageError] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
@@ -119,3 +119,5 @@ export const SrcCard = (props: CardProps) => {
     </div>
   );
 };
+
+export { SrcCard };
