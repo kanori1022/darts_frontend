@@ -5,18 +5,19 @@ type InputProps = {
   placeholder: string;
   value?: string;
   maxLength?: number;
+  type?: string;
   onChange?: ChangeEventHandler<HTMLInputElement>;
 };
 
 export const InputShort = (props: InputProps) => {
-  const { children, placeholder, onChange } = props;
+  const { children, placeholder, type = "text", onChange } = props;
   return (
     <>
       <p className="text-left">{children}</p>
       {/* <div className="relative w-70 mb-8 group"> */}
       <input
         className="border-2 rounded-sm w-70 placeholder-[#A39C9C] border-[#E0E0E0]"
-        type="text"
+        type={type}
         placeholder={placeholder}
         onChange={onChange}
       ></input>
@@ -49,13 +50,20 @@ export const InputShort = (props: InputProps) => {
 };
 
 export const InputLong = (props: InputProps) => {
-  const { children, placeholder, value, maxLength, onChange } = props;
+  const {
+    children,
+    placeholder,
+    value,
+    maxLength,
+    type = "text",
+    onChange,
+  } = props;
   return (
     <>
       <p className="mt-5 text-left">{children}</p>
       <input
         className="border-2 rounded-sm w-full placeholder-[#A39C9C] border-[#E0E0E0]"
-        type="text"
+        type={type}
         placeholder={placeholder}
         value={value}
         maxLength={maxLength}
