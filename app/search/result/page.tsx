@@ -1,5 +1,5 @@
 "use client";
-import { Card } from "@/components/Card/Card";
+import { Card } from "@/components/Card";
 import { useFavorites } from "@/hooks/api/useFavorites";
 import useAuth from "@/hooks/auth/useAuth";
 import { useFetch } from "@/hooks/fetch/useFetch";
@@ -28,30 +28,15 @@ function SearchResultContent() {
 
   // 検索フォームの状態
   const [searchForm, setSearchForm] = useState({
-    searchWord: "",
-    tags: "",
-    username: "",
+    searchWord: searchParams.get("searchWord") || "",
+    tags: searchParams.get("tags") || "",
+    username: searchParams.get("username") || "",
   });
-
-  // 検索条件の状態
-  const [searchConditions, setSearchConditions] = useState({
-    searchWord: "",
-    tags: "",
-    username: "",
-  });
-
-  // クライアントサイドでURLパラメータを初期化
-  useEffect(() => {
-    const searchWord = searchParams.get("searchWord") || "";
-    const tags = searchParams.get("tags") || "";
-    const username = searchParams.get("username") || "";
-
-    setSearchForm({ searchWord, tags, username });
-    setSearchConditions({ searchWord, tags, username });
-  }, [searchParams]);
 
   // 検索条件を取得
-  const { searchWord, tags, username } = searchConditions;
+  const searchWord = searchParams.get("searchWord") || "";
+  const tags = searchParams.get("tags") || "";
+  const username = searchParams.get("username") || "";
 
   // 検索条件に基づいてAPIからデータを取得
   const searchQuery = useMemo(() => {
@@ -197,8 +182,9 @@ function SearchResultContent() {
           <div className="mb-6 bg-gray-50 border border-gray-200 rounded-lg p-4">
             <div className="space-y-1 text-center">
               <p className="text-sm text-gray-600">
-                検索条件: {searchWord || "なし"} / タグ: {tags || "なし"} /
-                ユーザー名: {username || "なし"}
+                検索条件: {searchParams.get("searchWord") || "なし"} / タグ:{" "}
+                {searchParams.get("tags") || "なし"} / ユーザー名:{" "}
+                {searchParams.get("username") || "なし"}
               </p>
               <p className="text-sm text-gray-600">
                 結果件数: {data?.pagination.total_count || 0}件
