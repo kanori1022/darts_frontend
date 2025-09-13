@@ -1,6 +1,6 @@
 "use client";
 
-import { Card } from "@/components/Card/Card";
+import { Card } from "@/components/Card";
 import { useFavorites } from "@/hooks/api/useFavorites";
 import useAuth from "@/hooks/auth/useAuth";
 import { useAxios } from "@/hooks/axios/useAxios";
@@ -59,7 +59,7 @@ export default function HistoryPage() {
       return;
     }
     load(currentPage);
-  }, [currentPage, loginUser, isWaiting]);
+  }, [currentPage, loginUser, isWaiting, emptyData, load]);
 
   const currentData = useMemo<HistoryItem[]>(() => {
     return (data?.histories || []).map((h) => ({
