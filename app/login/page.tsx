@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@/components/Button";
-import { InputLong } from "@/components/Input";
+import { Button } from "@/components/Button/Button";
+import { InputLong } from "@/components/Input/Input";
 import useAuth from "@/hooks/auth/useAuth";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/navigation";

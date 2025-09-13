@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@/components/Button";
-import { Card } from "@/components/Card";
+import { Button } from "@/components/Button/Button";
+import { Card } from "@/components/Card/Card";
 import { useDeleteCombination } from "@/hooks/api/useDeleteCombination";
 import useAuth from "@/hooks/auth/useAuth";
 import { useFetch } from "@/hooks/fetch/useFetch";

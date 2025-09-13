@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
-import { SrcButton } from "@/components/Button";
-import { InputLong } from "@/components/Input";
+import { SrcButton } from "@/components/Button/Button";
+import { InputLong } from "@/components/Input/Input";
 import {
   faChevronDown,
   faChevronUp,

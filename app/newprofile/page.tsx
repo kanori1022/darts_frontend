@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@/components/Button";
-import { InputLong } from "@/components/Input";
+import { Button } from "@/components/Button/Button";
+import { InputLong } from "@/components/Input/Input";
 import { FirebaseError, getApp, getApps, initializeApp } from "firebase/app";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import { useState } from "react";

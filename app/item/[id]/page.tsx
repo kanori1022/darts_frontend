@@ -1,6 +1,6 @@
 "use client";
 
-import { LabelValueRow } from "@/components/LabelValueRow";
+import LabelValueRow from "@/components/LabelValueRow/LabelValueRow";
 import { useFavorites } from "@/hooks/api/useFavorites";
 import useAuth from "@/hooks/auth/useAuth";
 import { useAxios } from "@/hooks/axios/useAxios";
