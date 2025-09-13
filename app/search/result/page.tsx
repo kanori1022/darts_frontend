@@ -1,11 +1,11 @@
 "use client";
-import { Card } from "@/components/Card/Card";
+import { Card } from "@/components/Card";
 import { useFavorites } from "@/hooks/api/useFavorites";
 import useAuth from "@/hooks/auth/useAuth";
 import { useFetch } from "@/hooks/fetch/useFetch";
 import { Combination } from "@/types/combination";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 
 // APIレスポンスの型定義
 type SearchResponse = {
@@ -18,7 +18,7 @@ type SearchResponse = {
   };
 };
 
-export default function SearchResult() {
+function SearchResultContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
@@ -285,5 +285,20 @@ export default function SearchResult() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function SearchResult() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+          <span className="ml-3 text-gray-600 font-medium">読み込み中...</span>
+        </div>
+      }
+    >
+      <SearchResultContent />
+    </Suspense>
   );
 }
