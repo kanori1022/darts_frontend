@@ -1,6 +1,6 @@
 "use client";
 
-import { LabelValueRow } from "@/components/LabelValueRow";
+import LabelValueRow from "@/components/LabelValueRow/LabelValueRow";
 import { useFavorites } from "@/hooks/api/useFavorites";
 import useAuth from "@/hooks/auth/useAuth";
 import { useAxios } from "@/hooks/axios/useAxios";
@@ -38,7 +38,7 @@ export default function Item({ params }: Props) {
         // 失敗してもUIには影響させない
       }
     })();
-  }, [data?.id, loginUser, axios]);
+  }, [data?.id, loginUser]);
 
   // 日付フォーマット関数
   const formatDate = (dateString: string | undefined) => {
