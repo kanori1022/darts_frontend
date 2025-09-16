@@ -3,8 +3,9 @@
 import { Button } from "@/components/Button/Button";
 import useAuth from "@/hooks/auth/useAuth";
 import { useFetch } from "@/hooks/fetch/useFetch";
+import { useFetchPublic } from "@/hooks/fetch/useFetchPublic";
 import { User } from "@/types/user";
-import { faCalendarAlt, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
@@ -20,14 +21,30 @@ export default function UserProfile({ params }: Props) {
   const { id } = use(params);
   const { loginUser, isWaiting } = useAuth();
 
+  // 現在のユーザー情報を取得
   const {
-    data: currentUserData,
-    error,
-    isLoading,
-  } = useFetch<User>(id ? `/users/${id}` : null);
+    data: currentUser,
+    error: currentUserError,
+    isLoading: currentUserLoading,
+  } = useFetch<User>(loginUser ? "/users" : null);
+
+  // 表示したいユーザー情報を取得（認証不要）
+  const {
+    data: targetUser,
+    error: targetUserError,
+    isLoading: targetUserLoading,
+  } = useFetchPublic<User>(`/users/${id}`);
+
+  // デバッグ情報を追加
+  console.log("UserProfile Debug Info:", {
+    id,
+    currentUser,
+    targetUser,
+    isCurrentUser: currentUser?.id === id,
+  });
 
   // ローディング状態
-  if (isLoading || isWaiting) {
+  if (currentUserLoading || targetUserLoading || isWaiting) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="bg-white p-8 rounded-lg shadow-md">
@@ -38,8 +55,8 @@ export default function UserProfile({ params }: Props) {
     );
   }
 
-  // エラーまたはデータがない場合
-  if (error || !currentUserData) {
+  // 表示したいユーザーが見つからない場合
+  if (targetUserError || !targetUser) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="bg-white p-8 rounded-lg shadow-md text-center max-w-md">
@@ -48,7 +65,7 @@ export default function UserProfile({ params }: Props) {
             ユーザーが見つかりません
           </h2>
           <p className="text-gray-600 mb-4">
-            ユーザーID「{id}」は存在しないか、アクセスできません。
+            指定されたユーザー情報を取得できませんでした。
           </p>
           <div className="space-y-2">
             <Link href="/home">
@@ -56,8 +73,44 @@ export default function UserProfile({ params }: Props) {
                 ホームに戻る
               </Button>
             </Link>
+            {currentUser && (
+              <Link href="/mypage">
+                <Button color="bg-gray-500 hover:bg-gray-600">
+                  マイページ
+                </Button>
+              </Link>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 現在のユーザーと表示したいユーザーが一致するかチェック
+  const isOwnProfile = currentUser?.id === id;
+
+  // 自分のプロフィールの場合はマイページにリダイレクト
+  if (isOwnProfile) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="bg-white p-8 rounded-lg shadow-md text-center max-w-md">
+          <div className="text-blue-500 text-4xl mb-4">👤</div>
+          <h2 className="text-xl font-bold text-gray-800 mb-2">
+            自分のプロフィール
+          </h2>
+          <p className="text-gray-600 mb-4">
+            自分のプロフィールを編集する場合は、マイページをご利用ください。
+          </p>
+          <div className="space-y-2">
             <Link href="/mypage">
-              <Button color="bg-gray-500 hover:bg-gray-600">マイページ</Button>
+              <Button color="bg-blue-500 hover:bg-blue-600">
+                マイページに移動
+              </Button>
+            </Link>
+            <Link href="/home">
+              <Button color="bg-gray-500 hover:bg-gray-600">
+                ホームに戻る
+              </Button>
             </Link>
           </div>
         </div>
@@ -65,148 +118,124 @@ export default function UserProfile({ params }: Props) {
     );
   }
 
-  // 日付フォーマット関数
-  const formatDate = (dateString: string | undefined) => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    return date.toLocaleDateString("ja-JP", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
-
-  // 自己紹介文を取得（description または introduction のどちらかを使用）
-  const userDescription =
-    currentUserData.description || currentUserData.introduction;
-
+  // 他のユーザーのプロフィール表示
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Header Section */}
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-          {/* Profile Info */}
-          <div className="p-6 border-b border-gray-100">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-              {/* Avatar */}
-              <div className="flex-shrink-0">
-                <div className="w-24 h-24 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
-                  {currentUserData.name
-                    ? currentUserData.name.charAt(0).toUpperCase()
-                    : "U"}
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
+      {/* ヘッダー部分 */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-4xl mx-auto px-6 py-8">
+          <h1 className="text-3xl font-bold text-gray-800 text-center">
+            {targetUser.name || "未設定のユーザー"}のプロフィール
+          </h1>
+        </div>
+      </div>
+
+      {/* メインコンテンツ */}
+      <div className="max-w-2xl mx-auto px-6 py-8">
+        <div className="animate-fade-in">
+          {/* プロフィールカード */}
+          <div>
+            <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+              {/* プロフィールヘッダー */}
+              <div className="bg-gradient-to-r from-blue-500 to-green-500 px-8 py-12 text-center relative">
+                <div className="relative z-10">
+                  {/* プロフィール画像 */}
+                  <div className="inline-block relative">
+                    {targetUser?.image ? (
+                      <Image
+                        src={targetUser.image}
+                        alt="プロフィール画像"
+                        width={120}
+                        height={120}
+                        className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-xl"
+                      />
+                    ) : (
+                      <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center border-4 border-white shadow-xl">
+                        <FontAwesomeIcon
+                          icon={faCircleUser}
+                          className="text-gray-400 text-6xl"
+                        />
+                      </div>
+                    )}
+                    {/* オンライン状態インジケーター */}
+                    <div className="absolute bottom-2 right-2 w-6 h-6 bg-green-400 rounded-full border-2 border-white"></div>
+                  </div>
+
+                  {/* ユーザー名 */}
+                  <h2 className="text-2xl font-bold text-white mt-4 mb-2">
+                    {targetUser?.name || "未設定のユーザー"}
+                  </h2>
+                </div>
+
+                {/* 背景の装飾 */}
+                <div className="absolute top-0 left-0 w-full h-full opacity-10">
+                  <div className="absolute top-4 left-4 w-8 h-8 border-2 border-white rounded-full"></div>
+                  <div className="absolute top-8 right-8 w-6 h-6 border-2 border-white rotate-45"></div>
+                  <div className="absolute bottom-6 left-8 w-4 h-4 border-2 border-white rounded-full"></div>
                 </div>
               </div>
 
-              {/* User Info */}
-              <div className="flex-1 min-w-0">
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
-                  {currentUserData.name || "匿名ユーザー"}
-                </h1>
-                <div className="flex items-center gap-4 text-sm text-gray-600">
-                  <div className="flex items-center gap-2">
-                    <FontAwesomeIcon icon={faUser} className="text-blue-500" />
-                    <span>ユーザーID: {currentUserData.id}</span>
+              {/* プロフィール詳細 */}
+              <div className="p-8">
+                {/* 自己紹介セクション */}
+                <div className="mb-8">
+                  <div className="flex items-center mb-4">
+                    <div className="w-1 h-6 bg-gradient-to-b from-blue-500 to-green-500 rounded-full mr-3"></div>
+                    <h3 className="text-xl font-bold text-gray-800">
+                      自己紹介
+                    </h3>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <FontAwesomeIcon
-                      icon={faCalendarAlt}
-                      className="text-green-500"
-                    />
-                    <span>
-                      登録日: {formatDate(currentUserData.created_at)}
-                    </span>
+                  <div className="bg-gray-50 rounded-xl p-6 border-l-4 border-blue-500">
+                    {targetUser?.introduction ? (
+                      <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                        {targetUser.introduction}
+                      </p>
+                    ) : (
+                      <div className="text-center py-8">
+                        <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <FontAwesomeIcon
+                            icon={faCircleUser}
+                            className="text-gray-400 text-2xl"
+                          />
+                        </div>
+                        <p className="text-gray-500 italic">
+                          自己紹介が設定されていません
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
-              </div>
 
-              {/* Action Buttons */}
-              {loginUser && loginUser.uid === currentUserData.firebase_uid && (
-                <div className="flex gap-2">
-                  <Link href="/mypage">
-                    <Button color="bg-blue-600 hover:bg-blue-700">
-                      マイページ
-                    </Button>
+                {/* アクションボタン */}
+                <div className="space-y-4">
+                  <Link href="/home" className="block">
+                    <div className="group bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white p-4 rounded-xl transition-all duration-200 transform hover:scale-105 hover:shadow-lg cursor-pointer">
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium">ホームに戻る</span>
+                        <div className="text-blue-200 group-hover:text-white transition-colors">
+                          →
+                        </div>
+                      </div>
+                    </div>
                   </Link>
-                </div>
-              )}
-            </div>
-          </div>
 
-          {/* User Stats */}
-          <div className="p-6 bg-gray-50">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">
-                  {currentUserData.combinations_count || 0}
+                  {currentUser && (
+                    <Link href="/mypage" className="block">
+                      <div className="group bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white p-4 rounded-xl transition-all duration-200 transform hover:scale-105 hover:shadow-lg cursor-pointer">
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium">マイページ</span>
+                          <div className="text-green-200 group-hover:text-white transition-colors">
+                            →
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  )}
                 </div>
-                <div className="text-sm text-gray-600">投稿数</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">
-                  {currentUserData.favorites_count || 0}
-                </div>
-                <div className="text-sm text-gray-600">お気に入り数</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-purple-600">
-                  {currentUserData.view_count || 0}
-                </div>
-                <div className="text-sm text-gray-600">閲覧数</div>
               </div>
             </div>
           </div>
         </div>
-
-        {/* User Description */}
-        {userDescription && (
-          <div className="mt-6 bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-              <div className="w-1 h-6 bg-blue-500 rounded-full mr-3"></div>
-              自己紹介
-            </h2>
-            <p className="text-gray-600 leading-relaxed bg-gray-50 p-4 rounded-lg">
-              {userDescription}
-            </p>
-          </div>
-        )}
-
-        {/* Recent Posts */}
-        {currentUserData.recent_combinations &&
-          currentUserData.recent_combinations.length > 0 && (
-            <div className="mt-6 bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
-                <div className="w-1 h-6 bg-blue-500 rounded-full mr-3"></div>
-                最近の投稿
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {currentUserData.recent_combinations.map(
-                  (combination, index) => (
-                    <Link
-                      key={index}
-                      href={`/item/${combination.id}`}
-                      className="block bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors duration-200"
-                    >
-                      <div className="aspect-w-16 aspect-h-9 mb-3">
-                        <Image
-                          src={combination.image}
-                          alt={combination.title}
-                          width={200}
-                          height={150}
-                          className="w-full h-32 object-cover rounded-lg"
-                        />
-                      </div>
-                      <h3 className="font-medium text-gray-800 text-sm mb-2 line-clamp-2">
-                        {combination.title}
-                      </h3>
-                      <p className="text-xs text-gray-500">
-                        {formatDate(combination.created_at)}
-                      </p>
-                    </Link>
-                  )
-                )}
-              </div>
-            </div>
-          )}
       </div>
     </div>
   );
