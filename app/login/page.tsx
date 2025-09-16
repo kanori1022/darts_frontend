@@ -22,6 +22,7 @@ export default function Login() {
     email: "",
     pass: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
   console.log(login);
   const { auth, loginUser: currentUser, handleSignOut } = useAuth();
   const router = useRouter();
@@ -95,6 +96,7 @@ export default function Login() {
             </InputLong>
 
             <InputLong
+              type={showPassword ? "text" : "password"}
               placeholder="パスワード"
               onChange={(e) => {
                 setLogin({ ...login, pass: e.target.value });
@@ -102,6 +104,23 @@ export default function Login() {
             >
               パスワード
             </InputLong>
+
+            {/* パスワード表示切り替えチェックボックス */}
+            <div className="flex items-center mt-2">
+              <input
+                type="checkbox"
+                id="showPassword"
+                checked={showPassword}
+                onChange={(e) => setShowPassword(e.target.checked)}
+                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+              />
+              <label
+                htmlFor="showPassword"
+                className="ml-2 text-sm text-gray-700 cursor-pointer"
+              >
+                パスワードを表示する
+              </label>
+            </div>
           </div>
           <Button
             color="bg-[#3B82F6]"
