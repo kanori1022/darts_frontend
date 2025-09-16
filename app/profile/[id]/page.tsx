@@ -219,18 +219,16 @@ export default function UserProfile({ params }: Props) {
                     </div>
                   </Link>
 
-                  {currentUser && (
-                    <Link href="/mypage" className="block">
-                      <div className="group bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white p-4 rounded-xl transition-all duration-200 transform hover:scale-105 hover:shadow-lg cursor-pointer">
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium">マイページ</span>
-                          <div className="text-green-200 group-hover:text-white transition-colors">
-                            →
-                          </div>
+                  <Link href={`/user-posts/${id}`} className="block">
+                    <div className="group bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white p-4 rounded-xl transition-all duration-200 transform hover:scale-105 hover:shadow-lg cursor-pointer">
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium">投稿一覧を見る</span>
+                        <div className="text-green-200 group-hover:text-white transition-colors">
+                          →
                         </div>
                       </div>
-                    </Link>
-                  )}
+                    </div>
+                  </Link>
                 </div>
               </div>
             </div>
