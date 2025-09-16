@@ -31,7 +31,7 @@ export const Card = ({
 
   return (
     <div className="px-4 pb-2 w-40 flex flex-col justify-between">
-      <div className="w-40 text-[#000000] h-12 flex items-center justify-center text-center leading-tight overflow-hidden">
+      <div className="w-40 text-[#000000] h-12 flex items-center justify-start text-left leading-tight overflow-hidden text-sm">
         <span
           className="block"
           style={{
