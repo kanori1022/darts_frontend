@@ -128,7 +128,10 @@ export default function HistoryPage() {
                             title={item.title}
                             isFavorite={isFavorite(item.id)}
                             onToggleFavorite={() => toggleFavorite(item.id)}
+                            userId={undefined}
                             currentUserId={loginUser?.uid}
+                            firebaseUid={undefined}
+                            currentFirebaseUid={loginUser?.uid}
                             onClick={() =>
                               (window.location.href = `/item/${item.id}`)
                             }
