@@ -224,11 +224,8 @@ function SearchResultContent() {
                       </div>
 
                       {/* 詳細情報とボタン */}
-                      <div className="flex-1 flex flex-col justify-between">
-                        <div>
-                          <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                            {combination.title}
-                          </h3>
+                      <div className="flex-1 flex flex-col justify-center">
+                        <div className="mt-10">
                           <div className="text-sm text-gray-600 space-y-1">
                             <p>フライト: {combination.flight}</p>
                             <p>シャフト: {combination.shaft}</p>
