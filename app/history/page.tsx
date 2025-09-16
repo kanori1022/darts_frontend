@@ -135,6 +135,7 @@ export default function HistoryPage() {
                             onClick={() =>
                               (window.location.href = `/item/${item.id}`)
                             }
+                            tags={item.tags}
                           />
                         </div>
 

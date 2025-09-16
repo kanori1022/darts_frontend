@@ -217,12 +217,13 @@ export default function Item({ params }: Props) {
               <h3 className="text-lg font-semibold text-gray-800 mb-3">タグ</h3>
               <div className="flex flex-wrap gap-2">
                 {data.tags.map((tag, index) => (
-                  <span
+                  <Link
                     key={index}
-                    className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200 hover:bg-blue-200 transition-colors duration-200"
+                    href={`/search/result?tags=${encodeURIComponent(tag)}`}
+                    className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200 hover:bg-blue-200 transition-colors duration-200 cursor-pointer"
                   >
                     #{tag}
-                  </span>
+                  </Link>
                 ))}
               </div>
             </div>

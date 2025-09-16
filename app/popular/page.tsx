@@ -193,6 +193,7 @@ export default function PopularPage() {
                               onClick={() =>
                                 (window.location.href = `/item/${combination.id}`)
                               }
+                              tags={combination.tags}
                             />
                           </div>
 

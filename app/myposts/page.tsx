@@ -43,6 +43,7 @@ const CombinationCard = memo(function CombinationCard({
               title={combination.title}
               // 自分の投稿なので、お気に入り機能は無効
               // onToggleFavoriteとisFavoriteを渡さないことで、お気に入りボタンは表示されない
+              tags={combination.tags}
             />
           </div>
 
