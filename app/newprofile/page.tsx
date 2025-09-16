@@ -60,14 +60,17 @@ export default function Newprofile() {
 
     try {
       // 1. Firebase認証でユーザーを作成
+      console.log("Firebase認証開始...");
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
       const firebaseUser = userCredential.user;
+      console.log("Firebase認証成功:", firebaseUser.uid);
 
       // 2. API側にユーザー情報を登録
+      console.log("API側登録開始...");
       await createUser({
         user: {
           name: name,
@@ -76,6 +79,7 @@ export default function Newprofile() {
         },
         firebase_uid: firebaseUser.uid,
       });
+      console.log("API側登録成功");
 
       setSuccess(true);
 
@@ -84,6 +88,8 @@ export default function Newprofile() {
         router.push("/home");
       }, 2000);
     } catch (err: unknown) {
+      console.error("登録エラー:", err);
+
       if (err instanceof FirebaseError) {
         switch (err.code) {
           case "auth/email-already-in-use":
@@ -96,10 +102,15 @@ export default function Newprofile() {
             setError("パスワードが弱すぎます。");
             break;
           default:
-            setError(err.message);
+            setError(`Firebase認証エラー: ${err.message}`);
         }
       } else {
-        setError("予期しないエラーが発生しました。");
+        // API側のエラーの可能性
+        const errorMessage =
+          err instanceof Error
+            ? err.message
+            : "予期しないエラーが発生しました。";
+        setError(`API登録エラー: ${errorMessage}`);
       }
     } finally {
       setIsLoading(false);
