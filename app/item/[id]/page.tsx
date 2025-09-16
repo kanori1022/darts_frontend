@@ -28,6 +28,15 @@ export default function Item({ params }: Props) {
   const { isFavorite, toggleFavorite } = useFavorites();
   const axios = useAxios();
 
+  // デバッグ情報を追加
+  console.log("Item Debug Info:", {
+    id,
+    data,
+    user_id: data?.user_id,
+    user_name: data?.user_name,
+    error,
+  });
+
   // 閲覧履歴をAPIに保存
   useEffect(() => {
     if (!data || !loginUser) return;
@@ -38,7 +47,7 @@ export default function Item({ params }: Props) {
         // 失敗してもUIには影響させない
       }
     })();
-  }, [data?.id, loginUser]);
+  }, [data?.id, loginUser, axios]);
 
   // 日付フォーマット関数
   const formatDate = (dateString: string | undefined) => {
@@ -151,12 +160,18 @@ export default function Item({ params }: Props) {
             <div className="flex items-center gap-6 text-sm text-gray-600">
               <div className="flex items-center gap-2">
                 <FontAwesomeIcon icon={faUser} className="text-blue-500" />
-                <Link
-                  href={`/profile/${data.user_id}`}
-                  className="font-medium text-blue-600 hover:text-blue-800 hover:underline cursor-pointer transition-colors duration-200"
-                >
-                  {data.user_name || "匿名ユーザー"}
-                </Link>
+                {data.user_id ? (
+                  <Link
+                    href={`/profile/${data.user_id}`}
+                    className="font-medium text-blue-600 hover:text-blue-800 hover:underline cursor-pointer transition-colors duration-200"
+                  >
+                    {data.user_name || "匿名ユーザー"}
+                  </Link>
+                ) : (
+                  <span className="font-medium text-gray-600">
+                    {data.user_name || "匿名ユーザー"}
+                  </span>
+                )}
               </div>
               <div className="flex items-center gap-2">
                 <FontAwesomeIcon

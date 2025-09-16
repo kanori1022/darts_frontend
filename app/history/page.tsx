@@ -4,12 +4,22 @@ import { Card } from "@/components/Card";
 import { useFavorites } from "@/hooks/api/useFavorites";
 import useAuth from "@/hooks/auth/useAuth";
 import { useAxios } from "@/hooks/axios/useAxios";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-type HistoryItem = { id: string; title: string; image: string };
+type HistoryItem = {
+  id: string;
+  title: string;
+  image: string;
+  tags?: string[];
+};
 
 type HistoryResponse = {
-  histories: Array<{ id: string | number; title: string; image: string }>;
+  histories: Array<{
+    id: string | number;
+    title: string;
+    image: string;
+    tags?: string[];
+  }>;
   pagination: {
     current_page: number;
     per_page: number;
@@ -27,30 +37,36 @@ export default function HistoryPage() {
   const [data, setData] = useState<HistoryResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const emptyData: HistoryResponse = {
-    histories: [],
-    pagination: {
-      current_page: 1,
-      per_page: itemsPerPage,
-      total_count: 0,
-      total_pages: 0,
-    },
-  };
+  const emptyData: HistoryResponse = useMemo(
+    () => ({
+      histories: [],
+      pagination: {
+        current_page: 1,
+        per_page: itemsPerPage,
+        total_count: 0,
+        total_pages: 0,
+      },
+    }),
+    [itemsPerPage]
+  );
 
-  const load = async (page: number) => {
-    setIsLoading(true);
-    try {
-      const offset = (page - 1) * itemsPerPage;
-      const { data } = await axios.get("/view_histories", {
-        params: { limit: itemsPerPage, offset },
-      });
-      setData(data as HistoryResponse);
-    } catch {
-      setData(emptyData);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const load = useCallback(
+    async (page: number) => {
+      setIsLoading(true);
+      try {
+        const offset = (page - 1) * itemsPerPage;
+        const { data } = await axios.get("/view_histories", {
+          params: { limit: itemsPerPage, offset },
+        });
+        setData(data as HistoryResponse);
+      } catch {
+        setData(emptyData);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [axios, itemsPerPage, emptyData]
+  );
 
   useEffect(() => {
     if (isWaiting) return;
@@ -59,13 +75,14 @@ export default function HistoryPage() {
       return;
     }
     load(currentPage);
-  }, [currentPage, loginUser, isWaiting]);
+  }, [currentPage, loginUser, isWaiting, load, emptyData]);
 
   const currentData = useMemo<HistoryItem[]>(() => {
     return (data?.histories || []).map((h) => ({
       id: String(h.id),
       title: h.title,
       image: h.image,
+      tags: h.tags || [],
     }));
   }, [data]);
 

@@ -23,7 +23,12 @@ type CombinationsResponse = {
   };
 };
 
-type HistoryItem = { id: string; title: string; image: string };
+type HistoryItem = {
+  id: string;
+  title: string;
+  image: string;
+  tags?: string[];
+};
 
 export default function Home() {
   const [viewHistory, setViewHistory] = useState<HistoryItem[]>([]);
@@ -63,10 +68,16 @@ export default function Home() {
           params: { limit: 12, offset: 0 },
         });
         const mapped: HistoryItem[] = (data?.histories || []).map(
-          (h: { id: string | number; title: string; image: string }) => ({
+          (h: {
+            id: string | number;
+            title: string;
+            image: string;
+            tags?: string[];
+          }) => ({
             id: String(h.id),
             title: h.title,
             image: h.image,
+            tags: h.tags || [],
           })
         );
         setViewHistory(mapped);

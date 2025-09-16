@@ -9,4 +9,6 @@ export type User = {
   image: string;
   name: string;
   introduction?: string;
+  created_at?: string;
+  updated_at?: string;
 };

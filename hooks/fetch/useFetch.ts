@@ -3,9 +3,37 @@ import { useAxios } from "../axios/useAxios";
 
 export const useFetch = <T>(url: string | null) => {
   const axios = useAxios();
+
+  // デバッグ情報を追加
+  if (url) {
+    console.log("useFetch Debug Info:", {
+      url,
+      baseURL: axios.defaults.baseURL,
+      fullURL: `${axios.defaults.baseURL}${url}`,
+      headers: axios.defaults.headers,
+    });
+  }
+
   const { data, error, isLoading } = useSWR<T>(
     url,
-    url ? () => axios.get(url).then(({ data }) => data as T) : null,
+    url
+      ? () => {
+          console.log(
+            "Making API request to:",
+            `${axios.defaults.baseURL}${url}`
+          );
+          return axios
+            .get(url)
+            .then(({ data }) => {
+              console.log("API response received:", data);
+              return data as T;
+            })
+            .catch((error) => {
+              console.error("API request failed:", error);
+              throw error;
+            });
+        }
+      : null,
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
