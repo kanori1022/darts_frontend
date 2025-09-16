@@ -7,8 +7,15 @@ import useAuth from "../auth/useAuth";
 export const useAxios = () => {
   const { token } = useAuth();
   const instance = useMemo(() => {
+    // デバッグ情報を追加
+    console.log("useAxios Debug Info:", {
+      token: token ? "has token" : "no token",
+      tokenLength: token?.length || 0,
+      baseURL: process.env.NEXT_PUBLIC_API_HOST || "http://localhost:8000",
+    });
+
     return axios.create({
-      baseURL: process.env.NEXT_PUBLIC_API_HOST,
+      baseURL: process.env.NEXT_PUBLIC_API_HOST || "http://localhost:8000",
       headers: {
         "Content-Type": "application/json",
         // トークンが存在する場合のみAuthorizationヘッダーを追加

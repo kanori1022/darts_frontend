@@ -28,6 +28,16 @@ export default function Item({ params }: Props) {
   const { isFavorite, toggleFavorite } = useFavorites();
   const axios = useAxios();
 
+  // デバッグ情報を追加
+  console.log("Item Debug Info:", {
+    id,
+    data,
+    user_id: data?.user_id,
+    user_id_type: typeof data?.user_id,
+    user_name: data?.user_name,
+    error,
+  });
+
   // 閲覧履歴をAPIに保存
   useEffect(() => {
     if (!data || !loginUser) return;
@@ -38,7 +48,7 @@ export default function Item({ params }: Props) {
         // 失敗してもUIには影響させない
       }
     })();
-  }, [data?.id, loginUser]);
+  }, [data?.id, loginUser, axios]);
 
   // 日付フォーマット関数
   const formatDate = (dateString: string | undefined) => {
@@ -151,12 +161,40 @@ export default function Item({ params }: Props) {
             <div className="flex items-center gap-6 text-sm text-gray-600">
               <div className="flex items-center gap-2">
                 <FontAwesomeIcon icon={faUser} className="text-blue-500" />
-                <Link
-                  href={`/profile/${data.user_id}`}
-                  className="font-medium text-blue-600 hover:text-blue-800 hover:underline cursor-pointer transition-colors duration-200"
-                >
-                  {data.user_name || "匿名ユーザー"}
-                </Link>
+                {data.user_id ? (
+                  <Link
+                    href={`/profile/${data.user_id}`}
+                    className="group font-medium text-blue-600 hover:text-blue-800 hover:underline cursor-pointer transition-all duration-200 px-3 py-2 rounded-lg hover:bg-blue-50 border border-transparent hover:border-blue-200"
+                    onClick={() => {
+                      console.log("Navigating to profile:", {
+                        user_id: data.user_id,
+                        user_id_type: typeof data.user_id,
+                        profile_url: `/profile/${data.user_id}`,
+                      });
+                    }}
+                  >
+                    <span className="flex items-center gap-1">
+                      {data.user_name || "匿名ユーザー"}
+                      <svg
+                        className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                        />
+                      </svg>
+                    </span>
+                  </Link>
+                ) : (
+                  <span className="font-medium text-gray-600 px-3 py-2">
+                    {data.user_name || "匿名ユーザー"}
+                  </span>
+                )}
               </div>
               <div className="flex items-center gap-2">
                 <FontAwesomeIcon
