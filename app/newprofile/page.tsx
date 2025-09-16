@@ -71,6 +71,9 @@ export default function Newprofile() {
 
       // 2. API側にユーザー情報を登録
       console.log("API側登録開始...");
+      console.log("送信するFirebase UID:", firebaseUser.uid);
+      console.log("送信するユーザー名:", name);
+
       await createUser({
         user: {
           name: name,
