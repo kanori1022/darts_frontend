@@ -46,11 +46,16 @@ const UserCombinationCard = memo(function UserCombinationCard({
             <div className="mt-4">
               <p className="text-sm text-gray-600">
                 投稿日:{" "}
-                {new Date(combination.created_at).toLocaleDateString("ja-JP", {
-                  year: "numeric",
-                  month: "2-digit",
-                  day: "2-digit",
-                })}
+                {combination.created_at
+                  ? new Date(combination.created_at).toLocaleDateString(
+                      "ja-JP",
+                      {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                      }
+                    )
+                  : "不明"}
               </p>
             </div>
           </div>

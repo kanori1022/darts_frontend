@@ -7,7 +7,6 @@ import useAuth from "@/hooks/auth/useAuth";
 import { CombinationParams } from "@/types/combination";
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
@@ -120,11 +119,9 @@ export default function Post() {
             <div className="flex justify-center">
               <div className="w-48 h-48 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden hover:border-gray-400 transition-colors">
                 {previewUrl ? (
-                  <Image
+                  <img
                     src={previewUrl}
                     alt="選択された画像"
-                    width={192}
-                    height={192}
                     className="w-full h-full object-cover cursor-pointer"
                     onClick={() => {
                       inputRef.current?.click();

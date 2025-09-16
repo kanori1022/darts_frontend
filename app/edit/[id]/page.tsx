@@ -12,7 +12,6 @@ import {
   faUpload,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { use, useEffect, useState } from "react";
@@ -250,11 +249,9 @@ export default function EditCombination({
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                   />
                   {imagePreview ? (
-                    <Image
+                    <img
                       src={imagePreview}
                       alt="Preview"
-                      width={400}
-                      height={300}
                       className="w-full h-full object-cover rounded-lg"
                     />
                   ) : (
