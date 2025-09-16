@@ -193,15 +193,11 @@ export default function Item({ params }: Props) {
             <div className="w-1 h-6 bg-blue-500 rounded-full mr-3"></div>
             パーツ詳細
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <LabelValueRow label="フライト" value={data.flight} />
-              <LabelValueRow label="シャフト" value={data.shaft} />
-            </div>
-            <div className="space-y-4">
-              <LabelValueRow label="バレル" value={data.barrel} />
-              <LabelValueRow label="チップ" value={data.tip} />
-            </div>
+          <div className="space-y-4">
+            <LabelValueRow label="フライト" value={data.flight} />
+            <LabelValueRow label="シャフト" value={data.shaft} />
+            <LabelValueRow label="バレル" value={data.barrel} />
+            <LabelValueRow label="チップ" value={data.tip} />
           </div>
 
           {data.description && (
