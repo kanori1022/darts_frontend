@@ -151,9 +151,12 @@ export default function Item({ params }: Props) {
             <div className="flex items-center gap-6 text-sm text-gray-600">
               <div className="flex items-center gap-2">
                 <FontAwesomeIcon icon={faUser} className="text-blue-500" />
-                <span className="font-medium">
+                <Link
+                  href={`/profile/${data.user_id}`}
+                  className="font-medium text-blue-600 hover:text-blue-800 hover:underline cursor-pointer transition-colors duration-200"
+                >
                   {data.user_name || "匿名ユーザー"}
-                </span>
+                </Link>
               </div>
               <div className="flex items-center gap-2">
                 <FontAwesomeIcon
