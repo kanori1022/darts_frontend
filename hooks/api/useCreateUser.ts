@@ -28,7 +28,7 @@ export const useCreateUser = () => {
     console.log("送信するデータ全体:", requestData);
     console.log("=========================");
 
-    // FormDataを作成
+    // FormDataを作成（Railsのネストしたパラメータ形式）
     const formData = new FormData();
     formData.append("user[name]", request.user.name);
     formData.append("user[introduction]", request.user.introduction || "");
@@ -36,10 +36,10 @@ export const useCreateUser = () => {
       formData.append("user[image]", request.user.image);
     }
 
-    // Firebase UIDが存在する場合のみ追加
+    // Firebase UIDが存在する場合のみ追加（userオブジェクト内に配置）
     if (firebaseUid) {
-      formData.append("firebase_uid", firebaseUid);
-      console.log("FormDataにfirebase_uidを追加:", firebaseUid);
+      formData.append("user[firebase_uid]", firebaseUid);
+      console.log("FormDataにuser[firebase_uid]を追加:", firebaseUid);
     } else {
       console.error("Firebase UIDが存在しません！");
     }
@@ -49,26 +49,16 @@ export const useCreateUser = () => {
       console.log(`${key}:`, value);
     }
 
-    // まずFormDataで試行
+    // まずJSON形式で送信（より確実）
     try {
-      const response = await axios.post("/users", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      console.log("API応答 (FormData):", response.data);
-      return response.data;
-    } catch (error) {
-      console.log("FormData送信失敗、JSON形式で再試行...");
-
-      // FormDataが失敗した場合、JSON形式で再試行
+      // Railsのネストしたパラメータ形式に合わせる
       const jsonData = {
         user: {
           name: request.user.name,
           introduction: request.user.introduction || "",
           image: request.user.image,
+          firebase_uid: firebaseUid, // userオブジェクト内にfirebase_uidを配置
         },
-        firebase_uid: firebaseUid,
       };
 
       console.log("JSON送信データ:", jsonData);
@@ -77,8 +67,28 @@ export const useCreateUser = () => {
         headers: {
           "Content-Type": "application/json",
         },
+        // リクエストの詳細をログ出力
+        transformRequest: [
+          (data) => {
+            console.log("実際に送信されるデータ:", data);
+            return JSON.stringify(data);
+          },
+        ],
       });
       console.log("API応答 (JSON):", response.data);
+      console.log("レスポンスステータス:", response.status);
+      return response.data;
+    } catch (error) {
+      console.log("JSON送信失敗、FormData形式で再試行...");
+      console.error("JSON送信エラー:", error);
+
+      // JSONが失敗した場合、FormDataで再試行
+      const response = await axios.post("/users", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log("API応答 (FormData):", response.data);
       return response.data;
     }
   };
