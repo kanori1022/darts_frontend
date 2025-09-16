@@ -22,11 +22,9 @@ export default function UserProfile({ params }: Props) {
   const { loginUser, isWaiting } = useAuth();
 
   // 現在のユーザー情報を取得
-  const {
-    data: currentUser,
-    error: currentUserError,
-    isLoading: currentUserLoading,
-  } = useFetch<User>(loginUser ? "/users" : null);
+  const { data: currentUser, isLoading: currentUserLoading } = useFetch<User>(
+    loginUser ? "/users" : null
+  );
 
   // 表示したいユーザー情報を取得（認証不要）
   const {

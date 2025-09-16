@@ -96,7 +96,7 @@ export default function UserPostsPage({ params }: Props) {
   const { id } = use(params);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  const { loginUser, isWaiting } = useAuth();
+  const { loginUser } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
 
   const handleToggleFavorite = async (

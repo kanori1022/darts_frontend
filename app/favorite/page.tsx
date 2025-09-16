@@ -5,6 +5,7 @@ import { useFavorites } from "@/hooks/api/useFavorites";
 import useAuth from "@/hooks/auth/useAuth";
 import { useFetch } from "@/hooks/fetch/useFetch";
 import { Combination } from "@/types/combination";
+import Image from "next/image";
 import Link from "next/link";
 
 // APIレスポンスの型定義
@@ -96,9 +97,11 @@ export default function Favorite() {
                     <div className="flex-shrink-0">
                       <div className="w-24 h-24 bg-gray-200 rounded-lg overflow-hidden">
                         {combination.image ? (
-                          <img
+                          <Image
                             src={combination.image}
                             alt={combination.title}
+                            width={96}
+                            height={96}
                             className="w-full h-full object-cover"
                           />
                         ) : (
