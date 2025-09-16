@@ -22,7 +22,7 @@ function SearchResultContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const { loginUser } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
 
