@@ -3,6 +3,7 @@
 import { Button } from "@/components/Button/Button";
 import { InputLong, InputShort } from "@/components/Input/Input";
 import useAuth from "@/hooks/auth/useAuth";
+import { useAxios } from "@/hooks/axios/useAxios";
 import { useFetch } from "@/hooks/fetch/useFetch";
 import { Combination } from "@/types/combination";
 import {
@@ -22,6 +23,7 @@ export default function EditCombination({
 }) {
   const router = useRouter();
   const { loginUser } = useAuth();
+  const axios = useAxios();
   const [isLoading, setIsLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -31,7 +33,7 @@ export default function EditCombination({
 
   // 既存の投稿データを取得
   const { data: combinationData, isLoading: dataLoading } =
-    useFetch<Combination>(`http://localhost:8000/combinations/${id}`);
+    useFetch<Combination>(`/combinations/${id}`);
 
   const [combination, setCombination] = useState<Combination>({
     id: "",
@@ -47,12 +49,8 @@ export default function EditCombination({
 
   // データが取得できたらstateを更新
   useEffect(() => {
-    if (combinationData && combinationData.id) {
+    if (combinationData && combinationData.id && loginUser) {
       console.log("取得したデータ:", combinationData); // デバッグ用
-      console.log("フライト:", combinationData.flight); // デバッグ用
-      console.log("シャフト:", combinationData.shaft); // デバッグ用
-      console.log("バレル:", combinationData.barrel); // デバッグ用
-      console.log("チップ:", combinationData.tip); // デバッグ用
 
       // 自分の投稿かチェック
       console.log("=== 編集認可チェック ===");
@@ -74,17 +72,14 @@ export default function EditCombination({
         "型:",
         typeof loginUser?.uid
       );
-      console.log("user_id比較:", combinationData.user_id === loginUser?.uid);
-      console.log(
-        "firebase_uid比較:",
-        combinationData.firebase_uid === loginUser?.uid
-      );
-      console.log("========================");
 
       // Firebase UIDまたはuser_idで認可チェック
       const isOwner =
-        combinationData.firebase_uid === loginUser?.uid ||
-        String(combinationData.user_id) === String(loginUser?.uid);
+        combinationData.firebase_uid === loginUser.uid ||
+        String(combinationData.user_id) === String(loginUser.uid);
+
+      console.log("isOwner:", isOwner);
+      console.log("========================");
 
       if (!isOwner) {
         alert("自分の投稿のみ編集できます");
@@ -124,7 +119,7 @@ export default function EditCombination({
   }
 
   // データがまだ読み込まれていない場合のローディング表示
-  if (dataLoading || !combinationData) {
+  if (dataLoading || !combinationData || !loginUser) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
@@ -164,24 +159,17 @@ export default function EditCombination({
         formData.append("combination[image]", imageFile);
       }
 
-      const response = await fetch(`http://localhost:8000/combinations/${id}`, {
-        method: "PUT",
+      await axios.put(`/combinations/${id}`, formData, {
         headers: {
-          Authorization: `Bearer ${await loginUser.getIdToken()}`,
+          "Content-Type": "multipart/form-data",
         },
-        body: formData,
       });
 
-      if (response.ok) {
-        // 保存成功後、自分の投稿一覧に戻る
-        router.push("/myposts");
-      } else {
-        console.error("更新に失敗しました");
-        alert("更新に失敗しました。もう一度お試しください。");
-      }
+      // 保存成功後、自分の投稿一覧に戻る
+      router.push("/myposts");
     } catch (error) {
       console.error("エラーが発生しました:", error);
-      alert("エラーが発生しました。もう一度お試しください。");
+      alert("更新に失敗しました。もう一度お試しください。");
     } finally {
       setIsLoading(false);
     }
