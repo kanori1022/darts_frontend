@@ -54,7 +54,7 @@ export const Header = () => {
         </button>
 
         {/* タイトル */}
-        <p className="text-3xl font-serif text-[#CCCCCC] absolute left-1/2 transform -translate-x-1/2 cursor-pointer">
+        <p className="text-xl sm:text-2xl md:text-3xl font-serif text-[#CCCCCC] absolute left-1/2 transform -translate-x-1/2 cursor-pointer whitespace-nowrap">
           <Link
             href="/home"
             className="hover:text-white transition-colors duration-200"
