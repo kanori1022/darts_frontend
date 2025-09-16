@@ -327,7 +327,14 @@ export default function Home() {
                   </Button>
                 </Link>
                 <p className="text-sm text-gray-500 mt-4">
-                  ※登録済みの方はメニューよりログインをしてください
+                  ※登録済みの方はメニューより
+                  <Link
+                    href="/login"
+                    className="font-semibold text-blue-500 hover:text-blue-600 underline cursor-pointer"
+                  >
+                    ログイン
+                  </Link>
+                  をしてください
                 </p>
               </div>
             </div>
