@@ -202,6 +202,7 @@ export default function Home() {
                             (window.location.href = `/item/${combination.id}`)
                           }
                           priority={index === 0}
+                          tags={combination.tags}
                         />
                       </div>
                     </div>
@@ -280,6 +281,7 @@ export default function Home() {
                           (window.location.href = `/item/${combination.id}`)
                         }
                         priority={index === 0}
+                        tags={combination.tags}
                       />
                     </div>
                   </div>
@@ -401,6 +403,7 @@ export default function Home() {
                                 (window.location.href = `/item/${combination.id}`)
                               }
                               priority={index === 0}
+                              tags={combination.tags}
                             />
                           </div>
                         </div>

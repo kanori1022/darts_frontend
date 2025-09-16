@@ -222,6 +222,7 @@ function SearchResultContent() {
                           onClick={() =>
                             (window.location.href = `/item/${combination.id}`)
                           }
+                          tags={combination.tags}
                         />
                       </div>
 

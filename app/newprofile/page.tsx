@@ -27,6 +27,8 @@ export default function Newprofile() {
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [name, setName] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -146,21 +148,55 @@ export default function Newprofile() {
 
             <InputLong
               placeholder="パスワード"
-              type="password"
+              type={showPassword ? "text" : "password"}
               onChange={(e) => setPassword(e.target.value)}
               value={password}
             >
               パスワード
             </InputLong>
 
+            {/* パスワード表示切り替えチェックボックス */}
+            <div className="flex items-center mt-2">
+              <input
+                type="checkbox"
+                id="showPassword"
+                checked={showPassword}
+                onChange={(e) => setShowPassword(e.target.checked)}
+                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+              />
+              <label
+                htmlFor="showPassword"
+                className="ml-2 text-sm text-gray-700 cursor-pointer"
+              >
+                パスワードを表示する
+              </label>
+            </div>
+
             <InputLong
               placeholder="パスワード（確認）"
-              type="password"
+              type={showPasswordConfirm ? "text" : "password"}
               onChange={(e) => setPasswordConfirm(e.target.value)}
               value={passwordConfirm}
             >
               パスワード（確認）
             </InputLong>
+
+            {/* パスワード確認表示切り替えチェックボックス */}
+            <div className="flex items-center mt-2">
+              <input
+                type="checkbox"
+                id="showPasswordConfirm"
+                checked={showPasswordConfirm}
+                onChange={(e) => setShowPasswordConfirm(e.target.checked)}
+                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+              />
+              <label
+                htmlFor="showPasswordConfirm"
+                className="ml-2 text-sm text-gray-700 cursor-pointer"
+              >
+                パスワード（確認）を表示する
+              </label>
+            </div>
           </div>
 
           {error && <p className="text-red-500">{error}</p>}

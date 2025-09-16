@@ -136,6 +136,7 @@ export default function NewestPage() {
                             onClick={() =>
                               (window.location.href = `/item/${combination.id}`)
                             }
+                            tags={combination.tags}
                           />
                         </div>
 

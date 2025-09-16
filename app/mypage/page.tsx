@@ -29,15 +29,23 @@ export default function Mypage() {
 
   if (!loginUser) {
     return (
-      <div className="pl-10 pr-10 pt-10 pb-10 bg-white mb-10 text-center">
-        <p className="mb-3">
-          その他の機能を利用するには新規登録をしてください。
-        </p>
-        <Link href="/login">
-          <Button color="bg-[#3B82F6]">新規登録はコチラ</Button>
-        </Link>
-        <div className="pt-3">
-          ※登録済みの方はメニューよりログインをしてください。
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="bg-white p-8 rounded-lg shadow-md text-center max-w-md">
+          <div className="text-blue-500 text-6xl mb-4">🔒</div>
+          <h1 className="text-2xl font-bold mb-6 text-gray-800">
+            ログインが必要です
+          </h1>
+          <p className="mb-6 text-gray-600">
+            マイページを利用するには、ログインまたは新規登録が必要です。
+          </p>
+          <div className="space-y-3">
+            <Link href="/login">
+              <Button color="bg-blue-500 hover:bg-blue-600">ログイン</Button>
+            </Link>
+            <Link href="/newprofile">
+              <Button color="bg-gray-500 hover:bg-gray-600">新規登録</Button>
+            </Link>
+          </div>
         </div>
       </div>
     );

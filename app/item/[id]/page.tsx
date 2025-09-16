@@ -151,9 +151,12 @@ export default function Item({ params }: Props) {
             <div className="flex items-center gap-6 text-sm text-gray-600">
               <div className="flex items-center gap-2">
                 <FontAwesomeIcon icon={faUser} className="text-blue-500" />
-                <span className="font-medium">
+                <Link
+                  href={`/profile/${data.user_id}`}
+                  className="font-medium text-blue-600 hover:text-blue-800 hover:underline cursor-pointer transition-colors duration-200"
+                >
                   {data.user_name || "匿名ユーザー"}
-                </span>
+                </Link>
               </div>
               <div className="flex items-center gap-2">
                 <FontAwesomeIcon
@@ -193,15 +196,11 @@ export default function Item({ params }: Props) {
             <div className="w-1 h-6 bg-blue-500 rounded-full mr-3"></div>
             パーツ詳細
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <LabelValueRow label="フライト" value={data.flight} />
-              <LabelValueRow label="シャフト" value={data.shaft} />
-            </div>
-            <div className="space-y-4">
-              <LabelValueRow label="バレル" value={data.barrel} />
-              <LabelValueRow label="チップ" value={data.tip} />
-            </div>
+          <div className="space-y-4">
+            <LabelValueRow label="フライト" value={data.flight} />
+            <LabelValueRow label="シャフト" value={data.shaft} />
+            <LabelValueRow label="バレル" value={data.barrel} />
+            <LabelValueRow label="チップ" value={data.tip} />
           </div>
 
           {data.description && (
@@ -218,12 +217,13 @@ export default function Item({ params }: Props) {
               <h3 className="text-lg font-semibold text-gray-800 mb-3">タグ</h3>
               <div className="flex flex-wrap gap-2">
                 {data.tags.map((tag, index) => (
-                  <span
+                  <Link
                     key={index}
-                    className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200 hover:bg-blue-200 transition-colors duration-200"
+                    href={`/search/result?tags=${encodeURIComponent(tag)}`}
+                    className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200 hover:bg-blue-200 transition-colors duration-200 cursor-pointer"
                   >
                     #{tag}
-                  </span>
+                  </Link>
                 ))}
               </div>
             </div>
