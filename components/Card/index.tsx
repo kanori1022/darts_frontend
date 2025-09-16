@@ -52,12 +52,12 @@ export const Card = ({
         </span>
       </div>
       <div
-        className={`flex justify-center relative ${onClick ? "cursor-pointer group" : ""}`}
+        className={`flex justify-center items-center relative w-32 h-24 ${onClick ? "cursor-pointer group" : ""}`}
         onClick={onClick}
       >
         {/* 画像読み込み中のスケルトン */}
         {imageLoading && (
-          <div className="w-32 h-24 bg-gray-200 animate-pulse rounded-lg border shadow-sm" />
+          <div className="w-32 h-24 bg-gray-200 animate-pulse rounded-lg border shadow-sm absolute inset-0" />
         )}
 
         {/* エラー時のフォールバック */}
@@ -67,7 +67,7 @@ export const Card = ({
           </div>
         ) : (
           <Image
-            className={`w-32 h-24 shadow-sm border rounded-lg object-cover ${imageLoading ? "opacity-0" : "opacity-100"} transition-transform duration-200 ${onClick ? "hover:opacity-90 group-hover:scale-105" : ""}`}
+            className={`w-32 h-24 shadow-sm border rounded-lg object-cover ${imageLoading ? "opacity-0" : "opacity-100"} transition-opacity duration-200 ${onClick ? "hover:opacity-90 group-hover:scale-105" : ""}`}
             src={src}
             alt={title}
             width={128}

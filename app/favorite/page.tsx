@@ -47,7 +47,9 @@ export default function Favorite() {
 
   // 新しいAPIレスポンス形式に対応
   const combinations = data?.combinations || [];
-  const favoriteItems = combinations.filter((item) => isFavorite(item.id));
+  const favoriteItems = combinations
+    .filter((item) => isFavorite(item.id))
+    .slice(0, 10);
 
   return (
     <div className="min-h-screen bg-gray-50">

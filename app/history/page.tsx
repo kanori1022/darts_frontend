@@ -23,7 +23,7 @@ export default function HistoryPage() {
   const { loginUser, isWaiting } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 12;
+  const itemsPerPage = 10;
   const [data, setData] = useState<HistoryResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
