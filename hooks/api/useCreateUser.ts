@@ -4,7 +4,7 @@ import { useAxios } from "../axios/useAxios";
 
 type UserRequest = {
   user: UserParams;
-  firebase_uid?: string;
+  firebase_uid: string;
 };
 
 export const useCreateUser = () => {
@@ -13,7 +13,7 @@ export const useCreateUser = () => {
 
   const createUser = async (request: UserRequest) => {
     // Firebase UIDを追加（新規登録時はrequest.firebase_uidを使用）
-    const firebaseUid = request.firebase_uid || loginUser?.uid;
+    const firebaseUid = request.firebase_uid;
     const requestData = {
       ...request,
       firebase_uid: firebaseUid,

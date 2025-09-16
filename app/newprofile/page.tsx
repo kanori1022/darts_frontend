@@ -6,7 +6,7 @@ import { useCreateUser } from "@/hooks/api/useCreateUser";
 import { FirebaseError, getApp, getApps, initializeApp } from "firebase/app";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 // Firebase 初期化
 const firebaseConfig = {
@@ -34,7 +34,7 @@ export default function Newprofile() {
   const { createUser } = useCreateUser();
   const router = useRouter();
 
-  const handleRegister = async () => {
+  const handleRegister = useCallback(async () => {
     setError(null);
     setSuccess(false);
     setIsLoading(true);
@@ -118,7 +118,7 @@ export default function Newprofile() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [email, password, passwordConfirm, name, createUser, router]);
 
   return (
     <div>
