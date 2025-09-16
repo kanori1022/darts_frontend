@@ -48,17 +48,19 @@ export default function Item({ params }: Props) {
         // 失敗してもUIには影響させない
       }
     })();
-  }, [data?.id, loginUser, axios]);
+  }, [data, loginUser, axios]);
 
   // 日付フォーマット関数
   const formatDate = (dateString: string | undefined) => {
     if (!dateString) return "";
     const date = new Date(dateString);
-    return date.toLocaleDateString("ja-JP", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+    return date
+      .toLocaleDateString("ja-JP", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      })
+      .replace(/\//g, "/");
   };
 
   if (isLoading) {
