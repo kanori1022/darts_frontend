@@ -31,7 +31,22 @@ export const Card = ({
 
   return (
     <div className="px-4 pb-2 w-40 flex flex-col justify-between">
-      <div className="w-40 text-[#000000]">{title}</div>
+      <div className="w-40 text-[#000000] h-12 flex items-center justify-center text-center leading-tight overflow-hidden">
+        <span
+          className="block"
+          style={{
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            lineHeight: "1.2",
+            maxHeight: "2.4em",
+          }}
+        >
+          {title}
+        </span>
+      </div>
       <div
         className={`flex justify-center relative ${onClick ? "cursor-pointer group" : ""}`}
         onClick={onClick}
