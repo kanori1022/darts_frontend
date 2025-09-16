@@ -196,6 +196,8 @@ export default function Home() {
                           }
                           userId={combination.user_id}
                           currentUserId={loginUser?.uid}
+                          firebaseUid={combination.firebase_uid}
+                          currentFirebaseUid={loginUser?.uid}
                           onClick={() =>
                             (window.location.href = `/item/${combination.id}`)
                           }
@@ -272,6 +274,8 @@ export default function Home() {
                         }
                         userId={combination.user_id}
                         currentUserId={loginUser?.uid}
+                        firebaseUid={combination.firebase_uid}
+                        currentFirebaseUid={loginUser?.uid}
                         onClick={() =>
                           (window.location.href = `/item/${combination.id}`)
                         }
@@ -391,6 +395,8 @@ export default function Home() {
                               }
                               userId={undefined}
                               currentUserId={loginUser?.uid}
+                              firebaseUid={undefined}
+                              currentFirebaseUid={loginUser?.uid}
                               onClick={() =>
                                 (window.location.href = `/item/${combination.id}`)
                               }

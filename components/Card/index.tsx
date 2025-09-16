@@ -12,6 +12,8 @@ type CardProps = {
   onToggleFavorite?: () => void;
   userId?: string | number;
   currentUserId?: string | number;
+  firebaseUid?: string;
+  currentFirebaseUid?: string;
   onClick?: () => void;
   priority?: boolean;
 };
@@ -23,6 +25,8 @@ export const Card = ({
   onToggleFavorite,
   userId,
   currentUserId,
+  firebaseUid,
+  currentFirebaseUid,
   onClick,
   priority,
 }: CardProps) => {
@@ -78,21 +82,23 @@ export const Card = ({
           />
         )}
 
-        {onToggleFavorite && String(userId) !== String(currentUserId) && (
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              onToggleFavorite();
-            }}
-            className="absolute -bottom-1 right-1 text-xl cursor-pointer"
-          >
-            <FontAwesomeIcon
-              icon={isFavorite ? solidHeart : regularHeart}
-              className={isFavorite ? "text-red-500" : "text-white"}
-            />
-          </button>
-        )}
+        {onToggleFavorite &&
+          String(userId) !== String(currentUserId) &&
+          String(firebaseUid) !== String(currentFirebaseUid) && (
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onToggleFavorite();
+              }}
+              className="absolute -bottom-1 right-1 text-xl cursor-pointer"
+            >
+              <FontAwesomeIcon
+                icon={isFavorite ? solidHeart : regularHeart}
+                className={isFavorite ? "text-red-500" : "text-white"}
+              />
+            </button>
+          )}
       </div>
     </div>
   );

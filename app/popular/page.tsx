@@ -188,6 +188,8 @@ export default function PopularPage() {
                               }
                               userId={combination.user_id}
                               currentUserId={loginUser?.uid}
+                              firebaseUid={combination.firebase_uid}
+                              currentFirebaseUid={loginUser?.uid}
                               onClick={() =>
                                 (window.location.href = `/item/${combination.id}`)
                               }
