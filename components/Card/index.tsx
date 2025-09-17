@@ -30,7 +30,6 @@ export const Card = ({
   currentFirebaseUid,
   onClick,
   priority,
-  tags,
 }: CardProps) => {
   const [imageError, setImageError] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
@@ -93,7 +92,7 @@ export const Card = ({
                 e.stopPropagation();
                 onToggleFavorite();
               }}
-              className="absolute -bottom-1 right-1 text-xl cursor-pointer"
+              className="absolute -bottom-3 -right-3 w-8 h-8 bg-gray-200 bg-opacity-10 rounded-full flex items-center justify-center text-xl cursor-pointer hover:bg-opacity-25 transition-all duration-200"
             >
               <FontAwesomeIcon
                 icon={isFavorite ? solidHeart : regularHeart}
