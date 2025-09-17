@@ -82,19 +82,19 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
       ></button>
 
       {/* メニューアイテム */}
-      <div className="text-[#CCCCCC] text-xl pt-20 p-6 space-y-4">
+      <div className="text-[#CCCCCC] text-xl pt-20 pl-6 pr-6 pb-6">
         {/* ログインしていない場合のみ表示 */}
         {!isLoggedIn && (
           <>
-            <Link href="/login" className="block">
-              <p className="hover:bg-gray-700 p-3 rounded transition-colors">
+            <Link href="/login" className="block mb-4">
+              <p className="hover:bg-gray-700 p-3 rounded transition-colors text-left">
                 ログイン
               </p>
             </Link>
 
             <button
               onClick={handleGuestLogin}
-              className="w-full text-left text-[#CCCCCC] hover:bg-gray-700 p-3 rounded transition-colors"
+              className="w-full text-left text-[#CCCCCC] hover:bg-gray-700 p-3 rounded transition-colors mb-4"
               type="button"
             >
               ゲストログイン
@@ -104,16 +104,16 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
 
         {/* ログインしている場合のみ表示 */}
         {isLoggedIn && (
-          <Link href="/mypage" className="block">
-            <p className="hover:bg-gray-700 p-3 rounded transition-colors">
+          <Link href="/mypage" className="block mb-4">
+            <p className="hover:bg-gray-700 p-3 rounded transition-colors text-left">
               設定
             </p>
           </Link>
         )}
 
         {/* 常に表示 */}
-        <Link href="" className="block">
-          <p className="hover:bg-gray-700 p-3 rounded transition-colors">
+        <Link href="" className="block mb-4">
+          <p className="hover:bg-gray-700 p-3 rounded transition-colors text-left">
             お問い合わせ
           </p>
         </Link>
