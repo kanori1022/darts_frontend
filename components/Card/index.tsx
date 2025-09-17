@@ -36,7 +36,7 @@ export const Card = ({
 
   return (
     <div className="px-4 pb-2 w-40 h-32 flex flex-col justify-between">
-      <div className="w-40 text-[#000000] h-12 flex items-center justify-start text-left leading-tight overflow-hidden text-sm">
+      <div className="w-40 text-[#000000] h-12 flex items-center justify-start text-left leading-tight overflow-hidden text-xs font-semibold">
         <span
           className="block"
           style={{
@@ -45,8 +45,8 @@ export const Card = ({
             WebkitBoxOrient: "vertical",
             overflow: "hidden",
             textOverflow: "ellipsis",
-            lineHeight: "1.2",
-            maxHeight: "2.4em",
+            lineHeight: "1.1",
+            maxHeight: "2.2em",
           }}
         >
           {title}
