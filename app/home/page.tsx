@@ -28,6 +28,8 @@ type HistoryItem = {
   title: string;
   image: string;
   tags?: string[];
+  user_id?: string | number;
+  firebase_uid?: string;
 };
 
 export default function Home() {
@@ -73,11 +75,15 @@ export default function Home() {
             title: string;
             image: string;
             tags?: string[];
+            user_id?: string | number;
+            firebase_uid?: string;
           }) => ({
             id: String(h.id),
             title: h.title,
             image: h.image,
             tags: h.tags || [],
+            user_id: h.user_id,
+            firebase_uid: h.firebase_uid,
           })
         );
         setViewHistory(mapped);
@@ -406,9 +412,9 @@ export default function Home() {
                               onToggleFavorite={() =>
                                 handleToggleFavorite(combination.id)
                               }
-                              userId={undefined}
+                              userId={combination.user_id}
                               currentUserId={loginUser?.uid}
-                              firebaseUid={undefined}
+                              firebaseUid={combination.firebase_uid}
                               currentFirebaseUid={loginUser?.uid}
                               onClick={() =>
                                 (window.location.href = `/item/${combination.id}`)
