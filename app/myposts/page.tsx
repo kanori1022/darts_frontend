@@ -237,8 +237,8 @@ export default function MyPosts() {
 
               {/* ページネーション */}
               {totalPages > 1 && (
-                <div className="mt-8 mb-8 flex justify-center">
-                  <div className="flex items-center space-x-3 bg-white rounded-2xl shadow-lg border border-gray-200 p-2">
+                <div className="mt-8 mb-12 flex justify-center sticky bottom-4 z-10">
+                  <div className="flex items-center space-x-3 bg-white rounded-2xl shadow-lg border border-gray-200 p-2 backdrop-blur-sm">
                     <button
                       onClick={goToPrevPage}
                       disabled={currentPage === 1}
