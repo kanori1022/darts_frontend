@@ -1,19 +1,46 @@
 "use client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 
 type DrawerMenuProps = {
   isOpen: boolean;
   onClose: () => void;
   onLogout: () => void;
+  isLoggedIn: boolean;
 };
 
 export const DrawerMenu: React.FC<DrawerMenuProps> = ({
   isOpen,
   onClose,
   onLogout,
+  isLoggedIn,
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+
+  const handleGuestLogin = async () => {
+    try {
+      const { getAuth, signInWithEmailAndPassword } = await import(
+        "firebase/auth"
+      );
+      const auth = getAuth();
+      const result = await signInWithEmailAndPassword(
+        auth,
+        "gest@1.com",
+        "33443344"
+      );
+      console.log("ゲストログイン成功:", result);
+      alert("ゲストユーザーとしてログインしました");
+      onClose();
+      router.push("/home");
+    } catch (error) {
+      console.error("ゲストログインエラー:", error);
+      alert(
+        "ゲストログインに失敗しました。しばらくしてから再度お試しください。"
+      );
+    }
+  };
 
   // メニュー外をクリックしたときに閉じる
   useEffect(() => {
@@ -55,26 +82,56 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
       ></button>
 
       {/* メニューアイテム */}
-      <div className="text-[#CCCCCC] text-xl pt-20 p-4">
-        <Link href="/login">
-          <p className="mb-5">ログイン</p>
+      <div className="text-[#CCCCCC] text-xl pt-20 p-6 space-y-4">
+        {/* ログインしていない場合のみ表示 */}
+        {!isLoggedIn && (
+          <>
+            <Link href="/login" className="block">
+              <p className="hover:bg-gray-700 p-3 rounded transition-colors">
+                ログイン
+              </p>
+            </Link>
+
+            {/* ゲストログインボタン */}
+            <button
+              onClick={handleGuestLogin}
+              className="w-full text-left text-[#CCCCCC] hover:bg-gray-700 p-3 rounded transition-colors"
+              type="button"
+            >
+              ゲストログイン
+            </button>
+          </>
+        )}
+
+        {/* ログインしている場合のみ表示 */}
+        {isLoggedIn && (
+          <Link href="/mypage" className="block">
+            <p className="hover:bg-gray-700 p-3 rounded transition-colors">
+              設定
+            </p>
+          </Link>
+        )}
+
+        {/* 常に表示 */}
+        <Link href="" className="block">
+          <p className="hover:bg-gray-700 p-3 rounded transition-colors">
+            お問い合わせ
+          </p>
         </Link>
-        <Link href="/mypage">
-          <p className="mb-5">設定</p>
-        </Link>
-        <Link href="">
-          <p className="mb-5">お問い合わせ</p>
-        </Link>
-        <button
-          onClick={() => {
-            onLogout();
-            onClose();
-          }}
-          className="mb-5 text-left w-full text-red-500 hover:bg-gray-700 p-2 rounded"
-          type="button"
-        >
-          ログアウト
-        </button>
+
+        {/* ログインしている場合のみ表示（最下部） */}
+        {isLoggedIn && (
+          <button
+            onClick={() => {
+              onLogout();
+              onClose();
+            }}
+            className="w-full text-left text-red-500 hover:bg-gray-700 p-3 rounded transition-colors"
+            type="button"
+          >
+            ログアウト
+          </button>
+        )}
       </div>
     </div>
   );

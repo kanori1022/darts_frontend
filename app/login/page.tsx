@@ -46,6 +46,24 @@ export default function Login() {
     }
   };
 
+  const handleGuestLogin = async () => {
+    try {
+      const result = await signInWithEmailAndPassword(
+        auth,
+        "gest@1.com",
+        "33443344"
+      );
+      console.log("ゲストログイン成功:", result);
+      alert("ゲストユーザーとしてログインしました");
+      router.push("/home");
+    } catch (error) {
+      console.error("ゲストログインエラー:", error);
+      alert(
+        "ゲストログインに失敗しました。しばらくしてから再度お試しください。"
+      );
+    }
+  };
+
   const handleLogout = () => {
     handleSignOut();
     router.push("/login");
@@ -122,22 +140,43 @@ export default function Login() {
               </label>
             </div>
           </div>
-          <Button
-            color="bg-[#3B82F6]"
-            onClick={() => {
-              loginUser();
-            }}
-          >
-            ログイン
-          </Button>
+          <div className="space-y-6">
+            <Button
+              color="bg-[#3B82F6]"
+              onClick={() => {
+                loginUser();
+              }}
+            >
+              ログイン
+            </Button>
 
-          {/* <div className="text-center pt-6">※新規登録の方はコチラから</div> */}
-          <Button
-            color="bg-[#393939]"
-            onClick={() => router.push("/newprofile")}
-          >
-            ※新規登録の方はコチラから
-          </Button>
+            {/* 区切り線 */}
+            <div className="flex items-center justify-center">
+              <div className="flex-1 border-t border-gray-300"></div>
+              <span className="px-3 text-sm text-gray-500 bg-white">
+                または
+              </span>
+              <div className="flex-1 border-t border-gray-300"></div>
+            </div>
+
+            <button
+              onClick={handleGuestLogin}
+              className="w-full px-6 py-3 bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl cursor-pointer border border-slate-500 hover:border-slate-400 relative overflow-hidden group"
+            >
+              <span className="relative z-10 flex items-center justify-center">
+                <span>ゲストユーザーでログイン</span>
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-500"></div>
+            </button>
+
+            {/* <div className="text-center pt-6">※新規登録の方はコチラから</div> */}
+            <Button
+              color="bg-[#393939]"
+              onClick={() => router.push("/newprofile")}
+            >
+              ※新規登録の方はコチラから
+            </Button>
+          </div>
         </div>
         <div className="bg-neutral-100"></div>
       </div>
