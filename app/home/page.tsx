@@ -224,28 +224,30 @@ export default function Home() {
                         </div>
                       )}
 
-                      <div className="p-3 pt-4 flex flex-col items-center">
-                        <Card
-                          src={combination.image}
-                          title={combination.title}
-                          isFavorite={isFavorite(combination.id)}
-                          onToggleFavorite={() =>
-                            handleToggleFavorite(
-                              combination.id,
-                              combination.user_id,
-                              combination.firebase_uid
-                            )
-                          }
-                          userId={combination.user_id}
-                          currentUserId={loginUser?.uid}
-                          firebaseUid={combination.firebase_uid}
-                          currentFirebaseUid={loginUser?.uid}
-                          onClick={() =>
-                            (window.location.href = `/item/${combination.id}`)
-                          }
-                          priority={index === 0}
-                          tags={combination.tags}
-                        />
+                      <div className="p-3 pt-4 flex flex-col items-center justify-center h-full">
+                        <div className="flex justify-start">
+                          <Card
+                            src={combination.image}
+                            title={combination.title}
+                            isFavorite={isFavorite(combination.id)}
+                            onToggleFavorite={() =>
+                              handleToggleFavorite(
+                                combination.id,
+                                combination.user_id,
+                                combination.firebase_uid
+                              )
+                            }
+                            userId={combination.user_id}
+                            currentUserId={loginUser?.uid}
+                            firebaseUid={combination.firebase_uid}
+                            currentFirebaseUid={loginUser?.uid}
+                            onClick={() =>
+                              (window.location.href = `/item/${combination.id}`)
+                            }
+                            priority={index === 0}
+                            tags={combination.tags}
+                          />
+                        </div>
                       </div>
                     </div>
                   );
@@ -303,28 +305,30 @@ export default function Home() {
                     key={combination.id}
                     className="flex-shrink-0 w-52 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 overflow-hidden relative z-0"
                   >
-                    <div className="p-3 flex flex-col items-center">
-                      <Card
-                        src={combination.image}
-                        title={combination.title}
-                        isFavorite={isFavorite(combination.id)}
-                        onToggleFavorite={() =>
-                          handleToggleFavorite(
-                            combination.id,
-                            combination.user_id,
-                            combination.firebase_uid
-                          )
-                        }
-                        userId={combination.user_id}
-                        currentUserId={loginUser?.uid}
-                        firebaseUid={combination.firebase_uid}
-                        currentFirebaseUid={loginUser?.uid}
-                        onClick={() =>
-                          (window.location.href = `/item/${combination.id}`)
-                        }
-                        priority={index === 0}
-                        tags={combination.tags}
-                      />
+                    <div className="p-3 flex flex-col items-center justify-center h-full">
+                      <div className="flex justify-start">
+                        <Card
+                          src={combination.image}
+                          title={combination.title}
+                          isFavorite={isFavorite(combination.id)}
+                          onToggleFavorite={() =>
+                            handleToggleFavorite(
+                              combination.id,
+                              combination.user_id,
+                              combination.firebase_uid
+                            )
+                          }
+                          userId={combination.user_id}
+                          currentUserId={loginUser?.uid}
+                          firebaseUid={combination.firebase_uid}
+                          currentFirebaseUid={loginUser?.uid}
+                          onClick={() =>
+                            (window.location.href = `/item/${combination.id}`)
+                          }
+                          priority={index === 0}
+                          tags={combination.tags}
+                        />
+                      </div>
                     </div>
                   </div>
                 ))
@@ -453,24 +457,26 @@ export default function Home() {
                           key={combination.id}
                           className="flex-shrink-0 w-52 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 overflow-hidden relative"
                         >
-                          <div className="p-3 pt-4 flex flex-col items-center">
-                            <Card
-                              src={combination.image}
-                              title={combination.title}
-                              isFavorite={isFavorite(combination.id)}
-                              onToggleFavorite={() =>
-                                handleToggleFavorite(combination.id)
-                              }
-                              userId={combination.user_id}
-                              currentUserId={loginUser?.uid}
-                              firebaseUid={combination.firebase_uid}
-                              currentFirebaseUid={loginUser?.uid}
-                              onClick={() =>
-                                (window.location.href = `/item/${combination.id}`)
-                              }
-                              priority={index === 0}
-                              tags={combination.tags}
-                            />
+                          <div className="p-3 pt-4 flex flex-col items-center justify-center h-full">
+                            <div className="flex justify-start">
+                              <Card
+                                src={combination.image}
+                                title={combination.title}
+                                isFavorite={isFavorite(combination.id)}
+                                onToggleFavorite={() =>
+                                  handleToggleFavorite(combination.id)
+                                }
+                                userId={combination.user_id}
+                                currentUserId={loginUser?.uid}
+                                firebaseUid={combination.firebase_uid}
+                                currentFirebaseUid={loginUser?.uid}
+                                onClick={() =>
+                                  (window.location.href = `/item/${combination.id}`)
+                                }
+                                priority={index === 0}
+                                tags={combination.tags}
+                              />
+                            </div>
                           </div>
                         </div>
                       ))}

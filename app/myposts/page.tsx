@@ -35,7 +35,7 @@ const CombinationCard = memo(function CombinationCard({
   return (
     <div className="w-full bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200 overflow-hidden">
       <div className="p-4">
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-8">
           {/* 画像とタイトル */}
           <div className="flex-shrink-0">
             <Card
@@ -49,7 +49,7 @@ const CombinationCard = memo(function CombinationCard({
 
           {/* 詳細情報とボタン */}
           <div className="flex-2 flex flex-col justify-between">
-            <div className="mt-4 flex space-x-5">
+            <div className="mt-4 flex space-x-6">
               <Link href={`/edit/${combination.id}`}>
                 <button className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded text-sm font-medium transition-colors duration-200 cursor-pointer">
                   <FontAwesomeIcon icon={faEdit} className="mr-1" />
@@ -185,7 +185,7 @@ export default function MyPosts() {
   const SkeletonCard = () => (
     <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
       <div className="p-4">
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-8">
           <div className="flex-shrink-0">
             <div className="px-4 pb-2 w-40 flex flex-col justify-between">
               <div className="w-32 h-4 bg-gray-200 animate-pulse rounded mb-2"></div>
@@ -193,7 +193,7 @@ export default function MyPosts() {
             </div>
           </div>
           <div className="flex-2 flex flex-col justify-between">
-            <div className="mt-4 flex space-x-5">
+            <div className="mt-4 flex space-x-6">
               <div className="w-20 h-8 bg-gray-200 animate-pulse rounded"></div>
               <div className="w-20 h-8 bg-gray-200 animate-pulse rounded"></div>
             </div>

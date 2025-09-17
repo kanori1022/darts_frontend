@@ -17,6 +17,7 @@ type CardProps = {
   onClick?: () => void;
   priority?: boolean;
   tags?: string[];
+  showTitle?: boolean;
 };
 
 export const Card = ({
@@ -30,26 +31,31 @@ export const Card = ({
   currentFirebaseUid,
   onClick,
   priority,
+  showTitle = true,
 }: CardProps) => {
   const [imageError, setImageError] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
 
   return (
-    <div className="px-4 pb-2 w-40 h-32 flex flex-col justify-between">
-      <div className="w-40 text-[#000000] h-12 flex items-center justify-start text-left overflow-hidden text-[12px] font-semibold">
-        <span
-          className="block w-full"
-          style={{
-            lineHeight: "1.2",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            maxWidth: "100%",
-          }}
-        >
-          {title.length > 14 ? `${title.substring(0, 14)}...` : title}
-        </span>
-      </div>
+    <div
+      className={`px-4 pb-2 w-40 ${showTitle ? "h-32" : "h-24"} flex flex-col justify-between`}
+    >
+      {showTitle && (
+        <div className="w-40 text-[#000000] h-12 flex items-center justify-start text-left overflow-hidden text-[12px] font-semibold">
+          <span
+            className="block w-full"
+            style={{
+              lineHeight: "1.2",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              maxWidth: "100%",
+            }}
+          >
+            {title.length > 14 ? `${title.substring(0, 14)}...` : title}
+          </span>
+        </div>
+      )}
       <div
         className={`flex justify-center items-center relative w-32 h-24 ${onClick ? "cursor-pointer group" : ""}`}
         onClick={onClick}
