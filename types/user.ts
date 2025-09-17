@@ -2,6 +2,8 @@ export type UserParams = {
   image: File | null;
   name: string;
   introduction?: string;
+  headerGradientFrom?: string;
+  headerGradientTo?: string;
 };
 
 export type User = {
@@ -10,6 +12,8 @@ export type User = {
   name: string;
   introduction?: string;
   description?: string; // 自己紹介用
+  headerGradientFrom?: string; // ヘッダーグラデーション開始色
+  headerGradientTo?: string; // ヘッダーグラデーション終了色
   created_at?: string;
   updated_at?: string;
   firebase_uid?: string; // Firebase UID

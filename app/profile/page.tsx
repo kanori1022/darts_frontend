@@ -7,7 +7,11 @@ import { useFetch } from "@/hooks/fetch/useFetch";
 import { User } from "@/types/user";
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { updateProfile } from "firebase/auth";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -19,6 +23,8 @@ export default function Profile() {
   const [introduction, setIntroduction] = useState("");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [hasNewImage, setHasNewImage] = useState(false);
+  const [headerGradientFrom, setHeaderGradientFrom] = useState("#3B82F6"); // デフォルトは青
+  const [headerGradientTo, setHeaderGradientTo] = useState("#10B981"); // デフォルトは緑
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const { updateUser } = useUpdateUser();
@@ -28,9 +34,6 @@ export default function Profile() {
 
   const handleGuestLogin = async () => {
     try {
-      const { getAuth, signInWithEmailAndPassword } = await import(
-        "firebase/auth"
-      );
       const auth = getAuth();
       const result = await signInWithEmailAndPassword(
         auth,
@@ -66,6 +69,13 @@ export default function Profile() {
       setIntroduction(userData.introduction || "");
       // APIから取得した画像URLを優先的に使用
       setPreviewUrl(userData.image || loginUser?.photoURL || null);
+      // ヘッダーグラデーション色を設定
+      if (userData.headerGradientFrom) {
+        setHeaderGradientFrom(userData.headerGradientFrom);
+      }
+      if (userData.headerGradientTo) {
+        setHeaderGradientTo(userData.headerGradientTo);
+      }
     }
   }, [userData, loginUser, hasNewImage]);
 
@@ -91,18 +101,12 @@ export default function Profile() {
             <br />
             ログインまたは新規登録が必要です
           </p>
-          <div className="space-y-6">
+
             <Link href="/login">
               <Button color="bg-blue-500 hover:bg-blue-600">ログイン</Button>
             </Link>
 
-            {/* 区切り線 */}
-            <div className="flex items-center justify-center">
-              <div className="flex-1 border-t border-gray-300"></div>
-              <span className="px-3 text-sm text-gray-500 bg-white">
-                または
-              </span>
-              <div className="flex-1 border-t border-gray-300"></div>
+
             </div>
 
             <button
@@ -142,6 +146,8 @@ export default function Profile() {
           image: inputRef.current?.files?.[0] || null,
           name: displayName,
           introduction: introduction,
+          headerGradientFrom: headerGradientFrom,
+          headerGradientTo: headerGradientTo,
         },
       });
 
@@ -232,6 +238,61 @@ export default function Profile() {
           className="border border-gray-300 rounded p-2 w-full resize-vertical"
         />
         <p className="text-sm text-gray-500 mt-1">改行は自動的に反映されます</p>
+      </div>
+
+      {/* ヘッダーグラデーション色設定 */}
+      <div className="mb-6">
+        <label className="block font-semibold mb-3">ヘッダー背景色</label>
+        <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            {/* 開始色 */}
+            <div>
+              <label className="block text-sm text-gray-600 mb-2">開始色</label>
+              <div className="flex items-center space-x-3">
+                <input
+                  type="color"
+                  value={headerGradientFrom}
+                  onChange={(e) => setHeaderGradientFrom(e.target.value)}
+                  className="w-8 h-8 rounded border border-gray-300 cursor-pointer"
+                />
+                <span className="text-sm text-gray-500 font-mono">
+                  {headerGradientFrom}
+                </span>
+              </div>
+            </div>
+
+            {/* 終了色 */}
+            <div>
+              <label className="block text-sm text-gray-600 mb-2">終了色</label>
+              <div className="flex items-center space-x-3">
+                <input
+                  type="color"
+                  value={headerGradientTo}
+                  onChange={(e) => setHeaderGradientTo(e.target.value)}
+                  className="w-8 h-8 rounded border border-gray-300 cursor-pointer"
+                />
+                <span className="text-sm text-gray-500 font-mono">
+                  {headerGradientTo}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* プレビュー */}
+          <div className="mt-4">
+            <label className="block text-sm text-gray-600 mb-2">
+              プレビュー
+            </label>
+            <div
+              className="h-16 rounded-lg flex items-center justify-center text-white font-medium shadow-sm"
+              style={{
+                background: `linear-gradient(to right, ${headerGradientFrom}, ${headerGradientTo})`,
+              }}
+            >
+              ヘッダー背景プレビュー
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* ボタンエリア */}

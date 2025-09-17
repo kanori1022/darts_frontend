@@ -6,22 +6,16 @@ import { useFetch } from "@/hooks/fetch/useFetch";
 import { User } from "@/types/user";
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 export default function Mypage() {
   const { loginUser, isWaiting } = useAuth();
   const { data, isLoading } = useFetch<User>(
     loginUser && !isWaiting ? "/users" : null
   );
-  const router = useRouter();
 
-  const handleGuestLogin = async () => {
-    try {
-      const { getAuth, signInWithEmailAndPassword } = await import(
-        "firebase/auth"
-      );
       const auth = getAuth();
       const result = await signInWithEmailAndPassword(
         auth,
@@ -30,7 +24,7 @@ export default function Mypage() {
       );
       console.log("ゲストログイン成功:", result);
       alert("ゲストユーザーとしてログインしました");
-      router.push("/home");
+
     } catch (error) {
       console.error("ゲストログインエラー:", error);
       alert(
@@ -38,6 +32,7 @@ export default function Mypage() {
       );
     }
   };
+
 
   // 認証待機中の表示
   if (isWaiting) {
@@ -64,18 +59,6 @@ export default function Mypage() {
             <br />
             ログインまたは新規登録が必要です
           </p>
-          <div className="space-y-6">
-            <Link href="/login">
-              <Button color="bg-blue-500 hover:bg-blue-600">ログイン</Button>
-            </Link>
-
-            {/* 区切り線 */}
-            <div className="flex items-center justify-center">
-              <div className="flex-1 border-t border-gray-300"></div>
-              <span className="px-3 text-sm text-gray-500 bg-white">
-                または
-              </span>
-              <div className="flex-1 border-t border-gray-300"></div>
             </div>
 
             <button
@@ -160,7 +143,12 @@ export default function Mypage() {
           <div>
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
               {/* プロフィールヘッダー */}
-              <div className="bg-gradient-to-r from-blue-500 to-green-500 px-8 py-12 text-center relative">
+              <div
+                className="px-8 py-12 text-center relative"
+                style={{
+                  background: `linear-gradient(to right, ${headerGradientFrom}, ${headerGradientTo})`,
+                }}
+              >
                 <div className="relative z-10">
                   {/* プロフィール画像 */}
                   <div className="inline-block relative">
