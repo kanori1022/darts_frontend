@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 
 type DrawerMenuProps = {
@@ -14,6 +15,24 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
   onLogout,
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+
+  const handleGuestLogin = async () => {
+    try {
+      const { getAuth, signInAnonymously } = await import("firebase/auth");
+      const auth = getAuth();
+      const result = await signInAnonymously(auth);
+      console.log("ゲストログイン成功:", result);
+      alert("ゲストユーザーとしてログインしました");
+      onClose();
+      router.push("/home");
+    } catch (error) {
+      console.error("ゲストログインエラー:", error);
+      alert(
+        "ゲストログインに失敗しました。しばらくしてから再度お試しください。"
+      );
+    }
+  };
 
   // メニュー外をクリックしたときに閉じる
   useEffect(() => {
@@ -59,6 +78,16 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
         <Link href="/login">
           <p className="mb-5">ログイン</p>
         </Link>
+
+        {/* ゲストログインボタン */}
+        <button
+          onClick={handleGuestLogin}
+          className="mb-5 text-left w-full text-[#CCCCCC] hover:bg-gray-700 p-2 rounded"
+          type="button"
+        >
+          ゲストログイン
+        </button>
+
         <Link href="/mypage">
           <p className="mb-5">設定</p>
         </Link>

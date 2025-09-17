@@ -97,8 +97,7 @@ export default function Post() {
               onClick={handleGuestLogin}
               className="w-full px-6 py-3 bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl cursor-pointer border border-slate-500 hover:border-slate-400 relative overflow-hidden group"
             >
-              <span className="relative z-10 flex items-center justify-center gap-2">
-                <span className="text-lg">🎯</span>
+              <span className="relative z-10 flex items-center justify-center">
                 <span>ゲストユーザーでログイン</span>
               </span>
               <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-500"></div>
