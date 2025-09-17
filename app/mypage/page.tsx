@@ -8,12 +8,25 @@ import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function Mypage() {
   const { loginUser, isWaiting } = useAuth();
   const { data, isLoading } = useFetch<User>(
     loginUser && !isWaiting ? "/users" : null
   );
+  const [headerGradientFrom, setHeaderGradientFrom] = useState("#3B82F6"); // デフォルトは青
+  const [headerGradientTo, setHeaderGradientTo] = useState("#10B981"); // デフォルトは緑
+
+  // APIから取得したユーザーデータからヘッダーグラデーション色を設定
+  useEffect(() => {
+    if (data?.headerGradientFrom) {
+      setHeaderGradientFrom(data.headerGradientFrom);
+    }
+    if (data?.headerGradientTo) {
+      setHeaderGradientTo(data.headerGradientTo);
+    }
+  }, [data]);
 
   // 認証待機中の表示
   if (isWaiting) {
@@ -114,7 +127,12 @@ export default function Mypage() {
           <div>
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
               {/* プロフィールヘッダー */}
-              <div className="bg-gradient-to-r from-blue-500 to-green-500 px-8 py-12 text-center relative">
+              <div
+                className="px-8 py-12 text-center relative"
+                style={{
+                  background: `linear-gradient(to right, ${headerGradientFrom}, ${headerGradientTo})`,
+                }}
+              >
                 <div className="relative z-10">
                   {/* プロフィール画像 */}
                   <div className="inline-block relative">

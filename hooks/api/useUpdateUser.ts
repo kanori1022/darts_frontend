@@ -9,12 +9,24 @@ export const useUpdateUser = () => {
     async ({
       user,
     }: {
-      user: { name: string; image: File | null; introduction?: string };
+      user: {
+        name: string;
+        image: File | null;
+        introduction?: string;
+        headerGradientFrom?: string;
+        headerGradientTo?: string;
+      };
     }) => {
       const formData = new FormData();
       formData.append("user[name]", user.name);
       if (user.introduction !== undefined) {
         formData.append("user[introduction]", user.introduction);
+      }
+      if (user.headerGradientFrom !== undefined) {
+        formData.append("user[header_gradient_from]", user.headerGradientFrom);
+      }
+      if (user.headerGradientTo !== undefined) {
+        formData.append("user[header_gradient_to]", user.headerGradientTo);
       }
       if (user.image) {
         formData.append("user[image]", user.image);
