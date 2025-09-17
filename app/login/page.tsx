@@ -3,7 +3,7 @@
 import { Button } from "@/components/Button/Button";
 import { InputLong } from "@/components/Input/Input";
 import useAuth from "@/hooks/auth/useAuth";
-import { signInAnonymously, signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -48,7 +48,11 @@ export default function Login() {
 
   const handleGuestLogin = async () => {
     try {
-      const result = await signInAnonymously(auth);
+      const result = await signInWithEmailAndPassword(
+        auth,
+        "gest@1.com",
+        "33443344"
+      );
       console.log("ゲストログイン成功:", result);
       alert("ゲストユーザーとしてログインしました");
       router.push("/home");

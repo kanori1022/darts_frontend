@@ -7,7 +7,6 @@ import useAuth from "@/hooks/auth/useAuth";
 import { CombinationParams } from "@/types/combination";
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { signInAnonymously } from "firebase/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
@@ -32,9 +31,15 @@ export default function Post() {
 
   const handleGuestLogin = async () => {
     try {
-      const { getAuth } = await import("firebase/auth");
+      const { getAuth, signInWithEmailAndPassword } = await import(
+        "firebase/auth"
+      );
       const auth = getAuth();
-      const result = await signInAnonymously(auth);
+      const result = await signInWithEmailAndPassword(
+        auth,
+        "gest@1.com",
+        "33443344"
+      );
       console.log("ゲストログイン成功:", result);
       alert("ゲストユーザーとしてログインしました");
       router.push("/home");

@@ -5,7 +5,6 @@ import { useFavorites } from "@/hooks/api/useFavorites";
 import useAuth from "@/hooks/auth/useAuth";
 import { useFetch } from "@/hooks/fetch/useFetch";
 import { Combination } from "@/types/combination";
-import { signInAnonymously } from "firebase/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -32,9 +31,15 @@ export default function Favorite() {
 
   const handleGuestLogin = async () => {
     try {
-      const { getAuth } = await import("firebase/auth");
+      const { getAuth, signInWithEmailAndPassword } = await import(
+        "firebase/auth"
+      );
       const auth = getAuth();
-      const result = await signInAnonymously(auth);
+      const result = await signInWithEmailAndPassword(
+        auth,
+        "gest@1.com",
+        "33443344"
+      );
       console.log("ゲストログイン成功:", result);
       alert("ゲストユーザーとしてログインしました");
       router.push("/home");

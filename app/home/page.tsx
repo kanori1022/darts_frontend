@@ -57,12 +57,16 @@ export default function Home() {
 
   const handleGuestLogin = async () => {
     try {
-      // ゲストユーザーとしてログイン（Firebase Anonymous Auth）
-      const { signInAnonymously } = await import("firebase/auth");
+      // ゲストユーザーとしてログイン（Firebase Email/Password Auth）
+      const { signInWithEmailAndPassword } = await import("firebase/auth");
       const { getAuth } = await import("firebase/auth");
       const auth = getAuth();
 
-      const result = await signInAnonymously(auth);
+      const result = await signInWithEmailAndPassword(
+        auth,
+        "gest@1.com",
+        "33443344"
+      );
       console.log("ゲストログイン成功:", result);
       alert("ゲストユーザーとしてログインしました");
 

@@ -13,7 +13,7 @@ export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
-  const { handleSignOut } = useAuth();
+  const { handleSignOut, loginUser } = useAuth();
   const toggleDrawer = () => {
     setIsOpen((prev) => !prev);
   };
@@ -42,6 +42,7 @@ export const Header = () => {
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         onLogout={handleLogout}
+        isLoggedIn={!!loginUser}
       />
 
       <div className="bg-[#333333] p-5 flex justify-between items-center relative z-50">
