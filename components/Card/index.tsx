@@ -36,20 +36,18 @@ export const Card = ({
 
   return (
     <div className="px-4 pb-2 w-40 h-32 flex flex-col justify-between">
-      <div className="w-40 text-[#000000] h-12 flex items-center justify-start text-left leading-tight overflow-hidden text-[10px] font-medium">
+      <div className="w-40 text-[#000000] h-12 flex items-center justify-start text-left overflow-hidden text-[12px] font-semibold">
         <span
-          className="block"
+          className="block w-full"
           style={{
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
+            lineHeight: "1.2",
             overflow: "hidden",
             textOverflow: "ellipsis",
-            lineHeight: "1.0",
-            maxHeight: "2.0em",
+            whiteSpace: "nowrap",
+            maxWidth: "100%",
           }}
         >
-          {title}
+          {title.length > 14 ? `${title.substring(0, 14)}...` : title}
         </span>
       </div>
       <div
