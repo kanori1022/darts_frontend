@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
-import { SrcButton } from "@/components/Button/Button";
 import { InputLong } from "@/components/Input/Input";
 import {
   faChevronDown,
@@ -27,8 +26,11 @@ export default function search() {
     username: "",
   });
   const [showHints, setShowHints] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
+    setIsSearching(true);
+
     // 検索条件をクエリパラメータとして検索結果ページに渡す
     const searchParams = new URLSearchParams();
     if (word.searchWord) {
@@ -46,7 +48,10 @@ export default function search() {
       ? `/search/result?${queryString}`
       : "/search/result";
 
-    router.push(url);
+    // 少し遅延を入れてローディング状態を表示
+    setTimeout(() => {
+      router.push(url);
+    }, 800);
   };
 
   return (
@@ -60,71 +65,117 @@ export default function search() {
 
       {/* Search Form Section */}
       <div className="max-w-2xl mx-auto px-4">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-          <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">
-            検索条件を入力
-          </h2>
+        <div className="bg-gradient-to-br from-white via-blue-50 to-indigo-50 rounded-2xl shadow-xl border border-blue-200 p-8 relative overflow-hidden">
+          {/* 装飾的な背景要素 */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-100 to-transparent rounded-full -translate-y-16 translate-x-16 opacity-50"></div>
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-indigo-100 to-transparent rounded-full translate-y-12 -translate-x-12 opacity-50"></div>
 
-          {/* 検索ワード入力 */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              <FontAwesomeIcon icon={faSearch} className="mr-2 text-blue-600" />
-              キーワード検索
-            </label>
-            <InputLong
-              placeholder="タイトル、説明、パーツ名などで検索"
-              value={word.searchWord}
-              onChange={(e) => {
-                setWord({ ...word, searchWord: e.target.value });
-              }}
-            >
-              検索キーワード
-            </InputLong>
-          </div>
+          <div className="relative z-10">
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full mb-4 shadow-lg">
+                <FontAwesomeIcon
+                  icon={faSearch}
+                  className="text-white text-2xl"
+                />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                検索条件を入力
+              </h2>
+              <p className="text-gray-600">
+                キーワード、タグ、ユーザー名で詳細検索ができます
+              </p>
+            </div>
 
-          {/* タグ検索入力 */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              <FontAwesomeIcon icon={faTags} className="mr-2 text-green-600" />
-              タグ検索
-            </label>
-            <InputLong
-              placeholder="タグで絞り込み検索（任意）"
-              value={word.tags}
-              onChange={(e) => {
-                setWord({ ...word, tags: e.target.value });
-              }}
-            >
-              タグ
-            </InputLong>
-          </div>
+            {/* 検索ワード入力 */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <FontAwesomeIcon
+                  icon={faSearch}
+                  className="mr-2 text-blue-600"
+                />
+                キーワード検索
+              </label>
+              <InputLong
+                placeholder="タイトル、説明、パーツ名などで検索"
+                value={word.searchWord}
+                onChange={(e) => {
+                  setWord({ ...word, searchWord: e.target.value });
+                }}
+              >
+                検索キーワード
+              </InputLong>
+            </div>
 
-          {/* ユーザー名検索入力 */}
-          <div className="mb-8">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              <FontAwesomeIcon icon={faUser} className="mr-2 text-purple-600" />
-              ユーザー名検索
-            </label>
-            <InputLong
-              placeholder="投稿者のユーザー名で検索（任意）"
-              value={word.username}
-              onChange={(e) => {
-                setWord({ ...word, username: e.target.value });
-              }}
-            >
-              ユーザー名
-            </InputLong>
-          </div>
+            {/* タグ検索入力 */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <FontAwesomeIcon
+                  icon={faTags}
+                  className="mr-2 text-green-600"
+                />
+                タグ検索
+              </label>
+              <InputLong
+                placeholder="タグで絞り込み検索（任意）"
+                value={word.tags}
+                onChange={(e) => {
+                  setWord({ ...word, tags: e.target.value });
+                }}
+              >
+                タグ
+              </InputLong>
+            </div>
 
-          {/* 検索ボタン */}
-          <div className="flex justify-center">
-            <SrcButton
-              color={"bg-blue-600 hover:bg-blue-700"}
-              onClick={handleSearch}
-            >
-              <FontAwesomeIcon icon={faSearch} className="mr-2" />
-              検索を実行
-            </SrcButton>
+            {/* ユーザー名検索入力 */}
+            <div className="mb-8">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <FontAwesomeIcon
+                  icon={faUser}
+                  className="mr-2 text-purple-600"
+                />
+                ユーザー名検索
+              </label>
+              <InputLong
+                placeholder="投稿者のユーザー名で検索（任意）"
+                value={word.username}
+                onChange={(e) => {
+                  setWord({ ...word, username: e.target.value });
+                }}
+              >
+                ユーザー名
+              </InputLong>
+            </div>
+
+            {/* 検索ボタン */}
+            <div className="flex justify-center mt-8">
+              <button
+                onClick={handleSearch}
+                disabled={isSearching}
+                className={`group relative px-8 py-4 rounded-2xl font-semibold text-white transition-all duration-300 transform ${
+                  isSearching
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 hover:from-blue-600 hover:via-indigo-600 hover:to-purple-700 hover:shadow-2xl hover:scale-105 cursor-pointer"
+                } shadow-lg`}
+              >
+                <div className="flex items-center space-x-3">
+                  {isSearching ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                      <span>検索中...</span>
+                    </>
+                  ) : (
+                    <>
+                      <FontAwesomeIcon
+                        icon={faSearch}
+                        className="text-lg group-hover:scale-110 transition-transform duration-300"
+                      />
+                      <span>検索を実行</span>
+                      <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                    </>
+                  )}
+                </div>
+              </button>
+            </div>
           </div>
         </div>
 
