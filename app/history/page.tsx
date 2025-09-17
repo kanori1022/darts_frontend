@@ -89,10 +89,14 @@ export default function HistoryPage() {
   const totalPages = data?.pagination?.total_pages || 0;
 
   const goToNextPage = () => {
-    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
   };
   const goToPrevPage = () => {
-    if (currentPage > 1) setCurrentPage(currentPage - 1);
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
   };
 
   if (isLoading) {
@@ -105,27 +109,27 @@ export default function HistoryPage() {
   }
 
   return (
-    <div className="flex flex-col h-screen">
-      {/* スクロール可能なコンテンツエリア（popularに合わせる） */}
-      <div className="flex-1 overflow-y-auto min-h-0">
-        <div className="p-4">
-          {/* ヘッダー部分（スクロール対象 / popularと同様の見た目） */}
-          <div className="p-5 font-bold bg-white border-b shadow-sm mb-4 rounded-lg">
-            <div className="text-center">
-              <div className="flex items-center justify-center gap-3 mb-2">
-                <div className="w-1 h-6 bg-blue-500 rounded-full"></div>
-                <h1 className="text-2xl font-bold text-gray-800">
-                  閲覧履歴一覧
-                </h1>
-                <div className="px-2 py-1 bg-blue-100 text-blue-600 text-xs font-medium rounded">
-                  RECENT
-                </div>
-              </div>
-              <p className="text-sm text-gray-600">
-                総件数: {data?.pagination.total_count || 0}件
-              </p>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header Section - 固定位置 */}
+      <div className="bg-white border-b border-gray-200 py-6 px-6 mb-6">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <div className="w-1 h-6 bg-blue-500 rounded-full"></div>
+            <h1 className="text-2xl font-bold text-gray-800">
+              閲覧履歴一覧
+            </h1>
+            <div className="px-2 py-1 bg-blue-100 text-blue-600 text-xs font-medium rounded">
+              RECENT
             </div>
           </div>
+          <p className="text-sm text-gray-600">
+            総件数: {data?.pagination.total_count || 0}件
+          </p>
+        </div>
+      </div>
+
+      {/* Content Section */}
+      <div className="px-4">
 
           {/* コンテンツ（popularのカード並びに合わせる） */}
           {currentData.length > 0 ? (
@@ -180,8 +184,8 @@ export default function HistoryPage() {
 
       {/* ページネーション */}
       {totalPages > 1 && (
-        <div className="mt-8 mb-8 flex justify-center">
-          <div className="flex items-center space-x-3 bg-white rounded-2xl shadow-lg border border-gray-200 p-2">
+        <div className="mt-8 mb-12 flex justify-center sticky bottom-4 z-10">
+          <div className="flex items-center space-x-3 bg-white rounded-2xl shadow-lg border border-gray-200 p-2 backdrop-blur-sm">
             <button
               onClick={goToPrevPage}
               disabled={currentPage === 1}
@@ -238,6 +242,7 @@ export default function HistoryPage() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }
