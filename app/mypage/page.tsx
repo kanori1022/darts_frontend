@@ -9,18 +9,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 export default function Mypage() {
   const { loginUser, isWaiting } = useAuth();
   const { data, isLoading } = useFetch<User>(
     loginUser && !isWaiting ? "/users" : null
   );
-  const [headerGradientFrom, setHeaderGradientFrom] = useState("#3B82F6"); // デフォルトは青
-  const [headerGradientTo, setHeaderGradientTo] = useState("#10B981"); // デフォルトは緑
 
-  const handleGuestLogin = async () => {
-    try {
       const auth = getAuth();
       const result = await signInWithEmailAndPassword(
         auth,
@@ -29,7 +24,7 @@ export default function Mypage() {
       );
       console.log("ゲストログイン成功:", result);
       alert("ゲストユーザーとしてログインしました");
-      window.location.reload();
+
     } catch (error) {
       console.error("ゲストログインエラー:", error);
       alert(
@@ -38,15 +33,6 @@ export default function Mypage() {
     }
   };
 
-  // APIから取得したユーザーデータからヘッダーグラデーション色を設定
-  useEffect(() => {
-    if (data?.headerGradientFrom) {
-      setHeaderGradientFrom(data.headerGradientFrom);
-    }
-    if (data?.headerGradientTo) {
-      setHeaderGradientTo(data.headerGradientTo);
-    }
-  }, [data]);
 
   // 認証待機中の表示
   if (isWaiting) {
@@ -65,24 +51,14 @@ export default function Mypage() {
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="bg-white p-8 rounded-lg shadow-md text-center max-w-md">
           <div className="text-blue-500 text-6xl mb-4">🔒</div>
-          <h1 className="text-2xl font-bold mb-6 text-gray-800">
+          <h1 className="text-2xl font-bold mb-4 text-gray-800">
             ログインが必要です
           </h1>
-          <p className="mb-6 text-gray-600">
-            マイページを利用するには、ログインまたは新規登録が必要です。
+          <p className="mb-8 text-gray-600 leading-relaxed text-center max-w-sm mx-auto">
+            マイページをご利用いただくには
+            <br />
+            ログインまたは新規登録が必要です
           </p>
-          <div className="space-y-4">
-            <Link href="/login">
-              <Button color="bg-blue-500 hover:bg-blue-600">ログイン</Button>
-            </Link>
-
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">または</span>
-              </div>
             </div>
 
             <button

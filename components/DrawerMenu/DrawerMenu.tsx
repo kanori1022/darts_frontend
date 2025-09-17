@@ -91,6 +91,7 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
                 ログイン
               </p>
             </Link>
+
             <button
               onClick={handleGuestLogin}
               className="w-full text-left text-[#CCCCCC] hover:bg-gray-700 p-3 rounded transition-colors"

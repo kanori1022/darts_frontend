@@ -93,24 +93,20 @@ export default function Profile() {
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="bg-white p-8 rounded-lg shadow-md text-center max-w-md">
           <div className="text-blue-500 text-6xl mb-4">🔒</div>
-          <h1 className="text-2xl font-bold mb-6 text-gray-800">
+          <h1 className="text-2xl font-bold mb-4 text-gray-800">
             ログインが必要です
           </h1>
-          <p className="mb-6 text-gray-600">
-            プロフィール編集機能を利用するには、ログインまたは新規登録が必要です。
+          <p className="mb-8 text-gray-600 leading-relaxed text-center max-w-sm mx-auto">
+            プロフィール編集機能をご利用いただくには
+            <br />
+            ログインまたは新規登録が必要です
           </p>
-          <div className="space-y-4">
+
             <Link href="/login">
               <Button color="bg-blue-500 hover:bg-blue-600">ログイン</Button>
             </Link>
 
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">または</span>
-              </div>
+
             </div>
 
             <button

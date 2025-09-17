@@ -29,6 +29,28 @@ export default function Post() {
   const { loginUser } = useAuth();
   const router = useRouter();
 
+  const handleGuestLogin = async () => {
+    try {
+      const { getAuth, signInWithEmailAndPassword } = await import(
+        "firebase/auth"
+      );
+      const auth = getAuth();
+      const result = await signInWithEmailAndPassword(
+        auth,
+        "gest@1.com",
+        "33443344"
+      );
+      console.log("ゲストログイン成功:", result);
+      alert("ゲストユーザーとしてログインしました");
+      router.push("/home");
+    } catch (error) {
+      console.error("ゲストログインエラー:", error);
+      alert(
+        "ゲストログインに失敗しました。しばらくしてから再度お試しください。"
+      );
+    }
+  };
+
   // タグ追加処理の関数
   const handleAddTags = () => {
     const currentTags = combination.tags || [];
@@ -54,16 +76,38 @@ export default function Post() {
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="bg-white p-8 rounded-lg shadow-md text-center max-w-md">
           <div className="text-blue-500 text-6xl mb-4">🔒</div>
-          <h1 className="text-2xl font-bold mb-6 text-gray-800">
+          <h1 className="text-2xl font-bold mb-4 text-gray-800">
             ログインが必要です
           </h1>
-          <p className="mb-6 text-gray-600">
-            投稿機能を利用するには、ログインまたは新規登録が必要です。
+          <p className="mb-8 text-gray-600 leading-relaxed text-center max-w-sm mx-auto">
+            投稿機能をご利用いただくには
+            <br />
+            ログインまたは新規登録が必要です
           </p>
-          <div className="space-y-3">
+          <div className="space-y-6">
             <Link href="/login">
               <Button color="bg-blue-500 hover:bg-blue-600">ログイン</Button>
             </Link>
+
+            {/* 区切り線 */}
+            <div className="flex items-center justify-center">
+              <div className="flex-1 border-t border-gray-300"></div>
+              <span className="px-3 text-sm text-gray-500 bg-white">
+                または
+              </span>
+              <div className="flex-1 border-t border-gray-300"></div>
+            </div>
+
+            <button
+              onClick={handleGuestLogin}
+              className="w-full px-6 py-3 bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl cursor-pointer border border-slate-500 hover:border-slate-400 relative overflow-hidden group"
+            >
+              <span className="relative z-10 flex items-center justify-center">
+                <span>ゲストユーザーでログイン</span>
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-500"></div>
+            </button>
+
             <Link href="/newprofile">
               <Button color="bg-gray-500 hover:bg-gray-600">新規登録</Button>
             </Link>
