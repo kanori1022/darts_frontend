@@ -9,13 +9,28 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function Mypage() {
   const { loginUser, isWaiting } = useAuth();
   const { data, isLoading } = useFetch<User>(
     loginUser && !isWaiting ? "/users" : null
   );
+  const [headerGradientFrom, setHeaderGradientFrom] = useState("#3B82F6"); // デフォルトは青
+  const [headerGradientTo, setHeaderGradientTo] = useState("#10B981"); // デフォルトは緑
 
+  // データからグラデーション色を初期化
+  useEffect(() => {
+    if (data?.headerGradientFrom) {
+      setHeaderGradientFrom(data.headerGradientFrom);
+    }
+    if (data?.headerGradientTo) {
+      setHeaderGradientTo(data.headerGradientTo);
+    }
+  }, [data]);
+
+  const handleGuestLogin = async () => {
+    try {
       const auth = getAuth();
       const result = await signInWithEmailAndPassword(
         auth,
@@ -24,7 +39,7 @@ export default function Mypage() {
       );
       console.log("ゲストログイン成功:", result);
       alert("ゲストユーザーとしてログインしました");
-
+      window.location.reload();
     } catch (error) {
       console.error("ゲストログインエラー:", error);
       alert(
@@ -32,7 +47,6 @@ export default function Mypage() {
       );
     }
   };
-
 
   // 認証待機中の表示
   if (isWaiting) {
@@ -59,6 +73,18 @@ export default function Mypage() {
             <br />
             ログインまたは新規登録が必要です
           </p>
+          <div className="space-y-4">
+            <Link href="/login">
+              <Button color="bg-blue-500 hover:bg-blue-600">ログイン</Button>
+            </Link>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">または</span>
+              </div>
             </div>
 
             <button

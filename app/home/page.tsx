@@ -369,13 +369,22 @@ export default function Home() {
                 <p className="text-gray-600 mb-6">
                   新規登録をして限定コンテンツやパーソナライズ機能をお楽しみください
                 </p>
+                <div className="space-y-4">
                   <Link href="/login">
                     <Button color="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 shadow-lg">
                       新規登録はコチラ
                     </Button>
                   </Link>
 
-
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-gray-300" />
+                    </div>
+                    <div className="relative flex justify-center text-sm">
+                      <span className="px-2 bg-gradient-to-r from-blue-50 to-indigo-100 text-gray-500">
+                        または
+                      </span>
+                    </div>
                   </div>
 
                   <button
