@@ -3,7 +3,6 @@ import { faHeart as regularHeart } from "@fortawesome/free-regular-svg-icons";
 import { faHeart as solidHeart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import Link from "next/link";
 import { useState } from "react";
 
 type CardProps = {
@@ -37,7 +36,7 @@ export const Card = ({
   const [imageLoading, setImageLoading] = useState(true);
 
   return (
-    <div className="px-4 pb-2 w-40 flex flex-col justify-between">
+    <div className="px-4 pb-2 w-40 h-32 flex flex-col justify-between">
       <div className="w-40 text-[#000000] h-12 flex items-center justify-start text-left leading-tight overflow-hidden text-sm">
         <span
           className="block"
@@ -103,27 +102,6 @@ export const Card = ({
             </button>
           )}
       </div>
-
-      {/* タグ表示 */}
-      {tags && tags.length > 0 && (
-        <div className="mt-2 flex flex-wrap gap-1">
-          {tags.slice(0, 2).map((tag, index) => (
-            <Link
-              key={index}
-              href={`/search/result?tags=${encodeURIComponent(tag)}`}
-              className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200 hover:bg-blue-200 transition-colors duration-200 cursor-pointer"
-              onClick={(e) => e.stopPropagation()}
-            >
-              #{tag}
-            </Link>
-          ))}
-          {tags.length > 2 && (
-            <span className="text-xs text-gray-500 px-1">
-              +{tags.length - 2}
-            </span>
-          )}
-        </div>
-      )}
     </div>
   );
 };
