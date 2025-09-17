@@ -99,10 +99,10 @@ export default function PopularPage() {
       </div>
 
       {/* Content Section */}
-      <div className="px-4">
+      <div className="px-2 sm:px-4">
         {currentData.length > 0 ? (
           <div className="max-w-6xl mx-auto">
-            <div className="space-y-4">
+            <div className="space-y-2 sm:space-y-4">
               {currentData.map((combination, index) => {
                 const globalRank = (currentPage - 1) * itemsPerPage + index + 1;
 
@@ -137,18 +137,25 @@ export default function PopularPage() {
                     key={combination.id}
                     className="w-full bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 overflow-hidden"
                   >
-                    <div className="p-4">
-                      <div className="flex items-center space-x-4">
+                    {/* タイトルを上部左揃えに配置 */}
+                    <div className="p-3 sm:p-5 pb-2 sm:pb-3">
+                      <h3 className="text-sm sm:text-lg font-semibold text-gray-800 text-left mb-2 sm:mb-3">
+                        {combination.title}
+                      </h3>
+                    </div>
+
+                    <div className="px-3 sm:px-5 pb-3 sm:pb-5">
+                      <div className="flex items-center">
                         {/* ランキング表示 */}
-                        <div className="flex-shrink-0">
+                        <div className="flex-shrink-0 mr-4 sm:mr-6">
                           {globalRank <= 3 ? (
                             <div
-                              className={`w-12 h-12 ${crownStyle.bgColor} rounded-full flex items-center justify-center shadow-xl border-2 border-white`}
+                              className={`w-8 h-8 sm:w-12 sm:h-12 ${crownStyle.bgColor} rounded-full flex items-center justify-center shadow-xl border-2 border-white`}
                             >
                               <div className="relative flex items-center justify-center">
                                 <FontAwesomeIcon
                                   icon={faCrown}
-                                  className={`text-lg ${crownStyle.color}`}
+                                  className={`text-sm sm:text-lg ${crownStyle.color}`}
                                 />
                                 <span
                                   className="absolute text-xs font-bold text-gray-900 drop-shadow-sm"
@@ -163,16 +170,16 @@ export default function PopularPage() {
                               </div>
                             </div>
                           ) : (
-                            <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center border border-gray-300">
-                              <span className="text-lg font-bold text-gray-600">
+                            <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gray-100 rounded-full flex items-center justify-center border border-gray-300">
+                              <span className="text-sm sm:text-lg font-bold text-gray-600">
                                 {globalRank}
                               </span>
                             </div>
                           )}
                         </div>
 
-                        {/* 画像とタイトル */}
-                        <div className="flex-shrink-0">
+                        {/* 画像のみ */}
+                        <div className="flex-shrink-0 mr-8 sm:mr-12">
                           <Card
                             src={combination.image}
                             title={combination.title}
@@ -192,20 +199,38 @@ export default function PopularPage() {
                               (window.location.href = `/item/${combination.id}`)
                             }
                             tags={combination.tags}
+                            showTitle={false}
                           />
                         </div>
 
-                        {/* 詳細情報とボタン */}
-                        <div className="flex-1 flex flex-col justify-between">
+                        {/* 詳細情報 */}
+                        <div className="flex-1 flex flex-col justify-center max-w-xs">
                           <div>
-                            <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                              {combination.title}
-                            </h3>
-                            <div className="text-sm text-gray-600 space-y-1">
-                              <p>フライト: {combination.flight}</p>
-                              <p>シャフト: {combination.shaft}</p>
-                              <p>バレル: {combination.barrel}</p>
-                              <p>チップ: {combination.tip}</p>
+                            <div className="text-xs sm:text-sm text-gray-600 space-y-1 sm:space-y-1.5">
+                              <p>
+                                フライト:{" "}
+                                {combination.flight.length > 6
+                                  ? `${combination.flight.substring(0, 6)}...`
+                                  : combination.flight}
+                              </p>
+                              <p>
+                                シャフト:{" "}
+                                {combination.shaft.length > 6
+                                  ? `${combination.shaft.substring(0, 6)}...`
+                                  : combination.shaft}
+                              </p>
+                              <p>
+                                バレル:{" "}
+                                {combination.barrel.length > 6
+                                  ? `${combination.barrel.substring(0, 6)}...`
+                                  : combination.barrel}
+                              </p>
+                              <p>
+                                チップ:{" "}
+                                {combination.tip.length > 6
+                                  ? `${combination.tip.substring(0, 6)}...`
+                                  : combination.tip}
+                              </p>
                             </div>
                           </div>
                         </div>
@@ -224,19 +249,19 @@ export default function PopularPage() {
 
         {/* ページネーション */}
         {totalPages > 1 && (
-          <div className="mt-8 mb-12 flex justify-center sticky bottom-4 z-10">
-            <div className="flex items-center space-x-3 bg-white rounded-2xl shadow-lg border border-gray-200 p-2 backdrop-blur-sm">
+          <div className="mt-4 sm:mt-8 mb-8 sm:mb-12 flex justify-center sticky bottom-4 z-10">
+            <div className="flex items-center space-x-1 sm:space-x-3 bg-white rounded-2xl shadow-lg border border-gray-200 p-1 sm:p-2 backdrop-blur-sm">
               <button
                 onClick={goToPrevPage}
                 disabled={currentPage === 1}
-                className={`px-6 py-3 rounded-xl font-medium transition-all duration-300 flex items-center space-x-2 ${
+                className={`px-3 sm:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all duration-300 flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm ${
                   currentPage === 1
                     ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                     : "bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 hover:shadow-lg hover:scale-105 cursor-pointer"
                 }`}
               >
                 <svg
-                  className="w-4 h-4"
+                  className="w-3 h-3 sm:w-4 sm:h-4"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -248,25 +273,27 @@ export default function PopularPage() {
                     d="M15 19l-7-7 7-7"
                   />
                 </svg>
-                <span>前へ</span>
+                <span className="hidden sm:inline">前へ</span>
+                <span className="sm:hidden">前</span>
               </button>
 
-              <span className="px-4 py-2 text-gray-600">
+              <span className="px-2 sm:px-4 py-1 sm:py-2 text-gray-600 text-xs sm:text-sm">
                 {currentPage} / {totalPages}
               </span>
 
               <button
                 onClick={goToNextPage}
                 disabled={currentPage === totalPages}
-                className={`px-6 py-3 rounded-xl font-medium transition-all duration-300 flex items-center space-x-2 ${
+                className={`px-3 sm:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all duration-300 flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm ${
                   currentPage === totalPages
                     ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                     : "bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 hover:shadow-lg hover:scale-105 cursor-pointer"
                 }`}
               >
-                <span>次へ</span>
+                <span className="hidden sm:inline">次へ</span>
+                <span className="sm:hidden">次</span>
                 <svg
-                  className="w-4 h-4"
+                  className="w-3 h-3 sm:w-4 sm:h-4"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
