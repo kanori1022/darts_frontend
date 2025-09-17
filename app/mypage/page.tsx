@@ -6,6 +6,7 @@ import { useFetch } from "@/hooks/fetch/useFetch";
 import { User } from "@/types/user";
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -17,6 +18,25 @@ export default function Mypage() {
   );
   const [headerGradientFrom, setHeaderGradientFrom] = useState("#3B82F6"); // デフォルトは青
   const [headerGradientTo, setHeaderGradientTo] = useState("#10B981"); // デフォルトは緑
+
+  const handleGuestLogin = async () => {
+    try {
+      const auth = getAuth();
+      const result = await signInWithEmailAndPassword(
+        auth,
+        "gest@1.com",
+        "33443344"
+      );
+      console.log("ゲストログイン成功:", result);
+      alert("ゲストユーザーとしてログインしました");
+      window.location.reload();
+    } catch (error) {
+      console.error("ゲストログインエラー:", error);
+      alert(
+        "ゲストログインに失敗しました。しばらくしてから再度お試しください。"
+      );
+    }
+  };
 
   // APIから取得したユーザーデータからヘッダーグラデーション色を設定
   useEffect(() => {
@@ -51,10 +71,30 @@ export default function Mypage() {
           <p className="mb-6 text-gray-600">
             マイページを利用するには、ログインまたは新規登録が必要です。
           </p>
-          <div className="space-y-3">
+          <div className="space-y-4">
             <Link href="/login">
               <Button color="bg-blue-500 hover:bg-blue-600">ログイン</Button>
             </Link>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">または</span>
+              </div>
+            </div>
+
+            <button
+              onClick={handleGuestLogin}
+              className="w-full px-6 py-3 bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl cursor-pointer border border-slate-500 hover:border-slate-400 relative overflow-hidden group"
+            >
+              <span className="relative z-10 flex items-center justify-center">
+                <span>ゲストユーザーでログイン</span>
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-500"></div>
+            </button>
+
             <Link href="/newprofile">
               <Button color="bg-gray-500 hover:bg-gray-600">新規登録</Button>
             </Link>
