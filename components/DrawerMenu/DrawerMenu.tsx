@@ -82,16 +82,18 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
       ></button>
 
       {/* メニューアイテム */}
-      <div className="text-[#CCCCCC] text-xl pt-20 p-4">
+      <div className="text-[#CCCCCC] text-xl pt-20 p-6 space-y-4">
         {/* ログインしていない場合のみ表示 */}
         {!isLoggedIn && (
           <>
-            <Link href="/login">
-              <p className="mb-5">ログイン</p>
+            <Link href="/login" className="block">
+              <p className="hover:bg-gray-700 p-3 rounded transition-colors">
+                ログイン
+              </p>
             </Link>
             <button
               onClick={handleGuestLogin}
-              className="mb-5 text-left w-full hover:bg-gray-700 p-2 rounded"
+              className="w-full text-left text-[#CCCCCC] hover:bg-gray-700 p-3 rounded transition-colors"
               type="button"
             >
               ゲストログイン
@@ -101,14 +103,18 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
 
         {/* ログインしている場合のみ表示 */}
         {isLoggedIn && (
-          <Link href="/mypage">
-            <p className="mb-5">設定</p>
+          <Link href="/mypage" className="block">
+            <p className="hover:bg-gray-700 p-3 rounded transition-colors">
+              設定
+            </p>
           </Link>
         )}
 
         {/* 常に表示 */}
-        <Link href="">
-          <p className="mb-5">お問い合わせ</p>
+        <Link href="" className="block">
+          <p className="hover:bg-gray-700 p-3 rounded transition-colors">
+            お問い合わせ
+          </p>
         </Link>
 
         {/* ログインしている場合のみ表示（最下部） */}
@@ -118,7 +124,7 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
               onLogout();
               onClose();
             }}
-            className="mb-5 text-left w-full text-red-500 hover:bg-gray-700 p-2 rounded"
+            className="w-full text-left text-red-500 hover:bg-gray-700 p-3 rounded transition-colors"
             type="button"
           >
             ログアウト
