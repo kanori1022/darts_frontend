@@ -252,19 +252,19 @@ function SearchResultContent() {
 
       {/* ページネーション */}
       {totalPages > 1 && (
-        <div className="mt-8 mb-8 flex justify-center">
-          <div className="flex items-center space-x-3 bg-white rounded-2xl shadow-lg border border-gray-200 p-2">
+        <div className="mt-4 sm:mt-8 mb-8 sm:mb-12 flex justify-center sticky bottom-4 z-10">
+          <div className="flex items-center space-x-1 sm:space-x-3 bg-white rounded-2xl shadow-lg border border-gray-200 p-1 sm:p-2 backdrop-blur-sm">
             <button
               onClick={goToPrevPage}
               disabled={currentPage === 1}
-              className={`px-6 py-3 rounded-xl font-medium transition-all duration-300 flex items-center space-x-2 ${
+              className={`px-3 sm:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all duration-300 flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm ${
                 currentPage === 1
                   ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                  : "bg-gradient-to-r from-indigo-500 to-indigo-600 text-white hover:from-indigo-600 hover:to-indigo-700 hover:shadow-lg hover:scale-105 cursor-pointer"
+                  : "bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 hover:shadow-lg hover:scale-105 cursor-pointer"
               }`}
             >
               <svg
-                className="w-4 h-4"
+                className="w-3 h-3 sm:w-4 sm:h-4"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -276,25 +276,27 @@ function SearchResultContent() {
                   d="M15 19l-7-7 7-7"
                 />
               </svg>
-              <span>前へ</span>
+              <span className="hidden sm:inline">前へ</span>
+              <span className="sm:hidden">前</span>
             </button>
 
-            <span className="px-4 py-2 text-gray-600">
+            <span className="px-2 sm:px-4 py-1 sm:py-2 text-gray-600 text-xs sm:text-sm">
               {currentPage} / {totalPages}
             </span>
 
             <button
               onClick={goToNextPage}
               disabled={currentPage === totalPages}
-              className={`px-6 py-3 rounded-xl font-medium transition-all duration-300 flex items-center space-x-2 ${
+              className={`px-3 sm:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all duration-300 flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm ${
                 currentPage === totalPages
                   ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                  : "bg-gradient-to-r from-indigo-500 to-indigo-600 text-white hover:from-indigo-600 hover:to-indigo-700 hover:shadow-lg hover:scale-105 cursor-pointer"
+                  : "bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 hover:shadow-lg hover:scale-105 cursor-pointer"
               }`}
             >
-              <span>次へ</span>
+              <span className="hidden sm:inline">次へ</span>
+              <span className="sm:hidden">次</span>
               <svg
-                className="w-4 h-4"
+                className="w-3 h-3 sm:w-4 sm:h-4"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
