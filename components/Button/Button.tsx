@@ -2,13 +2,17 @@ type ButtonProps = {
   children?: React.ReactNode;
   color: string;
   onClick?: () => void;
+  type?: "button" | "submit" | "reset";
+  disabled?: boolean;
 };
 
 export const Button = (props: ButtonProps) => {
-  const { children, color, onClick } = props;
+  const { children, color, onClick, type = "button", disabled = false } = props;
   return (
     <button
-      className={`${color} mt-5 py-4 px-6 w-full whitespace-nowrap rounded-xl text-white font-semibold cursor-pointer transition-all duration-200 transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-300/50 active:scale-95`}
+      type={type}
+      disabled={disabled}
+      className={`${color} mt-5 py-4 px-6 w-full whitespace-nowrap rounded-xl text-white font-semibold cursor-pointer transition-all duration-200 transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-300/50 active:scale-95 ${disabled ? "opacity-50 cursor-not-allowed hover:scale-100" : ""}`}
       onClick={onClick}
     >
       {children}
@@ -17,10 +21,12 @@ export const Button = (props: ButtonProps) => {
 };
 
 export const SrcButton = (props: ButtonProps) => {
-  const { children, color, onClick } = props;
+  const { children, color, onClick, type = "button", disabled = false } = props;
   return (
     <button
-      className={`${color} mt-5 py-1 w-30 whitespace-nowrap rounded-sm text-[#FFFFFF] cursor-pointer`}
+      type={type}
+      disabled={disabled}
+      className={`${color} mt-5 py-1 w-30 whitespace-nowrap rounded-sm text-[#FFFFFF] cursor-pointer ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
       onClick={onClick}
     >
       {children}
