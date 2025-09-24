@@ -21,6 +21,11 @@ export default function Post() {
     tip: "",
     description: "",
     tags: [], // タグ配列を追加
+    full_setting_length: "",
+    full_setting_weight: "",
+    barrel_weight: "",
+    barrel_max_diameter: "",
+    barrel_min_diameter: "",
   });
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [tagInput, setTagInput] = useState(""); // タグ入力用の状態
@@ -249,6 +254,79 @@ export default function Post() {
           </div>
         </div>
 
+        {/* ダーツ詳細情報 */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-800 mb-4">
+            ダーツ詳細情報
+          </h2>
+          <p className="text-sm text-gray-600 mb-4">
+            以下の項目は任意入力です。入力されていなくても投稿可能です。
+          </p>
+
+          <div className="space-y-4">
+            <InputShort
+              placeholder="例：160mm"
+              value={combination.full_setting_length}
+              onChange={(e) => {
+                setCombination({
+                  ...combination,
+                  full_setting_length: e.target.value,
+                });
+              }}
+            >
+              フルセッティング時の全長
+            </InputShort>
+            <InputShort
+              placeholder="例：23.5g"
+              value={combination.full_setting_weight}
+              onChange={(e) => {
+                setCombination({
+                  ...combination,
+                  full_setting_weight: e.target.value,
+                });
+              }}
+            >
+              フルセッティング時の重さ
+            </InputShort>
+            <InputShort
+              placeholder="例：18.0g"
+              value={combination.barrel_weight}
+              onChange={(e) => {
+                setCombination({
+                  ...combination,
+                  barrel_weight: e.target.value,
+                });
+              }}
+            >
+              バレル単体の重さ
+            </InputShort>
+            <InputShort
+              placeholder="例：8.2mm"
+              value={combination.barrel_max_diameter}
+              onChange={(e) => {
+                setCombination({
+                  ...combination,
+                  barrel_max_diameter: e.target.value,
+                });
+              }}
+            >
+              バレル最大径
+            </InputShort>
+            <InputShort
+              placeholder="例：7.8mm"
+              value={combination.barrel_min_diameter}
+              onChange={(e) => {
+                setCombination({
+                  ...combination,
+                  barrel_min_diameter: e.target.value,
+                });
+              }}
+            >
+              バレル最小径
+            </InputShort>
+          </div>
+        </div>
+
         {/* 説明とタグ */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-800 mb-4">詳細情報</h2>
@@ -341,12 +419,15 @@ export default function Post() {
             <Button
               color="bg-blue-600 hover:bg-blue-700"
               onClick={async () => {
-                const hasEmptyField = Object.entries(combination).some(
-                  ([key, value]) => key !== "tags" && !value
+                const requiredFields = ["title", "image", "description"];
+                const hasEmptyRequiredField = requiredFields.some(
+                  (field) => !combination[field as keyof CombinationParams]
                 );
 
-                if (hasEmptyField) {
-                  alert("値の入力または画像の選択が完了していません！");
+                if (hasEmptyRequiredField) {
+                  alert(
+                    "必須項目（タイトル、画像、説明）の入力が完了していません！"
+                  );
                   return;
                 }
 
