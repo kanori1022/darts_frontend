@@ -253,7 +253,10 @@ export default function Newprofile() {
               <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-500"></div>
             </button>
 
-            <Button color="bg-[#393939]" onClick={() => router.back()}>
+            <Button
+              color="bg-gray-600 hover:bg-gray-700"
+              onClick={() => router.back()}
+            >
               キャンセル
             </Button>
           </div>

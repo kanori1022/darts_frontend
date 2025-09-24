@@ -140,7 +140,7 @@ export default function NewestPage() {
                           firebaseUid={combination.firebase_uid}
                           currentFirebaseUid={loginUser?.uid}
                           onClick={() =>
-                            (window.location.href = `/item/${combination.id}`)
+                            (window.location.href = `/item/${combination.id}?from=newest&page=${currentPage}`)
                           }
                           tags={combination.tags}
                           showTitle={false}

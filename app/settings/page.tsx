@@ -50,7 +50,7 @@ export default function Settings() {
             アカウント設定
           </h2>
           <div className="space-y-4">
-            <Link href="/mypage">
+            <Link href="/mypage" className="block">
               <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
                 <div>
                   <h3 className="font-medium text-gray-800">マイページ</h3>
@@ -74,7 +74,7 @@ export default function Settings() {
               </div>
             </Link>
 
-            <Link href="/newprofile">
+            <Link href="/newprofile" className="block">
               <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
                 <div>
                   <h3 className="font-medium text-gray-800">
@@ -100,7 +100,7 @@ export default function Settings() {
               </div>
             </Link>
 
-            <Link href="/change-password">
+            <Link href="/change-password" className="block">
               <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
                 <div>
                   <h3 className="font-medium text-gray-800">パスワード変更</h3>

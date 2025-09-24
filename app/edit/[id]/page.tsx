@@ -12,6 +12,7 @@ import {
   faUpload,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { use, useEffect, useState } from "react";
@@ -249,9 +250,11 @@ export default function EditCombination({
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                   />
                   {imagePreview ? (
-                    <img
+                    <Image
                       src={imagePreview}
                       alt="Preview"
+                      width={400}
+                      height={300}
                       className="w-full h-full object-cover rounded-lg"
                     />
                   ) : (
@@ -353,7 +356,7 @@ export default function EditCombination({
               <Link href="/myposts">
                 <button
                   type="button"
-                  className="bg-gray-500 hover:bg-gray-600 text-white px-8 py-3 rounded-lg font-medium transition-colors duration-200 cursor-pointer"
+                  className="bg-gray-600 hover:bg-gray-700 text-white px-8 py-3 rounded-lg font-medium transition-colors duration-200 cursor-pointer"
                 >
                   キャンセル
                 </button>
