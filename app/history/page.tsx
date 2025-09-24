@@ -1,14 +1,11 @@
 "use client";
 
-// 動的レンダリングを強制
-export const dynamic = "force-dynamic";
-
 import { Card } from "@/components/Card";
 import { useFavorites } from "@/hooks/api/useFavorites";
 import useAuth from "@/hooks/auth/useAuth";
 import { useAxios } from "@/hooks/axios/useAxios";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 
 type HistoryItem = {
   id: string;
@@ -48,7 +45,24 @@ type HistoryResponse = {
   };
 };
 
+// useSearchParamsを使用する場合はSuspenseでラップする必要がある
+// https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout
 export default function HistoryPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+          <span className="ml-3 text-gray-600 font-medium">読み込み中...</span>
+        </div>
+      }
+    >
+      <History />
+    </Suspense>
+  );
+}
+
+function History() {
   const axios = useAxios();
   const { loginUser, isWaiting } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
@@ -56,13 +70,6 @@ export default function HistoryPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [data, setData] = useState<HistoryResponse | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
-
-  // マウント状態を管理
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   // URLパラメータからページ番号を読み取り
   useEffect(() => {
@@ -94,7 +101,6 @@ export default function HistoryPage() {
 
   const load = useCallback(
     async (page: number) => {
-      setIsLoading(true);
       try {
         const offset = (page - 1) * itemsPerPage;
         const { data } = await axios.get("/view_histories", {
@@ -109,7 +115,6 @@ export default function HistoryPage() {
       } catch {
         setData(emptyData);
       } finally {
-        setIsLoading(false);
       }
     },
     [axios, itemsPerPage, emptyData]
@@ -154,219 +159,209 @@ export default function HistoryPage() {
     }
   };
 
-  // マウントされていない場合はローディング表示
-  if (!isMounted) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-        <span className="ml-3 text-gray-600 font-medium">読み込み中...</span>
-      </div>
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-        <span className="ml-3 text-gray-600 font-medium">読み込み中...</span>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header Section - 固定位置 */}
-      <div className="bg-white border-b border-gray-200 py-6 px-6 mb-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="flex items-center justify-center gap-3 mb-2">
-            <div className="w-1 h-6 bg-blue-500 rounded-full"></div>
-            <h1 className="text-2xl font-bold text-gray-800">閲覧履歴一覧</h1>
-            <div className="px-2 py-1 bg-blue-100 text-blue-600 text-xs font-medium rounded">
-              RECENT
-            </div>
-          </div>
-          <p className="text-sm text-gray-600">
-            総件数: {data?.pagination.total_count || 0}件
-          </p>
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+          <span className="ml-3 text-gray-600 font-medium">読み込み中...</span>
         </div>
-      </div>
+      }
+    >
+      <div className="min-h-screen bg-gray-50">
+        {/* Header Section - 固定位置 */}
+        <div className="bg-white border-b border-gray-200 py-6 px-6 mb-6">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="flex items-center justify-center gap-3 mb-2">
+              <div className="w-1 h-6 bg-blue-500 rounded-full"></div>
+              <h1 className="text-2xl font-bold text-gray-800">閲覧履歴一覧</h1>
+              <div className="px-2 py-1 bg-blue-100 text-blue-600 text-xs font-medium rounded">
+                RECENT
+              </div>
+            </div>
+            <p className="text-sm text-gray-600">
+              総件数: {data?.pagination.total_count || 0}件
+            </p>
+          </div>
+        </div>
 
-      {/* Content Section */}
-      <div className="px-2 sm:px-4">
-        {/* コンテンツ（新着一覧・人気ランキングと同じスタイル） */}
-        {currentData.length > 0 ? (
-          <div className="max-w-6xl mx-auto">
-            <div className="space-y-2 sm:space-y-4">
-              {currentData.map((item) => (
-                <div
-                  key={item.id}
-                  className="w-full bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 overflow-hidden min-h-[120px]"
-                >
-                  {/* タイトルを上部左揃えに配置 */}
-                  <div className="p-3 sm:p-5 pb-2 sm:pb-3">
-                    <h3 className="text-sm sm:text-lg font-semibold text-gray-800 text-left mb-2 sm:mb-3">
-                      {item.title}
-                    </h3>
-                  </div>
+        {/* Content Section */}
+        <div className="px-2 sm:px-4">
+          {/* コンテンツ（新着一覧・人気ランキングと同じスタイル） */}
+          {currentData.length > 0 ? (
+            <div className="max-w-6xl mx-auto">
+              <div className="space-y-2 sm:space-y-4">
+                {currentData.map((item) => (
+                  <div
+                    key={item.id}
+                    className="w-full bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 overflow-hidden min-h-[120px]"
+                  >
+                    {/* タイトルを上部左揃えに配置 */}
+                    <div className="p-3 sm:p-5 pb-2 sm:pb-3">
+                      <h3 className="text-sm sm:text-lg font-semibold text-gray-800 text-left mb-2 sm:mb-3">
+                        {item.title}
+                      </h3>
+                    </div>
 
-                  <div className="px-3 sm:px-5 pb-3 sm:pb-5">
-                    <div className="flex items-center">
-                      {/* 閲覧履歴バッジ */}
-                      <div className="flex-shrink-0 mr-4 sm:mr-6">
-                        <div className="w-8 h-8 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center border-2 border-blue-200">
-                          <div className="px-1 sm:px-2 py-0.5 sm:py-1 bg-blue-500 text-white text-xs font-medium rounded">
-                            RECENT
+                    <div className="px-3 sm:px-5 pb-3 sm:pb-5">
+                      <div className="flex items-center">
+                        {/* 閲覧履歴バッジ */}
+                        <div className="flex-shrink-0 mr-4 sm:mr-6">
+                          <div className="w-8 h-8 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center border-2 border-blue-200">
+                            <div className="px-1 sm:px-2 py-0.5 sm:py-1 bg-blue-500 text-white text-xs font-medium rounded">
+                              RECENT
+                            </div>
                           </div>
                         </div>
-                      </div>
 
-                      {/* 画像のみ */}
-                      <div className="flex-shrink-0 mr-8 sm:mr-12">
-                        <Card
-                          src={item.image}
-                          title={item.title}
-                          isFavorite={isFavorite(item.id)}
-                          onToggleFavorite={() =>
-                            toggleFavorite(
-                              item.id,
-                              item.user_id,
-                              item.firebase_uid
-                            )
-                          }
-                          userId={item.user_id}
-                          currentUserId={loginUser?.uid}
-                          firebaseUid={item.firebase_uid}
-                          currentFirebaseUid={loginUser?.uid}
-                          onClick={() =>
-                            (window.location.href = `/item/${item.id}?from=history&page=${currentPage}`)
-                          }
-                          tags={item.tags}
-                          showTitle={false}
-                        />
-                      </div>
+                        {/* 画像のみ */}
+                        <div className="flex-shrink-0 mr-8 sm:mr-12">
+                          <Card
+                            src={item.image}
+                            title={item.title}
+                            isFavorite={isFavorite(item.id)}
+                            onToggleFavorite={() =>
+                              toggleFavorite(
+                                item.id,
+                                item.user_id,
+                                item.firebase_uid
+                              )
+                            }
+                            userId={item.user_id}
+                            currentUserId={loginUser?.uid}
+                            firebaseUid={item.firebase_uid}
+                            currentFirebaseUid={loginUser?.uid}
+                            onClick={() =>
+                              (window.location.href = `/item/${item.id}?from=history&page=${currentPage}`)
+                            }
+                            tags={item.tags}
+                            showTitle={false}
+                          />
+                        </div>
 
-                      {/* パーツ詳細情報 */}
-                      <div className="flex-1 flex flex-col justify-center max-w-xs">
-                        <div>
-                          <div className="text-xs sm:text-sm text-gray-600 space-y-1 sm:space-y-1.5 min-h-[60px] flex flex-col justify-center">
-                            {item.flight ? (
-                              <p>
-                                フライト:{" "}
-                                {item.flight.length > 6
-                                  ? `${item.flight.substring(0, 6)}...`
-                                  : item.flight}
-                              </p>
-                            ) : (
-                              <p className="text-gray-400">フライト: -</p>
-                            )}
-                            {item.shaft ? (
-                              <p>
-                                シャフト:{" "}
-                                {item.shaft.length > 6
-                                  ? `${item.shaft.substring(0, 6)}...`
-                                  : item.shaft}
-                              </p>
-                            ) : (
-                              <p className="text-gray-400">シャフト: -</p>
-                            )}
-                            {item.barrel ? (
-                              <p>
-                                バレル:{" "}
-                                {item.barrel.length > 6
-                                  ? `${item.barrel.substring(0, 6)}...`
-                                  : item.barrel}
-                              </p>
-                            ) : (
-                              <p className="text-gray-400">バレル: -</p>
-                            )}
-                            {item.tip ? (
-                              <p>
-                                チップ:{" "}
-                                {item.tip.length > 6
-                                  ? `${item.tip.substring(0, 6)}...`
-                                  : item.tip}
-                              </p>
-                            ) : (
-                              <p className="text-gray-400">チップ: -</p>
-                            )}
+                        {/* パーツ詳細情報 */}
+                        <div className="flex-1 flex flex-col justify-center max-w-xs">
+                          <div>
+                            <div className="text-xs sm:text-sm text-gray-600 space-y-1 sm:space-y-1.5 min-h-[60px] flex flex-col justify-center">
+                              {item.flight ? (
+                                <p>
+                                  フライト:{" "}
+                                  {item.flight.length > 6
+                                    ? `${item.flight.substring(0, 6)}...`
+                                    : item.flight}
+                                </p>
+                              ) : (
+                                <p className="text-gray-400">フライト: -</p>
+                              )}
+                              {item.shaft ? (
+                                <p>
+                                  シャフト:{" "}
+                                  {item.shaft.length > 6
+                                    ? `${item.shaft.substring(0, 6)}...`
+                                    : item.shaft}
+                                </p>
+                              ) : (
+                                <p className="text-gray-400">シャフト: -</p>
+                              )}
+                              {item.barrel ? (
+                                <p>
+                                  バレル:{" "}
+                                  {item.barrel.length > 6
+                                    ? `${item.barrel.substring(0, 6)}...`
+                                    : item.barrel}
+                                </p>
+                              ) : (
+                                <p className="text-gray-400">バレル: -</p>
+                              )}
+                              {item.tip ? (
+                                <p>
+                                  チップ:{" "}
+                                  {item.tip.length > 6
+                                    ? `${item.tip.substring(0, 6)}...`
+                                    : item.tip}
+                                </p>
+                              ) : (
+                                <p className="text-gray-400">チップ: -</p>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="text-center text-gray-500 py-8">
-            閲覧履歴はありません
-          </div>
-        )}
-
-        {/* ページネーション */}
-        {totalPages > 1 && (
-          <div className="mt-4 sm:mt-8 mb-8 sm:mb-12 flex justify-center sticky bottom-4 z-10">
-            <div className="flex items-center space-x-1 sm:space-x-3 bg-white rounded-2xl shadow-lg border border-gray-200 p-1 sm:p-2 backdrop-blur-sm">
-              <button
-                onClick={goToPrevPage}
-                disabled={currentPage === 1}
-                className={`px-3 sm:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all duration-300 flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm ${
-                  currentPage === 1
-                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                    : "bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 hover:shadow-lg hover:scale-105 cursor-pointer"
-                }`}
-              >
-                <svg
-                  className="w-3 h-3 sm:w-4 sm:h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-                <span className="hidden sm:inline">前へ</span>
-                <span className="sm:hidden">前</span>
-              </button>
-
-              <span className="px-2 sm:px-4 py-1 sm:py-2 text-gray-600 text-xs sm:text-sm">
-                {currentPage} / {totalPages}
-              </span>
-
-              <button
-                onClick={goToNextPage}
-                disabled={currentPage === totalPages}
-                className={`px-3 sm:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all duration-300 flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm ${
-                  currentPage === totalPages
-                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                    : "bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 hover:shadow-lg hover:scale-105 cursor-pointer"
-                }`}
-              >
-                <span className="hidden sm:inline">次へ</span>
-                <span className="sm:hidden">次</span>
-                <svg
-                  className="w-3 h-3 sm:w-4 sm:h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </button>
+          ) : (
+            <div className="text-center text-gray-500 py-8">
+              閲覧履歴はありません
             </div>
-          </div>
-        )}
+          )}
+
+          {/* ページネーション */}
+          {totalPages > 1 && (
+            <div className="mt-4 sm:mt-8 mb-8 sm:mb-12 flex justify-center sticky bottom-4 z-10">
+              <div className="flex items-center space-x-1 sm:space-x-3 bg-white rounded-2xl shadow-lg border border-gray-200 p-1 sm:p-2 backdrop-blur-sm">
+                <button
+                  onClick={goToPrevPage}
+                  disabled={currentPage === 1}
+                  className={`px-3 sm:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all duration-300 flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm ${
+                    currentPage === 1
+                      ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                      : "bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 hover:shadow-lg hover:scale-105 cursor-pointer"
+                  }`}
+                >
+                  <svg
+                    className="w-3 h-3 sm:w-4 sm:h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 19l-7-7 7-7"
+                    />
+                  </svg>
+                  <span className="hidden sm:inline">前へ</span>
+                  <span className="sm:hidden">前</span>
+                </button>
+
+                <span className="px-2 sm:px-4 py-1 sm:py-2 text-gray-600 text-xs sm:text-sm">
+                  {currentPage} / {totalPages}
+                </span>
+
+                <button
+                  onClick={goToNextPage}
+                  disabled={currentPage === totalPages}
+                  className={`px-3 sm:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all duration-300 flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm ${
+                    currentPage === totalPages
+                      ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                      : "bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 hover:shadow-lg hover:scale-105 cursor-pointer"
+                  }`}
+                >
+                  <span className="hidden sm:inline">次へ</span>
+                  <span className="sm:hidden">次</span>
+                  <svg
+                    className="w-3 h-3 sm:w-4 sm:h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </Suspense>
   );
 }
