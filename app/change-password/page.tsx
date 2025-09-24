@@ -91,11 +91,12 @@ export default function ChangePassword() {
           router.push("/settings");
         }, 3000);
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error("パスワード変更エラー:", error);
 
       // Firebase Authのエラーメッセージを日本語に変換
-      switch (error.code) {
+      const firebaseError = error as { code?: string };
+      switch (firebaseError.code) {
         case "auth/weak-password":
           setError("パスワードが弱すぎます。6文字以上で入力してください");
           break;
