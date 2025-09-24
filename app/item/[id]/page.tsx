@@ -243,6 +243,51 @@ export default function Item({ params }: Props) {
             <LabelValueRow label="チップ" value={data.tip} />
           </div>
 
+          {/* ダーツ詳細情報セクション */}
+          {(data.full_setting_length ||
+            data.full_setting_weight ||
+            data.barrel_weight ||
+            data.barrel_max_diameter ||
+            data.barrel_min_diameter) && (
+            <div className="mt-6 pt-6 border-t border-gray-100">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                ダーツ詳細情報
+              </h3>
+              <div className="space-y-3">
+                {data.full_setting_length && (
+                  <LabelValueRow
+                    label="フルセッティング時の全長"
+                    value={`${data.full_setting_length}mm`}
+                  />
+                )}
+                {data.full_setting_weight && (
+                  <LabelValueRow
+                    label="フルセッティング時の重さ"
+                    value={`${data.full_setting_weight}g`}
+                  />
+                )}
+                {data.barrel_weight && (
+                  <LabelValueRow
+                    label="バレル単体の重さ"
+                    value={`${data.barrel_weight}g`}
+                  />
+                )}
+                {data.barrel_max_diameter && (
+                  <LabelValueRow
+                    label="バレル最大径"
+                    value={`${data.barrel_max_diameter}mm`}
+                  />
+                )}
+                {data.barrel_min_diameter && (
+                  <LabelValueRow
+                    label="バレル最小径"
+                    value={`${data.barrel_min_diameter}mm`}
+                  />
+                )}
+              </div>
+            </div>
+          )}
+
           {data.description && (
             <div className="mt-6 pt-6 border-t border-gray-100">
               <h3 className="text-lg font-semibold text-gray-800 mb-3">説明</h3>
