@@ -353,7 +353,7 @@ export default function EditCombination({
               <Link href="/myposts">
                 <button
                   type="button"
-                  className="bg-gray-500 hover:bg-gray-600 text-white px-8 py-3 rounded-lg font-medium transition-colors duration-200 cursor-pointer"
+                  className="bg-gray-600 hover:bg-gray-700 text-white px-8 py-3 rounded-lg font-medium transition-colors duration-200 cursor-pointer"
                 >
                   キャンセル
                 </button>

@@ -306,7 +306,10 @@ export default function Profile() {
         <Button color="bg-[#3B82F6]" onClick={handleUpdate}>
           保存する
         </Button>
-        <Button color="bg-[#BEBEBE]" onClick={() => router.push("/mypage")}>
+        <Button
+          color="bg-gray-600 hover:bg-gray-700"
+          onClick={() => router.push("/mypage")}
+        >
           キャンセル
         </Button>
       </div>
