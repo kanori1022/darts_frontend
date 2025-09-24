@@ -104,7 +104,7 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
 
         {/* ログインしている場合のみ表示 */}
         {isLoggedIn && (
-          <Link href="/mypage" className="block mb-4">
+          <Link href="/settings" className="block mb-4">
             <p className="hover:bg-gray-700 p-3 rounded transition-colors text-left">
               設定
             </p>
