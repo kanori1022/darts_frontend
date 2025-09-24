@@ -142,9 +142,11 @@ export default function Favorite() {
                     <div className="flex-shrink-0">
                       <div className="w-24 h-24 bg-gray-200 rounded-lg overflow-hidden">
                         {combination.image ? (
-                          <img
+                          <Image
                             src={combination.image}
                             alt={combination.title}
+                            width={96}
+                            height={96}
                             className="w-full h-full object-cover"
                           />
                         ) : (

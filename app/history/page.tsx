@@ -174,7 +174,7 @@ export default function HistoryPage() {
         {currentData.length > 0 ? (
           <div className="max-w-6xl mx-auto">
             <div className="space-y-2 sm:space-y-4">
-              {currentData.map((item, index) => (
+              {currentData.map((item) => (
                 <div
                   key={item.id}
                   className="w-full bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 overflow-hidden min-h-[120px]"

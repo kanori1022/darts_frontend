@@ -249,9 +249,11 @@ export default function EditCombination({
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                   />
                   {imagePreview ? (
-                    <img
+                    <Image
                       src={imagePreview}
                       alt="Preview"
+                      width={400}
+                      height={300}
                       className="w-full h-full object-cover rounded-lg"
                     />
                   ) : (
