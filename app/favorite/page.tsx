@@ -5,6 +5,7 @@ import { useFavorites } from "@/hooks/api/useFavorites";
 import useAuth from "@/hooks/auth/useAuth";
 import { useFetch } from "@/hooks/fetch/useFetch";
 import { Combination } from "@/types/combination";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
