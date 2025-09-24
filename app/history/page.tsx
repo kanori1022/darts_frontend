@@ -1,5 +1,8 @@
 "use client";
 
+// 動的レンダリングを強制
+export const dynamic = "force-dynamic";
+
 import { Card } from "@/components/Card";
 import { useFavorites } from "@/hooks/api/useFavorites";
 import useAuth from "@/hooks/auth/useAuth";
@@ -54,15 +57,25 @@ export default function HistoryPage() {
   const itemsPerPage = 10;
   const [data, setData] = useState<HistoryResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // マウント状態を管理
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // URLパラメータからページ番号を読み取り
   useEffect(() => {
-    const pageParam = searchParams.get("page");
-    if (pageParam) {
-      const pageNumber = parseInt(pageParam, 10);
-      if (pageNumber > 0) {
-        setCurrentPage(pageNumber);
+    try {
+      const pageParam = searchParams.get("page");
+      if (pageParam) {
+        const pageNumber = parseInt(pageParam, 10);
+        if (pageNumber > 0) {
+          setCurrentPage(pageNumber);
+        }
       }
+    } catch (error) {
+      console.warn("Failed to read search params:", error);
     }
   }, [searchParams]);
 
@@ -140,6 +153,16 @@ export default function HistoryPage() {
       setCurrentPage(currentPage - 1);
     }
   };
+
+  // マウントされていない場合はローディング表示
+  if (!isMounted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+        <span className="ml-3 text-gray-600 font-medium">読み込み中...</span>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
