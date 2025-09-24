@@ -196,7 +196,7 @@ export default function PopularPage() {
                             firebaseUid={combination.firebase_uid}
                             currentFirebaseUid={loginUser?.uid}
                             onClick={() =>
-                              (window.location.href = `/item/${combination.id}`)
+                              (window.location.href = `/item/${combination.id}?from=popular&page=${currentPage}`)
                             }
                             tags={combination.tags}
                             showTitle={false}

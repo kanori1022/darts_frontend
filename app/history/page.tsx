@@ -4,6 +4,7 @@ import { Card } from "@/components/Card";
 import { useFavorites } from "@/hooks/api/useFavorites";
 import useAuth from "@/hooks/auth/useAuth";
 import { useAxios } from "@/hooks/axios/useAxios";
+import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 type HistoryItem = {
@@ -11,6 +12,14 @@ type HistoryItem = {
   title: string;
   image: string;
   tags?: string[];
+  user_id?: string | number;
+  firebase_uid?: string;
+  user_name?: string;
+  viewed_at?: string;
+  flight?: string;
+  shaft?: string;
+  barrel?: string;
+  tip?: string;
 };
 
 type HistoryResponse = {
@@ -19,6 +28,14 @@ type HistoryResponse = {
     title: string;
     image: string;
     tags?: string[];
+    user_id?: string | number;
+    firebase_uid?: string;
+    user_name?: string;
+    viewed_at?: string;
+    flight?: string;
+    shaft?: string;
+    barrel?: string;
+    tip?: string;
   }>;
   pagination: {
     current_page: number;
@@ -32,10 +49,22 @@ export default function HistoryPage() {
   const axios = useAxios();
   const { loginUser, isWaiting } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
+  const searchParams = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [data, setData] = useState<HistoryResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  // URLパラメータからページ番号を読み取り
+  useEffect(() => {
+    const pageParam = searchParams.get("page");
+    if (pageParam) {
+      const pageNumber = parseInt(pageParam, 10);
+      if (pageNumber > 0) {
+        setCurrentPage(pageNumber);
+      }
+    }
+  }, [searchParams]);
 
   const emptyData: HistoryResponse = useMemo(
     () => ({
@@ -58,6 +87,11 @@ export default function HistoryPage() {
         const { data } = await axios.get("/view_histories", {
           params: { limit: itemsPerPage, offset },
         });
+        console.log("=== フロントエンド閲覧履歴デバッグ ===");
+        console.log("取得データ:", data);
+        console.log("histories件数:", data?.histories?.length);
+        console.log("total_count:", data?.pagination?.total_count);
+        console.log("=====================================");
         setData(data as HistoryResponse);
       } catch {
         setData(emptyData);
@@ -83,6 +117,14 @@ export default function HistoryPage() {
       title: h.title,
       image: h.image,
       tags: h.tags || [],
+      user_id: h.user_id,
+      firebase_uid: h.firebase_uid,
+      user_name: h.user_name,
+      viewed_at: h.viewed_at,
+      flight: h.flight,
+      shaft: h.shaft,
+      barrel: h.barrel,
+      tip: h.tip,
     }));
   }, [data]);
 
@@ -128,14 +170,14 @@ export default function HistoryPage() {
 
       {/* Content Section */}
       <div className="px-2 sm:px-4">
-        {/* コンテンツ（popularのカード並びに合わせる） */}
+        {/* コンテンツ（新着一覧・人気ランキングと同じスタイル） */}
         {currentData.length > 0 ? (
           <div className="max-w-6xl mx-auto">
             <div className="space-y-2 sm:space-y-4">
-              {currentData.map((item) => (
+              {currentData.map((item, index) => (
                 <div
                   key={item.id}
-                  className="w-full bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 overflow-hidden"
+                  className="w-full bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 overflow-hidden min-h-[120px]"
                 >
                   {/* タイトルを上部左揃えに配置 */}
                   <div className="p-3 sm:p-5 pb-2 sm:pb-3">
@@ -146,29 +188,85 @@ export default function HistoryPage() {
 
                   <div className="px-3 sm:px-5 pb-3 sm:pb-5">
                     <div className="flex items-center">
+                      {/* 閲覧履歴バッジ */}
+                      <div className="flex-shrink-0 mr-4 sm:mr-6">
+                        <div className="w-8 h-8 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center border-2 border-blue-200">
+                          <div className="px-1 sm:px-2 py-0.5 sm:py-1 bg-blue-500 text-white text-xs font-medium rounded">
+                            RECENT
+                          </div>
+                        </div>
+                      </div>
+
                       {/* 画像のみ */}
                       <div className="flex-shrink-0 mr-8 sm:mr-12">
                         <Card
                           src={item.image}
                           title={item.title}
                           isFavorite={isFavorite(item.id)}
-                          onToggleFavorite={() => toggleFavorite(item.id)}
-                          userId={undefined}
+                          onToggleFavorite={() =>
+                            toggleFavorite(
+                              item.id,
+                              item.user_id,
+                              item.firebase_uid
+                            )
+                          }
+                          userId={item.user_id}
                           currentUserId={loginUser?.uid}
-                          firebaseUid={undefined}
+                          firebaseUid={item.firebase_uid}
                           currentFirebaseUid={loginUser?.uid}
                           onClick={() =>
-                            (window.location.href = `/item/${item.id}`)
+                            (window.location.href = `/item/${item.id}?from=history&page=${currentPage}`)
                           }
                           tags={item.tags}
                           showTitle={false}
                         />
                       </div>
 
-                      {/* 詳細情報（タイトルのみ） */}
+                      {/* パーツ詳細情報 */}
                       <div className="flex-1 flex flex-col justify-center max-w-xs">
                         <div>
-                          {/* タイトルは上部に移動したため、ここには何も表示しない */}
+                          <div className="text-xs sm:text-sm text-gray-600 space-y-1 sm:space-y-1.5 min-h-[60px] flex flex-col justify-center">
+                            {item.flight ? (
+                              <p>
+                                フライト:{" "}
+                                {item.flight.length > 6
+                                  ? `${item.flight.substring(0, 6)}...`
+                                  : item.flight}
+                              </p>
+                            ) : (
+                              <p className="text-gray-400">フライト: -</p>
+                            )}
+                            {item.shaft ? (
+                              <p>
+                                シャフト:{" "}
+                                {item.shaft.length > 6
+                                  ? `${item.shaft.substring(0, 6)}...`
+                                  : item.shaft}
+                              </p>
+                            ) : (
+                              <p className="text-gray-400">シャフト: -</p>
+                            )}
+                            {item.barrel ? (
+                              <p>
+                                バレル:{" "}
+                                {item.barrel.length > 6
+                                  ? `${item.barrel.substring(0, 6)}...`
+                                  : item.barrel}
+                              </p>
+                            ) : (
+                              <p className="text-gray-400">バレル: -</p>
+                            )}
+                            {item.tip ? (
+                              <p>
+                                チップ:{" "}
+                                {item.tip.length > 6
+                                  ? `${item.tip.substring(0, 6)}...`
+                                  : item.tip}
+                              </p>
+                            ) : (
+                              <p className="text-gray-400">チップ: -</p>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -193,7 +291,7 @@ export default function HistoryPage() {
                 className={`px-3 sm:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all duration-300 flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm ${
                   currentPage === 1
                     ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                    : "bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700 hover:shadow-lg hover:scale-105 cursor-pointer"
+                    : "bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 hover:shadow-lg hover:scale-105 cursor-pointer"
                 }`}
               >
                 <svg
@@ -223,7 +321,7 @@ export default function HistoryPage() {
                 className={`px-3 sm:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all duration-300 flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm ${
                   currentPage === totalPages
                     ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                    : "bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700 hover:shadow-lg hover:scale-105 cursor-pointer"
+                    : "bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 hover:shadow-lg hover:scale-105 cursor-pointer"
                 }`}
               >
                 <span className="hidden sm:inline">次へ</span>

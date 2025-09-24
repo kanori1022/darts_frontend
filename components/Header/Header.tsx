@@ -29,6 +29,62 @@ export const Header = () => {
       return;
     }
 
+    // URLパラメータを確認
+    const urlParams = new URLSearchParams(window.location.search);
+    const from = urlParams.get("from");
+    const page = urlParams.get("page");
+
+    // 閲覧履歴ページから来た場合
+    if (from === "history") {
+      const historyUrl = page ? `/history?page=${page}` : "/history";
+      router.push(historyUrl);
+      return;
+    }
+
+    // 新着一覧ページから来た場合
+    if (from === "newest") {
+      const newestUrl = page ? `/newest?page=${page}` : "/newest";
+      router.push(newestUrl);
+      return;
+    }
+
+    // 人気ランキングページから来た場合
+    if (from === "popular") {
+      const popularUrl = page ? `/popular?page=${page}` : "/popular";
+      router.push(popularUrl);
+      return;
+    }
+
+    // 検索結果ページから来た場合
+    if (from === "search") {
+      router.push("/search/result");
+      return;
+    }
+
+    // リファラーを確認して適切なページに戻る（フォールバック）
+    const referrer = document.referrer;
+
+    if (referrer.includes("/history")) {
+      router.push("/history");
+      return;
+    }
+
+    if (referrer.includes("/newest")) {
+      router.push("/newest");
+      return;
+    }
+
+    if (referrer.includes("/popular")) {
+      router.push("/popular");
+      return;
+    }
+
+    if (referrer.includes("/search/result")) {
+      router.push("/search/result");
+      return;
+    }
+
+    // その他の場合はブラウザの履歴に従う
     if (window.history.length > 1) {
       router.back();
     } else {
